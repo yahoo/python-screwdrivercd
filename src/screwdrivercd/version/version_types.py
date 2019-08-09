@@ -142,6 +142,10 @@ class Version:
 
     @property
     def version(self):
+        """
+        The version from the versioner, will be the version from the screwdriver package.version if it is set, otherwise
+        it will be the generated version number from the versioner.
+        """
         if self.meta_version:  # pragma: no cover
             return self.meta_version
 
@@ -156,14 +160,15 @@ class VersionUpdateRevision(Version):
     Version updater that updates the revision (last component) of a semetic version.
     """
     log_errors = True
-
+    default_revision_value = '0'
+    
     def __init__(self, *args, **kwargs):
         self.log_errors = kwargs.pop('log_errors', self.log_errors)
         super().__init__(*args, **kwargs)
 
     def revision_value(self):  # pragma: no cover
         "Method to return a newly generatated revision value"
-        return '0'
+        return self.default_revision_value
 
     def generate(self):  # pragma: no cover
         version = super().generate()
