@@ -15,8 +15,6 @@ LOG = logging.getLogger(LOG_NAME)
 def main():
     """Run the tool from the command line"""
     args = parse_arguments()
-    ignore_meta = args.ignore_meta
-    update_meta = args.update_meta
 
     if args.force_update or setupcfg_has_metadata():
         versioner = versioners[args.version_type]
