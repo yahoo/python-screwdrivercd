@@ -12,7 +12,7 @@ from .exceptions import VersionError
 LOG = logging.getLogger(__name__)
 
 
-class Version(object):
+class Version:
     """
     Base Screwdriver Versioning class
     """
@@ -40,6 +40,7 @@ class Version(object):
             output = subprocess.check_output(['git', 'commit', '-m', 'Updated version', self.setup_cfg_filename])  # nosec
         except subprocess.CalledProcessError:
             pass
+        LOG.debug(f'Git commit output {output}')
 
     def read_setup_version(self):
         """
