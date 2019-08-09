@@ -38,9 +38,9 @@ class Version:
         """
         try:
             output = subprocess.check_output(['git', 'commit', '-m', 'Updated version', self.setup_cfg_filename])  # nosec
+            LOG.debug(f'Git commit output {output}')
         except subprocess.CalledProcessError:
             pass
-        LOG.debug(f'Git commit output {output}')
 
     def read_setup_version(self):
         """
