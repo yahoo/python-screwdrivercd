@@ -12,7 +12,10 @@ from .exceptions import VersionError
 LOG = logging.getLogger(__name__)
 
 
-class Version(object):
+class Version:
+    """
+    Base Screwdriver Versioning class
+    """
     name = None
     default_version = ['0', '0', '0']
     setup_cfg_filename = 'setup.cfg'
@@ -35,10 +38,20 @@ class Version(object):
         """
         try:
             output = subprocess.check_output(['git', 'commit', '-m', 'Updated version', self.setup_cfg_filename])  # nosec
+            LOG.debug(f'Git commit output {output}')
         except subprocess.CalledProcessError:
             pass
 
     def read_setup_version(self):
+        """
+        Read the package version from the setup.cfg file
+
+        Returns
+        -------
+        str:
+            The version number from the setup.cfg [metadata] section or the default version if the version is not
+            present.
+        """
         config = configparser.ConfigParser()
         config.read(self.setup_cfg_filename)
         if 'metadata' in config.sections():
@@ -46,6 +59,9 @@ class Version(object):
         return self.default_version
 
     def generate(self):
+        """
+        Generate the version
+        """
         return self.read_setup_version()
 
     def update_setup_cfg_metadata(self):
@@ -67,6 +83,9 @@ class Version(object):
         self.commit_changed_setup_cfg()
 
     def update_meta_version(self):  # noqa
+        """
+        Update the meta_version value based on the generated version and pull_request_number
+        """
         if not self.meta_version:  # pragma: no cover
             if not self.pull_request_number:
                 self.meta_version = self.generated_version
@@ -75,6 +94,15 @@ class Version(object):
 
     @property
     def pull_request_number(self):
+        """
+        Return the Pull request number from the Screwdriver SD_PULL_REQUEST env variable if present, returns 0
+        if it is not present.
+        
+        Returns
+        -------
+        int:
+            Pull request number or 0 if not running from a pull request
+        """
         try:
             prnum = int(os.environ.get('SD_PULL_REQUEST', None))
         except (TypeError, ValueError):
@@ -83,10 +111,16 @@ class Version(object):
 
     @property
     def generated_version(self):
+        """
+        The generated version
+        """
         return '.'.join(self.generate())
 
     @property
     def meta_version(self):
+        """
+        The version from the screwdriver metadata package.version value or None if not present.
+        """
         if self.ignore_meta_version:
             return None
         try:  # pragma: no cover
@@ -108,6 +142,10 @@ class Version(object):
 
     @property
     def version(self):
+        """
+        The version from the versioner, will be the version from the screwdriver package.version if it is set, otherwise
+        it will be the generated version number from the versioner.
+        """
         if self.meta_version:  # pragma: no cover
             return self.meta_version
 
@@ -118,15 +156,19 @@ class Version(object):
 
 
 class VersionUpdateRevision(Version):
+    """
+    Version updater that updates the revision (last component) of a semetic version.
+    """
     log_errors = True
-
+    default_revision_value = '0'
+    
     def __init__(self, *args, **kwargs):
         self.log_errors = kwargs.pop('log_errors', self.log_errors)
         super().__init__(*args, **kwargs)
 
     def revision_value(self):  # pragma: no cover
         "Method to return a newly generatated revision value"
-        return '0'
+        return self.default_revision_value
 
     def generate(self):  # pragma: no cover
         version = super().generate()
@@ -142,6 +184,16 @@ class VersionUpdateRevision(Version):
 
 
 class VersionGitRevisionCount(VersionUpdateRevision):
+    """
+    Version Revision updater that sets the revision number to be equal to the number of git commits of the current
+    repository.
+    
+    Each new git commit will increment the revision value.
+    
+    Notes
+    -----
+    This Versioner may not work correctly if the current git repository is a shallow git clone.
+    """
     name = 'git_revision_count'
 
     def revision_value(self):
@@ -167,6 +219,11 @@ class VersionGitRevisionCount(VersionUpdateRevision):
 
 
 class VersionSDV4Build(VersionUpdateRevision):
+    """
+    Version Revision updater that sets the revision number to be equal to the value of the screwdriver SD_BUILD number.
+    
+    Each new screwdriver job run will increment the revision number.
+    """
     name = 'sdv4_SD_BUILD'
     def revision_value(self):
         revision = os.environ.get('SD_BUILD', None)
@@ -176,6 +233,11 @@ class VersionSDV4Build(VersionUpdateRevision):
 
 
 class VersionUTCDate(Version):
+    """
+    Version updater that generates a version based on the current UTC date/time.
+    
+    Each new screwdriver job will get a version based on the current date and time.
+    """
     name = 'utc_date'
     now = None
 
