@@ -5,4 +5,3 @@
 
 class VersionError(Exception):
     """An error has occurred generating a version"""
-    pass
