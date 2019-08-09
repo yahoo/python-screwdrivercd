@@ -1,4 +1,4 @@
-[![Build Status](https://cd.screwdriver.cd/pipelines/pipelineid/badge)](https://cd.screwdriver.cd/pipelines/pipelineid)
+[![Build Status](https://cd.screwdriver.cd/pipelines/3063/badge)](https://cd.screwdriver.cd/pipelines/3063)
 [![Codestyle](https://img.shields.io/badge/code%20style-pep8-lightgrey.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 # screwdrivercd
