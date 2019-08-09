@@ -59,6 +59,9 @@ class Version:
         return self.default_version
 
     def generate(self):
+        """
+        Generate the version
+        """
         return self.read_setup_version()
 
     def update_setup_cfg_metadata(self):
@@ -108,10 +111,16 @@ class Version:
 
     @property
     def generated_version(self):
+        """
+        The generated version
+        """
         return '.'.join(self.generate())
 
     @property
     def meta_version(self):
+        """
+        The version from the screwdriver metadata package.version value or None if not present.
+        """
         if self.ignore_meta_version:
             return None
         try:  # pragma: no cover
