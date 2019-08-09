@@ -44,7 +44,7 @@ class Version(object):
     def read_setup_version(self):
         """
         Read the package version from the setup.cfg file
-        
+
         Returns
         -------
         str:
