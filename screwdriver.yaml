@@ -7,7 +7,7 @@ shared:
     PACKAGE_DIRECTORY: src/screwdrivercd
   steps:
     - update_version: |
-      pip install .
+      $BASE_PYTHON -m pip install .
       screwdrivercd_version
 
 jobs:
@@ -34,9 +34,9 @@ jobs:
   generate_version:
     template: python/generate_version
     steps:
-        - generate_version: |
-            $BASE_PYTHON -m pip install .
-            screwdrivercd_version --ignore_meta --update_meta
+      - generate_version: |
+        $BASE_PYTHON -m pip install .
+        screwdrivercd_version --ignore_meta --update_meta
     requires: [~commit]
 
   publish_test_pypi:
@@ -49,7 +49,7 @@ jobs:
   verify_test_package:
     template: python/validate_pypi_package
     environment:
-        PYPI_INDEX_URL: https://test.pypi.org/simple
+      PYPI_INDEX_URL: https://test.pypi.org/simple
     requires: [publish_test_pypi]
 
   publish_pypi:
