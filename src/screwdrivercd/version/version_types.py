@@ -138,7 +138,7 @@ class Version:
         try:
             subprocess.check_call(['meta', 'set', 'package.version', new_version])  # nosec
         except FileNotFoundError:
-            pass
+            LOG.warning('The screwdriver meta command is missing, unable to set version in screwdriver metadata')
 
     @property
     def version(self):
