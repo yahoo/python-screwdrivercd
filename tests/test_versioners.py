@@ -95,6 +95,7 @@ class TestVersioners(unittest.TestCase):
 
     def test__sdv4_SD_BUILD__unset(self):
         self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
+        os.system('printenv')
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
