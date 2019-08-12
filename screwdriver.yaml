@@ -6,7 +6,7 @@ shared:
   environment:
     PACKAGE_DIRECTORY: src/screwdrivercd
   steps:
-    update_version: |
+    - update_version: |
       pip install .
       screwdrivercd_version
 
