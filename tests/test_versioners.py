@@ -104,6 +104,7 @@ class TestVersioners(unittest.TestCase):
         self.environ_keys.add('SD_BUILD')
         self.environ_keys.add('SD_BUILD_ID')
         os.environ['SD_BUILD'] = '9999'
+        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
         self.assertEqual(str(versioner), '0.0.9999')
         versioner.update_setup_cfg_metadata()
