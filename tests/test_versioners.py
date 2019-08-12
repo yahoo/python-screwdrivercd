@@ -44,6 +44,11 @@ class TestVersioners(unittest.TestCase):
             if self.orig_environ.get(environ_key, None):
                 os.environ[environ_key] = self.orig_environ[environ_key]
 
+    def delkeys(self, keys):
+        for key in keys:
+            if key in os.environ.keys():
+                del key
+
     def setupEmptyGit(self):
         subprocess.check_call(['git', 'init'])
         subprocess.check_call(['git', 'config', 'user.email', 'foo@bar.com'])
@@ -90,8 +95,7 @@ class TestVersioners(unittest.TestCase):
 
     def test__sdv4_SD_BUILD__unset(self):
         self.environ_keys.add('SD_BUILD')
-        del os.environ['SD_BUILD']
-        del os.environ['SD_BUILD_ID']
+        self.delkeys(['SD_BUILD', 'SD_BUILD_ID'])
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
@@ -107,9 +111,7 @@ class TestVersioners(unittest.TestCase):
     def test__sdv4_SD_BUILD__PR__unset(self):
         self.environ_keys.add('SD_BUILD')
         self.environ_keys.add('SD_PULL_REQUEST')
-        del os.environ['SD_BUILD']
-        del os.environ['SD_BUILD_ID']
-        del os.environ['SD_PULL_REQUEST']
+        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
