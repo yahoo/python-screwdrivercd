@@ -16,7 +16,7 @@ class TestVersioners(unittest.TestCase):
     orig_argv = None
     orig_environ =None
     tempdir = None
-    environ_keys = {'SD_PULL_REQUEST'}
+    environ_keys = {'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -43,6 +43,13 @@ class TestVersioners(unittest.TestCase):
         for environ_key in self.environ_keys:
             if self.orig_environ.get(environ_key, None):
                 os.environ[environ_key] = self.orig_environ[environ_key]
+
+    def delkeys(self, keys):
+        for key in keys:
+            try:
+                del os.environ[key]
+            except KeyError:
+                pass
 
     def setupEmptyGit(self):
         subprocess.check_call(['git', 'init'])
@@ -89,13 +96,13 @@ class TestVersioners(unittest.TestCase):
         self.assertIn('version = 0.0.1', result)
 
     def test__sdv4_SD_BUILD__unset(self):
-        self.environ_keys.add('SD_BUILD')
-        del os.environ['SD_BUILD']
+        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
+        os.system('printenv')
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
     def test__sdv4_SD_BUILD__set(self):
-        self.environ_keys.add('SD_BUILD')
+        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         os.environ['SD_BUILD'] = '9999'
         versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
         self.assertEqual(str(versioner), '0.0.9999')
@@ -104,16 +111,12 @@ class TestVersioners(unittest.TestCase):
         self.assertEqual(config_version, ['0', '0', '9999'])
 
     def test__sdv4_SD_BUILD__PR__unset(self):
-        self.environ_keys.add('SD_BUILD')
-        self.environ_keys.add('SD_PULL_REQUEST')
-        del os.environ['SD_BUILD']
-        del os.environ['SD_PULL_REQUEST']
+        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
     def test__sdv4_SD_BUILD__PR__set(self):
-        self.environ_keys.add('SD_BUILD')
-        self.environ_keys.add('SD_PULL_REQUEST')
+        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         os.environ['SD_BUILD'] = '9999'
         os.environ['SD_PULL_REQUEST'] = '9'
         versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
