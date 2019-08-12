@@ -3,7 +3,7 @@
 import copy
 import datetime
 import os
-import subprocess
+import subprocess  # nosec
 import sys
 import tempfile
 import unittest
@@ -17,12 +17,17 @@ class TestVersioners(unittest.TestCase):
     orig_environ =None
     tempdir = None
     environ_keys = {'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'}
+    meta_version = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.orig_argv = sys.argv
         self.cwd = os.getcwd()
         self.orig_environ = copy.copy(os.environ)
+        try:
+            self.meta_version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore').strip()  # nosec
+        except subprocess.CalledProcessError:
+            pass
         os.environ['SD_PULL_REQUEST'] = ''
 
     def setUp(self):
@@ -43,6 +48,12 @@ class TestVersioners(unittest.TestCase):
         for environ_key in self.environ_keys:
             if self.orig_environ.get(environ_key, None):
                 os.environ[environ_key] = self.orig_environ[environ_key]
+
+        if self.meta_version and self.meta_version != 'null':  # Make sure meta_version gets set back
+            try:
+                subprocess.check_call(['meta', 'set', 'package.version', self.meta_version])  # nosec
+            except FileNotFoundError:
+                pass
 
     def delkeys(self, keys):
         for key in keys:
