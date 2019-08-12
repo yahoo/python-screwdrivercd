@@ -91,6 +91,7 @@ class TestVersioners(unittest.TestCase):
     def test__sdv4_SD_BUILD__unset(self):
         self.environ_keys.add('SD_BUILD')
         del os.environ['SD_BUILD']
+        del os.environ['SD_BUILD_ID']
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
@@ -107,6 +108,7 @@ class TestVersioners(unittest.TestCase):
         self.environ_keys.add('SD_BUILD')
         self.environ_keys.add('SD_PULL_REQUEST')
         del os.environ['SD_BUILD']
+        del os.environ['SD_BUILD_ID']
         del os.environ['SD_PULL_REQUEST']
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
