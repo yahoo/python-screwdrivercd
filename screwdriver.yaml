@@ -5,10 +5,6 @@ version: 4
 shared:
     environment:
         PACKAGE_DIRECTORY: src/screwdrivercd
-    steps:
-        -   preupdate_version: meta get package.version
-        -   update_version: $BASE_PYTHON -m pip install . ; screwdrivercd_version
-        -   postupdate_version: meta get package.version
 
 jobs:
     validate_test:
@@ -33,8 +29,6 @@ jobs:
 
     generate_version:
         template: python/generate_version
-        steps:
-            -   pregenerate_version: $BASE_PYTHON -m pip install .
         requires: [validate_test, validate_lint, validate_codestyle, validate_safetydb, validate_security]
 
     publish_test_pypi:
