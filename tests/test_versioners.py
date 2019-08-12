@@ -46,8 +46,10 @@ class TestVersioners(unittest.TestCase):
 
     def delkeys(self, keys):
         for key in keys:
-            if key in os.environ.keys():
+            try:
                 del key
+            except KeyError:
+                pass
 
     def setupEmptyGit(self):
         subprocess.check_call(['git', 'init'])
