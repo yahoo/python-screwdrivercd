@@ -6,6 +6,7 @@ shared:
     environment:
         PACKAGE_DIRECTORY: src/screwdrivercd
     steps:
+        -   preupdate_version: meta get package.version
         -   update_version: $BASE_PYTHON -m pip install . ; screwdrivercd_version
 
 jobs:
