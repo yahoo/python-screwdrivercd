@@ -47,7 +47,7 @@ class TestVersioners(unittest.TestCase):
     def delkeys(self, keys):
         for key in keys:
             try:
-                del key
+                del os.environ[key]
             except KeyError:
                 pass
 
