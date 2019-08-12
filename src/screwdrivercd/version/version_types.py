@@ -229,8 +229,8 @@ class VersionSDV4Build(VersionUpdateRevision):
         revision = os.environ.get('SD_BUILD', None)
         if not revision:
             revision = os.environ.get('SD_BUILD_ID', None)
-            if not revision:
-                raise VersionError('Unable to generate version, no SD_BUILD or SD_BUILD_ID value set in the environment variables')
+        if not revision:
+            raise VersionError('Unable to generate version, no SD_BUILD or SD_BUILD_ID value set in the environment variables')
         return revision
 
 
