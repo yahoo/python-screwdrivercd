@@ -30,7 +30,7 @@ jobs:
   generate_version:
     template: python/generate_version
     steps:
-        generate_version: |
+        - generate_version: |
             $BASE_PYTHON -m pip install .
             screwdrivercd_version --ignore_meta --update_meta
     requires: [~commit]
