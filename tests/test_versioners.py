@@ -55,7 +55,6 @@ class TestVersioners(unittest.TestCase):
             except FileNotFoundError:
                 pass
 
-
     def delkeys(self, keys):
         for key in keys:
             try:
