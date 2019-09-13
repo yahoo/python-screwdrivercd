@@ -26,7 +26,7 @@ class TestVersioners(unittest.TestCase):
         self.orig_environ = copy.copy(os.environ)
         try:
             self.meta_version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore').strip()  # nosec
-        except subprocess.CalledProcessError:
+        except (FileNotFoundError, subprocess.CalledProcessError):
             pass
         os.environ['SD_PULL_REQUEST'] = ''
 
