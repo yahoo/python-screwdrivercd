@@ -5,10 +5,11 @@ screwdrivercd exceptions
 """
 
 
-class PackageError(object):
+class PackageError(Exception):
     """
     General package error
     """
+
 
 class PackageValidationError(PackageError):
     """
@@ -17,4 +18,6 @@ class PackageValidationError(PackageError):
 
 
 class PackageParseError(PackageValidationError):
-    pass
+    """
+    Parsing of the package configuration failed
+    """

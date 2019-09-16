@@ -5,14 +5,13 @@ screwdrivercd package functions
 """
 import logging
 import os
-import shutil
 import subprocess  # nosec
 import sys
 import tarfile
 import tempfile
 import zipfile
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 from pyroma.projectdata import run_setup, FakeContext, SetupMonkey
 from .exceptions import PackageParseError
@@ -49,14 +48,24 @@ def setup_query(command, cli_args=None) -> str:
     return run_setup_command(command, cli_args=cli_args).decode(errors='ignore').strip().split(os.linesep)[-1].strip()
 
 
-
-class PackageMetadata(object):
+class PackageMetadata():
+    """
+    Python package metadata parser
+    """
     used_setuptools = False
     _get_package_data_run = False
     metadata: Dict[str, Any] = {}
     options: Dict[str, Any] = {}
 
     def __init__(self, path=None):
+        """
+        Parse a python package
+
+        Parameters
+        ----------
+        path: str, optional
+            The path to the package, this can be a directory containing a package or a package archive file
+        """
         super().__init__()
         if path:
             self.path = os.path.abspath(path)
@@ -71,6 +80,7 @@ class PackageMetadata(object):
         """
         Extract a package archive and update the attributes of this class with it's metadata values.
         """
+        # pylint: disable=W0612
         if not path:  # pragma: no cover
             path = self.path
         path = os.path.abspath(path)
@@ -105,7 +115,7 @@ class PackageMetadata(object):
             with SetupMonkey() as sm:
                 try:
                     distro = run_setup('setup.py', stop_after='config')
-                except ImportError as e:  # pragma: no cover
+                except ImportError:  # pragma: no cover
                     raise PackageParseError('Unable to parse the package setup.py')
 
                 self.used_setuptools = sm.used_setuptools
