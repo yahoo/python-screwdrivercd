@@ -14,8 +14,9 @@ import os
 import subprocess  # nosec
 import sys
 
+from termcolor import colored
 from ..package import PackageMetadata
-from ..utility import colored, create_artifact_directory, env_bool, run_exit_on_error, working_dir
+from ..utility import create_artifact_directory, env_bool, working_dir
 
 
 logger_name = 'validate_type' if __name__ == '__main__' else __name__
@@ -72,6 +73,14 @@ def validate_with_mypy(report_dir):
 
 
 def validate_type():
+    """
+    Run a type validator and store the output
+
+    Returns
+    -------
+    int:
+        Exit returncode from the type validation command or 0 if TYPE_CHECK_ENFORCING env variable is false
+    """
     # Make sure the report directory exists
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
     report_dir = os.path.join(artifacts_dir, 'reports/type_validation')
@@ -91,4 +100,12 @@ def validate_type():
 
 
 def main():
+    """
+    Type check runner utility command line entry point
+
+    Returns
+    -------
+    int:
+        Returncode from running the check
+    """
     return validate_type()

@@ -5,25 +5,15 @@ screwdrivercd utility functions
 """
 import logging
 import os
-import subprocess  # nosec
 import sys
 from contextlib import contextmanager
-from typing import Optional
+from typing import Optional, Union
 
 
 logger = logging.getLogger(__name__)
 
 
-# Use termcolor if it's installed
-try:
-    from termcolor import colored
-except ImportError:
-    logger.debug('Termcolor is not installed')
-    def colored(text, color):
-        return text
-
-
-def create_artifact_directory(artifact_directory: Optional[str]=''):
+def create_artifact_directory(artifact_directory: Optional[str] = ''):
     """
     Create the artifact directory if it is not present
 
@@ -39,50 +29,67 @@ def create_artifact_directory(artifact_directory: Optional[str]=''):
         os.makedirs(artifact_directory, exist_ok=True)
 
 
-def env_bool(variable_name: str, default: Optional[bool]=True) -> bool:
+def env_bool(variable_name: str, default: Union[None, bool] = None) -> Union[None, bool]:
+    """
+    Return the value of an env variable as a boolean
+
+    Parameters
+    ----------
+    variable_name: str
+        The environment variable
+
+    default: bool, optional
+        The default value to return if the env variable is not present.  Default=None
+
+    Returns
+    -------
+    bool or None:
+        The value from the env variable if present, otherwise the default value.
+
+    """
     true_strings = ['true', 'on', '1']
+
+    if variable_name not in os.environ.keys():
+        return default
 
     value = os.environ.get(variable_name, str(default)).lower()
 
     if value in true_strings:
         return True
+
     return False
 
 
-def env_int(variable_name:str, default: Optional[int]=0) -> int:
+def env_int(variable_name: str, default: int = 0) -> int:
+    """
+    Return the value of an environment variable as an integer
+
+    Parameters
+    ----------
+    variable_name: str
+        Name of the environment variable
+
+    default: int
+        Default value to return if the environment variable is not present
+
+    Returns
+    -------
+    int:
+        Value of the env variable as an integer, or the default value if the env variable is not present.
+    """
+    if variable_name not in os.environ.keys():
+        return default
+
     value = os.environ.get(variable_name, str(default)).lower()
     return int(value)
 
 
 def flush_terminals():
+    """
+    Flush the terminal devices
+    """
     sys.stdout.flush()
     sys.stderr.flush()
-
-
-def run_exit_on_error(command, show_output=False):
-    sys.stdout.flush()
-    sys.stderr.flush()
-    try:
-        output = subprocess.check_output(command)  # nosec
-    except subprocess.CalledProcessError as error:
-        print(error.output.decode(errors='ignore'), file=sys.stderr, flush=True)
-        print(str(error), file=sys.stderr, flush=True)
-        sys.exit(1)
-    if show_output:
-        print(output.decode(errors='ignore'), flush=True)
-
-
-def store_artifacts(artifact_dirs=None):
-    dest = os.environ['ARTIFACTS_DIR']
-    if not artifact_dirs:
-        artifact_dirs = []
-
-    if not artifact_dirs:
-        if os.path.exists('artifacts'):
-            artifact_dirs.append('artifacts')
-
-    for artifact_dir in artifact_dirs:
-        os.system(f'cp -r {artifact_dir}/* {dest}')  # nosec
 
 
 @contextmanager
