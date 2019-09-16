@@ -27,7 +27,7 @@ def validate_with_mypy(report_dir):
     """Run the mypy command directly to do the validation"""
 
     src_dir = os.environ.get('PACKAGE_DIR', '.')
-    package_name = PackageMetadata(path=src_dir).metadata['name']
+    package_name = PackageMetadata().metadata['name']
 
     # Generate the command line from the environment settings
     command = ['mypy']

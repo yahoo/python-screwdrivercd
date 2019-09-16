@@ -13,11 +13,11 @@ class ScrewdriverValidatorTestCase(ScrewdriverTestCase):
 
 # Simple working package tree
 working_config = {
-    'src/setup.py': b"""
+    'setup.py': b"""
 from setuptools import setup
 setup()
 """,
-    'src/setup.cfg': b"""
+    'setup.cfg': b"""
 [metadata]
 name=mypyvalidator
 version=0.0.0
