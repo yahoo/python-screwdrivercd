@@ -46,16 +46,16 @@ def validate_with_mypy(report_dir):
         command += extra_args.split()
 
     # Add targets
-    command += ['-p', package_name]
+    target = package_name if src_dir == '.' else src_dir
+    command += [target]
 
     print('-' * 90 + '\nRunning:', ' '.join(command) + '\n' + '-' * 90, flush=True)
     rc = 0
-    with working_dir(src_dir):
-        try:
-            output = subprocess.check_output(command)  # nosec
-        except subprocess.CalledProcessError as error:
-            rc = error.returncode
-            output = error.output
+    try:
+        output = subprocess.check_output(command)  # nosec
+    except subprocess.CalledProcessError as error:
+        rc = error.returncode
+        output = error.output
 
     for line in output.decode(errors='ignore').split(os.linesep):
         line = line.strip()
