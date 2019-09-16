@@ -6,6 +6,7 @@ import logging
 import os
 import subprocess  # nosec
 from datetime import datetime
+from typing import List, Union
 from .exceptions import VersionError
 
 
@@ -16,9 +17,9 @@ class Version:
     """
     Base Screwdriver Versioning class
     """
-    name = None
-    default_version = ['0', '0', '0']
-    setup_cfg_filename = 'setup.cfg'
+    name: Union[str, None] = None
+    default_version: List[str] = ['0', '0', '0']
+    setup_cfg_filename: str = 'setup.cfg'
 
     def __init__(self, setup_cfg_filename=None, ignore_meta_version=False, update_sdv4_meta=True):
         if setup_cfg_filename:  # pragma: no cover
@@ -159,8 +160,8 @@ class VersionUpdateRevision(Version):
     """
     Version updater that updates the revision (last component) of a semetic version.
     """
-    log_errors = True
-    default_revision_value = '0'
+    log_errors: bool = True
+    default_revision_value: str = '0'
     
     def __init__(self, *args, **kwargs):
         self.log_errors = kwargs.pop('log_errors', self.log_errors)
@@ -194,7 +195,7 @@ class VersionGitRevisionCount(VersionUpdateRevision):
     -----
     This Versioner may not work correctly if the current git repository is a shallow git clone.
     """
-    name = 'git_revision_count'
+    name: str = 'git_revision_count'
 
     def revision_value(self):
         """

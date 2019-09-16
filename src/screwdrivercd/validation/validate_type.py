@@ -16,7 +16,7 @@ import sys
 
 from termcolor import colored
 from ..package import PackageMetadata
-from ..utility import create_artifact_directory, env_bool, working_dir
+from ..utility import create_artifact_directory, env_bool
 
 
 logger_name = 'validate_type' if __name__ == '__main__' else __name__
@@ -27,7 +27,7 @@ def validate_with_mypy(report_dir):
     """Run the mypy command directly to do the validation"""
 
     src_dir = os.environ.get('PACKAGE_DIR', '.')
-    package_name = PackageMetadata(path=src_dir).metadata['name']
+    package_name = PackageMetadata().metadata['name']
 
     # Generate the command line from the environment settings
     command = ['mypy']
@@ -46,16 +46,16 @@ def validate_with_mypy(report_dir):
         command += extra_args.split()
 
     # Add targets
-    command += ['-p', package_name]
+    target = package_name if src_dir == '.' else src_dir
+    command += [target]
 
     print('-' * 90 + '\nRunning:', ' '.join(command) + '\n' + '-' * 90, flush=True)
     rc = 0
-    with working_dir(src_dir):
-        try:
-            output = subprocess.check_output(command)  # nosec
-        except subprocess.CalledProcessError as error:
-            rc = error.returncode
-            output = error.output
+    try:
+        output = subprocess.check_output(command)  # nosec
+    except subprocess.CalledProcessError as error:
+        rc = error.returncode
+        output = error.output
 
     for line in output.decode(errors='ignore').split(os.linesep):
         line = line.strip()
