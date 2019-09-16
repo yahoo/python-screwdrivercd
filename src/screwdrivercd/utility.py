@@ -7,6 +7,7 @@ import logging
 import os
 import subprocess  # nosec
 import sys
+from contextlib import contextmanager
 from typing import Optional
 
 
@@ -84,3 +85,15 @@ def store_artifacts(artifact_dirs=None):
         os.system(f'cp -r {artifact_dir}/* {dest}')  # nosec
 
 
+@contextmanager
+def working_dir(new_path):
+    """
+    A context manager that changes to the new_path directory and
+    returns to the current working directory when it completes.
+    """
+    old_dir = os.getcwd()
+    os.chdir(new_path)
+    try:
+        yield
+    finally:
+        os.chdir(old_dir)

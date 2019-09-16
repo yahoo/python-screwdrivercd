@@ -1,75 +1,17 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for termsimport copy
-import copy
 import datetime
 import os
 import subprocess  # nosec
-import sys
-import tempfile
 import unittest
+from . import ScrewdriverTestCase
+
 from screwdrivercd.version.exceptions import VersionError
 from screwdrivercd.version.version_types import versioners, Version, VersionGitRevisionCount, VersionSDV4Build, VersionUTCDate
 
 
-class TestVersioners(unittest.TestCase):
-    cwd = None
-    orig_argv = None
-    orig_environ =None
-    tempdir = None
+class TestVersioners(ScrewdriverTestCase):
     environ_keys = {'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'}
-    meta_version = None
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.orig_argv = sys.argv
-        self.cwd = os.getcwd()
-        self.orig_environ = copy.copy(os.environ)
-        try:
-            self.meta_version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore').strip()  # nosec
-        except (FileNotFoundError, subprocess.CalledProcessError):
-            pass
-        os.environ['SD_PULL_REQUEST'] = ''
-
-    def setUp(self):
-        self.tempdir = tempfile.TemporaryDirectory()
-        os.chdir(self.tempdir.name)
-
-    def tearDown(self):
-        if self.orig_argv:
-            sys.argv = self.orig_argv
-
-        if self.cwd:
-            os.chdir(self.cwd)
-
-        if self.tempdir:
-            self.tempdir.cleanup()
-            self.tempdir = None
-
-        for environ_key in self.environ_keys:
-            if self.orig_environ.get(environ_key, None):
-                os.environ[environ_key] = self.orig_environ[environ_key]
-
-        if self.meta_version and self.meta_version != 'null':  # Make sure meta_version gets set back
-            try:
-                subprocess.check_call(['meta', 'set', 'package.version', self.meta_version])  # nosec
-            except FileNotFoundError:
-                pass
-
-    def delkeys(self, keys):
-        for key in keys:
-            try:
-                del os.environ[key]
-            except KeyError:
-                pass
-
-    def setupEmptyGit(self):
-        subprocess.check_call(['git', 'init'])
-        subprocess.check_call(['git', 'config', 'user.email', 'foo@bar.com'])
-        subprocess.check_call(['git', 'config', 'user.name', 'foo'])
-        with open('setup.cfg', 'w') as setup_handle:
-            setup_handle.write('')
-        subprocess.check_call(['git', 'add', 'setup.cfg'])
-        subprocess.check_call(['git', 'commit', '-a', '-m', 'initial'])
 
     def test__version__read_setup_version__no_version(self):
         version = Version(ignore_meta_version=True).read_setup_version()
