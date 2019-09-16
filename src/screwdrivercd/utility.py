@@ -7,7 +7,7 @@ import logging
 import os
 import sys
 from contextlib import contextmanager
-from typing import Optional, Union
+from typing import Union
 
 
 logger = logging.getLogger(__name__)

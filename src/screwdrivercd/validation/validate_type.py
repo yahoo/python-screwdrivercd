@@ -16,7 +16,7 @@ import sys
 
 from termcolor import colored
 from ..package import PackageMetadata
-from ..utility import create_artifact_directory, env_bool, working_dir
+from ..utility import create_artifact_directory, env_bool
 
 
 logger_name = 'validate_type' if __name__ == '__main__' else __name__
