@@ -13,8 +13,9 @@ The following settings are supported:
 
 | Setting                  | Default Value               | Description                                         |
 | ------------------------ | --------------------------- | --------------------------- |
-| BASE_PYTHON              | /opt/python/bin/python3.6   | Python interpreter to use to run the mypy command                          |
+| BASE_PYTHON              | python3                     | Python interpreter to use to run the mypy command                          |
 | MYPY_ARGS                | --ignore-missing-imports    | Additional mypy command arguments                   |
+| PACKAGE_DIR              | .                           | Directory containing the package source |
 | TYPE_CHECK_ENFORCING     | False                       | Make check enforcing                                |
 | TYPE_CHECK_REPORT_FORMAT | txt,cobertura-xml,junit-xml | Comma seperated list of report formats to generate. |
 |                          |                             | Supported formats:                                  |
