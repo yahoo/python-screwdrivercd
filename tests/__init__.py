@@ -39,6 +39,9 @@ class ScrewdriverTestCase(unittest.TestCase):
         self.tempdir = tempfile.TemporaryDirectory()
         os.chdir(self.tempdir.name)
 
+        # Delete keys in the environ keys so they aren't set
+        self.delkeys(self.environ_keys)
+
         # Create expected CI directories
         self.artifacts_dir = os.path.join(self.tempdir.name, 'artifacts')
         os.makedirs(self.artifacts_dir, exist_ok=True)
@@ -46,6 +49,7 @@ class ScrewdriverTestCase(unittest.TestCase):
 
         # Make sure the value of SD_PULL_REQUEST is always unset
         os.environ['SD_PULL_REQUEST'] = ''
+
 
     def tearDown(self):
 

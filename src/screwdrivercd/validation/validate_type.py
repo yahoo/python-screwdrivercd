@@ -30,7 +30,7 @@ def validate_with_mypy(report_dir):
     package_name = PackageMetadata().metadata['name']
 
     # Generate the command line from the environment settings
-    command = ['mypy']
+    command = [sys.executable, '-m', 'mypy']
 
     # Add report arguments
     reports = os.environ.get('TYPE_CHECK_REPORT_FORMAT', 'txt').split(',')
