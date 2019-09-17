@@ -46,8 +46,10 @@ def validate_with_mypy(report_dir):
         command += extra_args.split()
 
     # Add targets
-    target = package_name if src_dir == '.' else src_dir
-    command += [target]
+    if src_dir not in ['', '.']:
+        command += [src_dir]
+    else:
+        command += ['-p', package_name]
 
     print('-' * 90 + '\nRunning:', ' '.join(command) + '\n' + '-' * 90, flush=True)
     rc = 0
