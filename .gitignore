@@ -86,3 +86,5 @@ __pycache__/
 pytest_*.xml
 coverage.xml
 
+/.mypy_cache
+/reports
