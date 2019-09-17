@@ -46,7 +46,7 @@ def validate_with_mypy(report_dir):
         command += extra_args.split()
 
     # Add targets
-    target = package_name if src_dir == '.' else src_dir
+    target = package_name.replace('.', '/') if src_dir == '.' else src_dir
     command += [target]
 
     print('-' * 90 + '\nRunning:', ' '.join(command) + '\n' + '-' * 90, flush=True)
