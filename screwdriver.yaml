@@ -7,14 +7,6 @@ shared:
         PACKAGE_DIRECTORY: src/screwdrivercd
 
 jobs:
-    validate_test:
-        template: python/validate_unittest
-        requires: [~commit, ~pr]
-
-    validate_lint:
-        template: python/validate_lint
-        requires: [~commit, ~pr]
-
     validate_codestyle:
         template: python/validate_codestyle
         requires: [~commit, ~pr]
@@ -23,20 +15,32 @@ jobs:
         template: python/validate_dependencies
         requires: [~commit, ~pr]
 
+    validate_lint:
+        template: python/validate_lint
+        requires: [~commit, ~pr]
+
     validate_security:
         template: python/validate_security
         requires: [~commit, ~pr]
 
+    validate_test:
+        template: python/validate_unittest
+        requires: [~commit, ~pr]
+
+    validate_type:
+        template: python/validate_type
+        requires: [~commit, ~pr]
+
     generate_version:
         template: python/generate_version
-        requires: [validate_test, validate_lint, validate_codestyle, validate_dependencies, validate_security]
+        requires: [~commit, ~pr]
 
     publish_test_pypi:
         template: python/package_python
         environment:
             PUBLISH: True
             TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
-        requires: [generate_version]
+        requires: [generate_version, validate_test, validate_lint, validate_codestyle, validate_dependencies, validate_security]
 
     verify_test_package:
         template: python/validate_pypi_package
