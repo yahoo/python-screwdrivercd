@@ -4,7 +4,7 @@
 version: 4
 shared:
     environment:
-        PACKAGE_DIRECTORY: src/screwdrivercd
+        PACKAGE_DIRECTORY: src
 
 jobs:
     validate_codestyle:
