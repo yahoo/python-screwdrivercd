@@ -15,8 +15,8 @@ import subprocess  # nosec
 import sys
 
 from termcolor import colored
-from ..package import PackageMetadata
 from ..utility import create_artifact_directory, env_bool
+from ..utility.package import PackageMetadata
 
 
 logger_name = 'validate_type' if __name__ == '__main__' else __name__
@@ -26,7 +26,10 @@ logger = logging.getLogger(logger_name)
 def validate_with_mypy(report_dir):
     """Run the mypy command directly to do the validation"""
 
-    src_dir = os.environ.get('PACKAGE_DIR', '.')
+    src_dir = os.environ.get('PACKAGE_DIR', '')
+    if not src_dir:
+        src_dir = os.environ.get('PACKAGE_DIRECTORY', '')
+
     package_name = PackageMetadata().metadata['name']
 
     # Generate the command line from the environment settings
