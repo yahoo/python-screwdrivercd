@@ -1,16 +1,16 @@
-## Package Versioning Helper
+# Package Versioning Helper
 
 The versioning helper script is used to update and propagate a version for the package.   This helper allows the
 version numbers for the package to be defined from the Screwdriver CD Pipeline.  
 
-### Rationale
+## Rationale
 
 This allows multiple templates within a CI/CD Pipeline to use the same version number for different operations without
 needing to make changes to the source code repository.  This makes it possible to have a single pipeline that uses
 templates to generate packages and containers in multiple formats that all have the same version without requiring 
 changes to the source code repository.
 
-### screwdrivercd_version usage
+## screwdrivercd_version usage
 
 The versioning wrapper command line utility is named `screwdrivercd_version`.
 
@@ -32,7 +32,7 @@ If no arguments are provided, the utility reads it configuration from the `[scre
 The utility will update the version of the `[metadata]` section of the setup.cfg file with the version number from
 the screwdriver pipeline package.version metadata attribute. 
 
-##### Example
+### Example
 
 This is an example of the `setup.cfg` file before and after, with the `screwdrivercd_version` command run from a
 screwdriver pipeline with a BUILD_ID of 1319

@@ -1,11 +1,11 @@
-## Validation helpers
+# Validation helpers
 
 
-### Type Validation - screwdrivercd_validate_type
+## Type Validation - screwdrivercd_validate_type
  
 The `screwdrivercd_validate_type` command runs type annotation validations using the mypy tool.
 
-#### Settings
+### Settings
 
 All settings for the `scrwedrivercd_validate_type` command are specified via environment variables.
 
@@ -24,7 +24,7 @@ The following settings are supported:
 |                          |                             | xslt-html, xslt-txt                                 |
 
 
-#### Example
+### Example
 
 This example runs the type check with enforcement enabled.
 
@@ -38,7 +38,7 @@ This example runs the type check with enforcement enabled.
                 TYPE_CHECK_ENFORCING: True
     ```
 
-#### Artifacts
+### Artifacts
 
 | Directory | Description |
 | --------- | ----------- |

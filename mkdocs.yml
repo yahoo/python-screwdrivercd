@@ -30,12 +30,22 @@ nav:
     - Quickstart: index.md
     - Usage:
           - Overview: usage.md
-          - Validation Wrappers: Validation_Helpers.md
-          - Versioning: Versioning.md
+          - Integration Utilities:
+              - Build Dependency Installer: Install_Dependencies.md
+              - Validation Wrappers: Validation_Helpers.md
+              - Package Versioning: Versioning.md
     - Contributing: Contributing.md
 
 plugins:
     - search
+
+theme:
+    name: readthedocs
+    highlightjs: true
+    hljs_language:
+        - yaml
+        - toml
+        - python
 
 remote_branch: gh-pages
 remote_name: origin
