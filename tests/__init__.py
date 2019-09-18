@@ -16,7 +16,8 @@ class ScrewdriverTestCase(unittest.TestCase):
     orig_environ =None
     tempdir = None
     environ_keys = {
-        'BASE_PYTHON', 'PACKAGE_DIR', 'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST',
+        'BASE_PYTHON', 'PACKAGE_DIR', 'PACKAGE_DIRECTORY', 'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID',
+        'SD_PULL_REQUEST',
     }
     meta_version = None
 
