@@ -26,6 +26,11 @@ jobs:
 
     validate_test:
         template: python/validate_unittest
+        steps:
+            - postupdate_version: |
+                PACKAGE_VERSION="`meta get package.version`"
+                echo $PACKAGE_VERSION
+            - postvalidate_code: meta set package.version "$PACKAGE_VERSION"
         requires: [~commit, ~pr]
 
     validate_type:
