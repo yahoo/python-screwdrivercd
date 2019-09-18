@@ -15,8 +15,8 @@ import subprocess  # nosec
 import sys
 
 from termcolor import colored
-from ..package import PackageMetadata
 from ..utility import create_artifact_directory, env_bool
+from ..utility.package import PackageMetadata
 
 
 logger_name = 'validate_type' if __name__ == '__main__' else __name__
