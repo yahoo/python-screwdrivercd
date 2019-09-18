@@ -270,8 +270,8 @@ class Installer():
         self.add_repos()
         self.update_index()
 
-        installed = []
-        invalid = []
+        installed: List[str] = []
+        invalid: List[str] = []
         for config_key in self.deps_config_keys:
             LOG.debug(f'Looking for dependencies in [tool.sdv4_installdeps.{self.config_section}] {config_key}')
             dependencies = self.config.configuration[self.config_section][config_key]
