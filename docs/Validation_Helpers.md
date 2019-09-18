@@ -15,7 +15,7 @@ The following settings are supported:
 | ------------------------ | --------------------------- | --------------------------- |
 | BASE_PYTHON              | python3                     | Python interpreter to use to run the mypy command                          |
 | MYPY_ARGS                | --ignore-missing-imports    | Additional mypy command arguments                   |
-| PACKAGE_DIR              | .                           | Directory containing the package source |
+| PACKAGE_DIRECTORY        | .                           | Directory containing the package source |
 | TYPE_CHECK_ENFORCING     | False                       | Make check enforcing                                |
 | TYPE_CHECK_REPORT_FORMAT | txt,cobertura-xml,junit-xml | Comma seperated list of report formats to generate. |
 |                          |                             | Supported formats:                                  |

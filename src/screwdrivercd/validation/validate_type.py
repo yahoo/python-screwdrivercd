@@ -26,7 +26,10 @@ logger = logging.getLogger(logger_name)
 def validate_with_mypy(report_dir):
     """Run the mypy command directly to do the validation"""
 
-    src_dir = os.environ.get('PACKAGE_DIR', '.')
+    src_dir = os.environ.get('PACKAGE_DIR', '')
+    if not src_dir:
+        src_dir = os.environ.get('PACKAGE_DIRECTORY', '')
+
     package_name = PackageMetadata().metadata['name']
 
     # Generate the command line from the environment settings
