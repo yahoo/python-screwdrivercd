@@ -1,12 +1,11 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
 """Install yum dependencies"""
-import copy
 import logging
 import os
 import shutil
 import subprocess  # nosec - All subprocess calls use full path
-from typing import Any, Dict, Optional, List
+from typing import Dict, Optional, List
 
 from termcolor import colored
 
@@ -17,6 +16,9 @@ LOG = logging.getLogger(__name__)
 
 
 class YumInstaller(Installer):
+    """
+    Yum Package tool package installer
+    """
     install_command: List[str] = ['yum', 'install', '-y']
     install_repo_command: List[str] = ['yum-config-manager', '--add-repo']
     config_section: str = 'yum'
@@ -29,6 +31,13 @@ class YumInstaller(Installer):
     _repo_tool_install_failed = False
 
     def install_repo_tool(self):
+        """
+        Installer the tool needed to add repositories to the system
+
+        Raises
+        ------
+        FileNotFoundError: The tool was not found after attempting to install it
+        """
         if self.install_repo_command[0].startswith('/') or self._repo_tool_install_failed:
             return
 

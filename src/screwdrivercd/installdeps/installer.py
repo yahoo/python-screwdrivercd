@@ -7,18 +7,22 @@ import os
 import shutil
 import subprocess  # nosec - All subprocess calls use full path
 import sys
-from typing import Any, Dict, Optional, List
+from typing import Dict, Optional, List
 
 from termcolor import colored
 from .config import Configuration
 from .requirement import Requirement
 
+
 LOG = logging.getLogger(__name__)
 
 
-class Installer(object):
+class Installer():
     """Generic Package Installer
     """
+    name: str = 'generic'
+    """:str: The name of the installer class"""
+
     install_command: List[str] = ['echo', 'fake', 'install']
     """:obj:`list` of :obj:`str`: The base install command list"""
 
@@ -49,7 +53,7 @@ class Installer(object):
     exit_on_missing: bool = False
     """bool: If True, terminate installation immediately if a dependency is missing"""
 
-    def __init__(self, dry_run: bool=False, bin_dir: Optional[str]=None):
+    def __init__(self, dry_run: bool = False, bin_dir: Optional[str] = None):
         """
         Generic Package Installer
 
@@ -121,10 +125,18 @@ class Installer(object):
 
     @property
     def plugin_configuration(self):
+        """
+        Return the plugin configuration dictionary if it is found
+
+        Returns
+        -------
+        dict:
+            Plugin configuration dictionary
+        """
         if not self.config:
-            return
+            return {}
         if not self.config.configuration:
-            return
+            return {}
         return self.config.configuration.get(self.config_section, {})
 
     def _handle_custom_settings(self):
@@ -138,7 +150,6 @@ class Installer(object):
         Returns
         -------
         """
-        pass
 
     def add_repos(self):
         """
@@ -179,7 +190,6 @@ class Installer(object):
             The url of the repository to add
 
         """
-        pass
 
     def determine_bin_directory(self):
         """
@@ -378,4 +388,3 @@ class Installer(object):
         """
         Method to update the package index
         """
-        pass

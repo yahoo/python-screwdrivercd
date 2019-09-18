@@ -1,12 +1,11 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
 """Install rpm dependencies"""
-import copy
 import logging
 import os
 import shutil
 import subprocess  # nosec - All subprocess calls use full path
-from typing import Any, Dict, Optional, List
+from typing import List
 
 from termcolor import colored
 
@@ -17,6 +16,9 @@ LOG = logging.getLogger(__name__)
 
 
 class AptInstaller(Installer):
+    """
+    Debian/Ubuntu Package Installer
+    """
     install_command: List[str] = ['apt-get', 'install', '-y']
     install_repo_command: List[str] = ['add-apt-repository']
     config_section: str = 'apt-get'
@@ -26,12 +28,18 @@ class AptInstaller(Installer):
     _updated_index: bool = False
 
     def update_index(self):
+        """
+        Method to update the package index
+        """
         if self._updated_index:
             return
         subprocess.check_call([self.install_command[0], 'update'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # nosec - All subprocess calls use full path
         self._updated_index = True
 
     def install_repo_tool(self):
+        """
+        Install the repo install tool
+        """
         if self.install_repo_command[0].startswith('/') or self._repo_tool_install_failed:
             return
 
@@ -51,7 +59,7 @@ class AptInstaller(Installer):
 
     def add_repo(self, repo_name, repo_url):
         """
-        Add Yum repos specified in the configuration
+        Add apt repos specified in the configuration
         """
         try:
             self.install_repo_tool()

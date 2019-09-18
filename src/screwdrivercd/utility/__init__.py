@@ -89,5 +89,3 @@ def flush_terminals():
     """
     sys.stdout.flush()
     sys.stderr.flush()
-
-

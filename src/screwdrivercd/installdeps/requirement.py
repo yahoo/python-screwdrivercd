@@ -1,11 +1,13 @@
 # This is based on the pep508-parser grammer at https://github.com/NFJones/pep508-parser
 # MIT Licensed
-import copy
+"""
+Requirements parsing functions
+"""
 import logging
 import os
 import platform
 import sys
-from typing import Any, Dict, List, Optional
+from typing import Dict
 
 import distro
 import parsley
@@ -125,7 +127,10 @@ GRAMMAR: str = """
 """
 
 
-class Requirement(object):
+class Requirement():
+    """
+    Requirement parser
+    """
     _parser = None
     _lookup: Dict[str, str] = dict(
         distro_codename=distro.codename(),
@@ -150,26 +155,45 @@ class Requirement(object):
 
     @property
     def name(self):
+        """
+        Get the name part of the requirement
+        """
         return self._parsed_requirement[0]
 
     @property
     def extra(self):
+        """
+        Get the extras from the requirement
+        """
         return self._parsed_requirement[1]
 
     @property
     def version_evals(self):
+        """
+        Return the version evaluations for the requirement if present
+        """
         if not self._parsed_requirement[2]:
             return []
         return self._parsed_requirement[2]
 
     @property
     def env_evals(self):
+        """
+        Return any environment evaluations for the requirement
+        """
         if not self._parsed_requirement[3]:
             return []
         return self._parsed_requirement[3]
 
     @property
     def env_matches(self):
+        """
+        Determine if the current env matches the requirement
+
+        Returns
+        -------
+        True if it matches
+        """
         env_evals = list(self.env_evals)
         env_evals = self.evaluate_matches(env_evals)
         if len(env_evals) == 3:
@@ -177,7 +201,17 @@ class Requirement(object):
         return False not in env_evals
 
     def evaluate_matches(self, env_evals):
-        for element_num in range(len(env_evals)):
+        """
+        Evaluate all of the statements and return a list of the results
+        Parameters
+        ----------
+        env_evals: evals to be evaluated
+
+        Returns
+        -------
+        Evaluates all the statements and return the ones that match
+        """
+        for element_num in range(len(env_evals)):  # pylint: disable=consider-using-enumerate
             entry = env_evals[element_num]
             if isinstance(entry, str):
                 continue
@@ -186,6 +220,7 @@ class Requirement(object):
         return env_evals
 
     def evaluate(self, operation, val1, val2):
+        """Evaluate"""
         if isinstance(val1, tuple):
             val1 = self.evaluate(*val1)
         if isinstance(val2, tuple):
@@ -196,7 +231,7 @@ class Requirement(object):
         if isinstance(val2, str):
             val2 = pkg_resources.parse_version(val2)
 
-        statement = f'{val1} {operation} {val2}'
+        # statement = f'{val1} {operation} {val2}'
 
         result = None
         if operation == '>':

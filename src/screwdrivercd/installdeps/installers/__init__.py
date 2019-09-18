@@ -1,5 +1,8 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+"""
+Package installer classes
+"""
 from .apk import ApkInstaller
 from .apt import AptInstaller
 from .brew import BrewInstaller

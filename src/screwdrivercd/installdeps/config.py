@@ -1,9 +1,14 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
-from collections import Mapping
-from typing import Any, Dict, Optional
+"""
+Read/Parse the configuration file for the screwdrivercd.installdeps tool
+"""
 import copy
 import os
+
+from collections import Mapping  # pylint: disable no-name-in-module
+from typing import Any, Dict, Optional
+
 import toml
 
 
@@ -52,17 +57,23 @@ def deep_update(source, update_dict):
     return source
 
 
-class Configuration(object):
+class Configuration():
+    """
+    installdeps configuration class
+    """
     filename = 'pyproject.toml'
     configuration: Dict[Any, Any] = {}
 
-    def __init__(self, filename: Optional[str]=None):
+    def __init__(self, filename: Optional[str] = None):
         if filename:
             self.filename = filename
         self.configuration = copy.deepcopy(CONFIGURATION_SCHEMA)
         self.load_configuration()
 
     def load_configuration(self):
+        """
+        Load the configuration from the configuration file
+        """
         if not os.path.exists(self.filename):
             return
         
