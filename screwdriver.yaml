@@ -4,6 +4,7 @@
 version: 4
 shared:
     environment:
+        PACKAGE_DIR: src
         PACKAGE_DIRECTORY: src
 
 jobs:
