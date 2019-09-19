@@ -16,8 +16,7 @@ import subprocess  # nosec
 import sys
 
 from termcolor import colored
-from ..screwdriver.environment import get_env_job_name, logging_basicConfig
-from ..screwdriver.metadata import Metadata
+from ..screwdriver.environment import get_env_job_name, logging_basicConfig, update_job_status
 from ..utility import create_artifact_directory, env_bool
 from ..utility.package import PackageMetadata
 
@@ -91,8 +90,8 @@ def validate_type():
     """
     logging_basicConfig()
 
-    metadata = Metadata()
-    meta_job_status_key = f'meta.status.{get_env_job_name(default="type_validation")}'
+    # Set the status message
+    update_job_status(status='SUCCESS', message='Checking type annotations')
 
     # Make sure the report directory exists
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
@@ -103,14 +102,14 @@ def validate_type():
 
     if rc > 0 and env_bool('TYPE_CHECK_ENFORCING'):
         print(colored('ERROR: Type check failed', 'red'), file=sys.stderr, flush=True)
-        metadata.set(meta_job_status_key, json.dumps(dict(status='FAILED', message='Type annotation check failed')))
+        update_job_status(status='FAILURE', message='Type annotation check failed')
         return rc
     if rc == 0:
         print(colored('OK: Type validation sucessful', 'green'), flush=True)
-        metadata.set(meta_job_status_key, json.dumps(dict(status='SUCCESS', message='Type annotation check passed')))
+        update_job_status(status='SUCCESS', message='Type annotation check passed')
     else:
         print(colored('WARNING: Type check failed, enforcement is disabled, so not failing check', 'yellow'))
-        metadata.set(meta_job_status_key, json.dumps(dict(status='SUCCESS', message='Type annotation check, failed but is not enforcing')))
+        update_job_status(status='SUCCESS', message='Type annotation check, failed but is not enforcing')
         return 0
     return rc
 
