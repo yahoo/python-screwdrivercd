@@ -4,7 +4,7 @@ import os
 import tempfile
 import unittest
 
-from screwdrivercd.utility import create_artifact_directories, env_bool, env_int, flush_terminals
+from screwdrivercd.utility import create_artifact_directory, env_bool, env_int, flush_terminals
 from screwdrivercd.utility.contextmanagers import InTemporaryDirectory, revert_file, working_dir
 
 
