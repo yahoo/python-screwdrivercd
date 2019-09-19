@@ -5,7 +5,7 @@ Screwdriver metadata management functions
 """
 import json
 import logging
-import subprocess
+import subprocess#  # nosec
 
 
 class Metadata(dict):
@@ -35,7 +35,7 @@ class Metadata(dict):
         command = ['meta', 'get', '--json-value', key]
         logging.debug(f'Running: {command}')
         try:
-            response = subprocess.check_output(command).decode(errors='ignore')
+            response = subprocess.check_output(command).decode(errors='ignore')  # nosec
         except (subprocess.CalledProcessError, FileNotFoundError):
             return None
         result = json.loads(response)
@@ -48,7 +48,7 @@ class Metadata(dict):
         command = ['meta', 'set', '--json-value', key, json.dumps(value)]
         logging.debug(f'Running: {command}')
         try:
-            response = subprocess.check_output(command).decode(errors='ignore')
+            response = subprocess.check_output(command).decode(errors='ignore')  # nosec
         except (subprocess.CalledProcessError, FileNotFoundError):
             return None
         result = json.loads(response)
