@@ -53,4 +53,3 @@ class Metadata(dict):
             return None
         result = json.loads(response)
         return result
-
