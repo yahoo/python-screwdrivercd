@@ -19,10 +19,12 @@ class Metadata(dict):
     from screwdriver's metadata.
     """
     def __getattr__(self, key):
+        """Get value from screwdriver metadata"""
         key = key.replace('_', '.')
         return self.get(key)
 
     def __setattr__(self, key, value):
+        """Set an attr to screwdriver metadata"""
         key = key.replace('_', '.')
         self.set(key, value)
 
