@@ -170,6 +170,16 @@ The pip3 tool supports using the python pip3 command to install python packages 
     deps = ['serviceping']
 ```
 
+### Environment Settings
+
+Some settings for `scrwedrivercd_install_deps` command are specified via environment variables.
+
+The following settings are supported:
+
+| Setting                  | Default Value               | Description                                         |
+| ------------------------ | --------------------------- | --------------------------- |
+| INSTALLDEPS_DEBUG        | False                       | Enable verbose debug output |
+
 ## Examples
 
 Here is an example that installs the mysql client package and installs the python `serviceping` package properly on multiple different Linux operating systems.

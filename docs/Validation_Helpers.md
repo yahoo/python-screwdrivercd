@@ -5,7 +5,7 @@
  
 The `screwdrivercd_validate_type` command runs type annotation validations using the mypy tool.
 
-### Settings
+### Environment Settings
 
 All settings for the `scrwedrivercd_validate_type` command are specified via environment variables.
 
