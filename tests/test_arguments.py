@@ -71,25 +71,22 @@ class TestArguments(unittest.TestCase):
 
     def test__parse_arguments_legacy__default__setup_cfg__version_type(self):
         with open('setup.cfg', 'w') as fh:
-            fh.write('[ouroath.platform_version]\nversion_type = utc_date\n')
+            fh.write('[sdv4.version]\nversion_type = utc_date\n')
         sys.argv = ['screwdrivercd_version']
         result = parse_arguments()
         self.assertEqual(result.version_type, 'utc_date')
 
     def test__parse_arguments_legacy__default__setup_cfg__version_type__invalid(self):
         with open('setup.cfg', 'w') as fh:
-            fh.write('[ouroath.platform_version]\nversion_type = invalid\n')
+            fh.write('[sdv4.version]\nversion_type = invalid\n')
         sys.argv = ['screwdrivercd_version']
         with self.assertRaises(VersionError):
             parse_arguments()
 
     def test__parse_arguments_legacy__setup_cfg__update_meta__true(self):
         with open('setup.cfg', 'w') as fh:
-            fh.write('[ouroath.platform_version]\nupdate_screwdriver_meta = True\n')
+            fh.write('[sdv4.version]\nupdate_screwdriver_meta = True\n')
         sys.argv = ['screwdrivercd_version']
         result = parse_arguments()
         self.assertTrue(result.update_meta)
 
-
-if __name__ == '__main__':
-    unittest.main()
