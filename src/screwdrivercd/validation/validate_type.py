@@ -9,14 +9,15 @@ This wrapper runs the validation tool.  This wrapper does the following:
 - ensures all the logs and reports are stored in the build artifacts before exiting.
 - Propagates a success code if the TYPE_CHECK_ENFORCING is set to false.
 """
-import json
+from ..screwdriver.environment import logging_basicConfig, update_job_status
+logging_basicConfig()
+
 import logging
 import os
 import subprocess  # nosec
 import sys
 
 from termcolor import colored
-from ..screwdriver.environment import get_env_job_name, logging_basicConfig, update_job_status
 from ..utility import create_artifact_directory, env_bool
 from ..utility.package import PackageMetadata
 

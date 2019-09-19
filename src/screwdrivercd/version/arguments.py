@@ -27,8 +27,8 @@ def get_config_default(key, default=None, setup_cfg_filename='setup.cfg'):
     if 'screwdrivercd.version' in config.sections():
         return config['screwdrivercd.version'].get(key, default)
 
-    if 'ouroath.platform_version' in config.sections():
-        return config['ouroath.platform_version'].get(key, default)
+    if 'sdv4.version' in config.sections():
+        return config['sdv4.version'].get(key, default)
 
     return default
 
