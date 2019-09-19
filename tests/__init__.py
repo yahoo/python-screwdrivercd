@@ -6,6 +6,9 @@ import sys
 import tempfile
 
 
+from screwdrivercd.screwdriver.metadata import Metadata
+
+
 class ScrewdriverTestCase(unittest.TestCase):
     """
     Test case class for testing screwdriver wrappers that perform common operations like saving/restoring the environment
@@ -37,6 +40,8 @@ class ScrewdriverTestCase(unittest.TestCase):
             pass
 
     def setUp(self):
+        Metadata.read_only = True
+
         self.tempdir = tempfile.TemporaryDirectory()
         os.chdir(self.tempdir.name)
 
@@ -53,6 +58,7 @@ class ScrewdriverTestCase(unittest.TestCase):
 
 
     def tearDown(self):
+        Metadata.read_only = False
 
         # Restore sys.argv
         if self.orig_argv:

@@ -30,7 +30,7 @@ class YumInstaller(Installer):
     )
     _repo_tool_install_failed = False
 
-    def install_repo_tool(self):
+    def install_repo_tool(self):  # pragma: no cover - Function is OS specific
         """
         Installer the tool needed to add repositories to the system
 
@@ -55,7 +55,7 @@ class YumInstaller(Installer):
                 self._repo_tool_install_failed = True
                 raise FileNotFoundError('Could not find the {self.install_repo_command[0]} utility')
 
-    def add_repo(self, repo_name, repo_url):
+    def add_repo(self, repo_name, repo_url):  # pragma: no cover - Function is OS specific
         """
         Add Yum repos specified in the configuration
         """
@@ -109,7 +109,7 @@ class YumInstaller(Installer):
             else:
                 LOG.error('Adding repository {repo_name!r} failed')
 
-    def validate_dependency(self, dependency):
+    def validate_dependency(self, dependency):  # pragma: no cover - Function is OS specific
         """
         Validate a dependency is valid
         Parameters

@@ -83,6 +83,7 @@ __pycache__/
 *.py[cod]
 
 # test/coverage reports
+/.coverage.*
 pytest_*.xml
 coverage.xml
 

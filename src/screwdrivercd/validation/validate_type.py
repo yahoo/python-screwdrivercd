@@ -9,12 +9,14 @@ This wrapper runs the validation tool.  This wrapper does the following:
 - ensures all the logs and reports are stored in the build artifacts before exiting.
 - Propagates a success code if the TYPE_CHECK_ENFORCING is set to false.
 """
+import json
 import logging
 import os
 import subprocess  # nosec
 import sys
 
 from termcolor import colored
+from ..screwdriver.environment import get_env_job_name, logging_basicConfig, update_job_status
 from ..utility import create_artifact_directory, env_bool
 from ..utility.package import PackageMetadata
 
@@ -86,6 +88,11 @@ def validate_type():
     int:
         Exit returncode from the type validation command or 0 if TYPE_CHECK_ENFORCING env variable is false
     """
+    logging_basicConfig()
+
+    # Set the status message
+    update_job_status(status='SUCCESS', message='Checking type annotations')
+
     # Make sure the report directory exists
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
     report_dir = os.path.join(artifacts_dir, 'reports/type_validation')
@@ -95,11 +102,14 @@ def validate_type():
 
     if rc > 0 and env_bool('TYPE_CHECK_ENFORCING'):
         print(colored('ERROR: Type check failed', 'red'), file=sys.stderr, flush=True)
+        update_job_status(status='FAILURE', message='Type annotation check failed')
         return rc
     if rc == 0:
         print(colored('OK: Type validation sucessful', 'green'), flush=True)
+        update_job_status(status='SUCCESS', message='Type annotation check passed')
     else:
         print(colored('WARNING: Type check failed, enforcement is disabled, so not failing check', 'yellow'))
+        update_job_status(status='SUCCESS', message='Type annotation check, failed but is not enforcing')
         return 0
     return rc
 

@@ -5,17 +5,18 @@
  
 The `screwdrivercd_validate_type` command runs type annotation validations using the mypy tool.
 
-### Settings
+### Environment Settings
 
 All settings for the `scrwedrivercd_validate_type` command are specified via environment variables.
 
 The following settings are supported:
 
 | Setting                  | Default Value               | Description                                         |
-| ------------------------ | --------------------------- | --------------------------- |
-| BASE_PYTHON              | python3                     | Python interpreter to use to run the mypy command                          |
+| ------------------------ | --------------------------- | --------------------------------------------------- |
+| BASE_PYTHON              | python3                     | Python interpreter to use                           |
 | MYPY_ARGS                | --ignore-missing-imports    | Additional mypy command arguments                   |
-| PACKAGE_DIRECTORY        | .                           | Directory containing the package source |
+| PACKAGE_DIRECTORY        | .                           | Directory containing the package source             |
+| TYPE_CHECK_DEBUG         | False                       | Enable debug logging if True                        |
 | TYPE_CHECK_ENFORCING     | False                       | Make check enforcing                                |
 | TYPE_CHECK_REPORT_FORMAT | txt,cobertura-xml,junit-xml | Comma seperated list of report formats to generate. |
 |                          |                             | Supported formats:                                  |
