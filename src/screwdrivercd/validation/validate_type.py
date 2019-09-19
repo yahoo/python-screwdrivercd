@@ -16,6 +16,7 @@ import subprocess  # nosec
 import sys
 
 from termcolor import colored
+from ..screwdriver.environment import get_env_job_name, logging_basicConfig
 from ..screwdriver.metadata import Metadata
 from ..utility import create_artifact_directory, env_bool
 from ..utility.package import PackageMetadata
@@ -88,11 +89,10 @@ def validate_type():
     int:
         Exit returncode from the type validation command or 0 if TYPE_CHECK_ENFORCING env variable is false
     """
+    logging_basicConfig()
+
     metadata = Metadata()
-    job_name = os.environ.get('SD_JOB_NAME', '').split(':')[-1]
-    if not job_name:
-        job_name = 'type_validation'
-    meta_job_status_key = f'meta.status.{job_name}'
+    meta_job_status_key = f'meta.status.{get_env_job_name(default="type_validation")}'
 
     # Make sure the report directory exists
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')

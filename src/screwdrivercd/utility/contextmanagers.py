@@ -21,7 +21,7 @@ def working_dir(new_path):
     old_dir = os.getcwd()
     os.chdir(new_path)
     try:
-        yield
+        yield new_path
     finally:
         os.chdir(old_dir)
 
@@ -32,15 +32,22 @@ def revert_file(filename):
     A context manager that reverts a file's contents.
     """
     original_data = None
-    with open(filename, 'rb') as file_handle:
-        original_data = file_handle.read()
+    exists = os.path.exists(filename)
+    if exists:
+        with open(filename, 'rb') as file_handle:
+            original_data = file_handle.read()
 
     try:
-        yield
+        yield filename
     finally:
-        if original_data:
-            with open(filename, 'wb') as file_handle:
-                file_handle.write(original_data)
+        if exists:
+            if original_data:
+                with open(filename, 'wb') as file_handle:
+                    file_handle.write(original_data)
+        else:
+            if os.path.exists(filename):
+                os.remove(filename)
+
 
 @contextmanager
 def InTemporaryDirectory():
@@ -49,4 +56,4 @@ def InTemporaryDirectory():
     """
     with TemporaryDirectory() as tempdir:
         with working_dir(tempdir):
-            yield
+            yield tempdir

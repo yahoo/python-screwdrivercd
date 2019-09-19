@@ -27,7 +27,7 @@ class AptInstaller(Installer):
     _repo_tool_install_failed: bool = False
     _updated_index: bool = False
 
-    def update_index(self):
+    def update_index(self):  # pragma: no cover - Function is OS specific
         """
         Method to update the package index
         """
@@ -36,7 +36,7 @@ class AptInstaller(Installer):
         subprocess.check_call([self.install_command[0], 'update'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # nosec - All subprocess calls use full path
         self._updated_index = True
 
-    def install_repo_tool(self):
+    def install_repo_tool(self):  # pragma: no cover - Function is OS specific
         """
         Install the repo install tool
         """
@@ -57,7 +57,7 @@ class AptInstaller(Installer):
                 self._repo_tool_install_failed = True
                 raise FileNotFoundError(f'Could not find the {self.install_repo_command[0]} utility')
 
-    def add_repo(self, repo_name, repo_url):
+    def add_repo(self, repo_name, repo_url):  # pragma: no cover - Function is OS specific
         """
         Add apt repos specified in the configuration
         """
