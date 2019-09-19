@@ -49,10 +49,10 @@ class Metadata(dict):
         """
         if self.read_only:
             logging.debug('Cannot write metadata, metadata is readonly')
-            return None
+            return
         command = ['meta', 'set', '--json-value', key, json.dumps(value)]
         logging.debug(f'Running: {command}')
         try:
             subprocess.check_call(command)  # nosec
         except (subprocess.CalledProcessError, FileNotFoundError):
-            return None
+            return
