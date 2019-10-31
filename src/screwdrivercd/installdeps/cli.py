@@ -6,12 +6,14 @@ Command line `sdv4_install_deps` utility.
 The main() function of this utility provides a command line interface to install Operating system packages based on
 the configuration in the `pyproject.toml` file.
 """
+import json
 import logging
 import os
 import sys
 
 from termcolor import colored
 
+from ..utility import create_artifact_directory
 from .installer import Configuration
 from .installers import install_plugins
 
@@ -38,6 +40,7 @@ def main():
     if not installer_order:
         installer_order = install_plugins.keys()
 
+    installed = {}
     for installer_name in installer_order:
         try:
             installer_class = install_plugins[installer_name]
@@ -51,6 +54,7 @@ def main():
             continue
         if not installer_instance.has_dependencies:
             continue
+
         if installer_instance.plugin_configuration:
             print(f'Running {installer_name} installer ', flush=True)
             result = installer_instance.install_dependencies()
@@ -58,7 +62,18 @@ def main():
                 print(colored(f'Installed {len(result)} package{"s" if len(result) > 1 else ""}', 'green'), flush=True)
             else:
                 print('No packages installed', flush=True)
+            installed[installer_name] = result
             print('')
+
+    # Make sure the report directory exists
+    artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
+    report_dir = os.path.join(artifacts_dir, 'reports/type_validation')
+    report_filename = os.path.join(report_dir, 'installdeps.json')
+    create_artifact_directory(report_dir)
+
+    with open(report_filename, 'w') as fh:
+        json.dump(installed, fh)
+
 
 
 if __name__ == '__main__':
