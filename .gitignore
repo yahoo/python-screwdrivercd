@@ -89,3 +89,11 @@ coverage.xml
 
 /.mypy_cache
 /reports
+
+# Begin: Added by set_up_screwdriver.py
+/MANIFEST.in
+/artifacts/test/coverage/cobertura.xml
+/artifacts/coverage/cobertura.xml
+/.python_screwdriver_local.json
+
+# End: Added by set_up_screwdriver.py

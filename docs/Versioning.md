@@ -32,6 +32,16 @@ If no arguments are provided, the utility reads it configuration from the `[scre
 The utility will update the version of the `[metadata]` section of the setup.cfg file with the version number from
 the screwdriver pipeline package.version metadata attribute. 
 
+### Environment Settings
+
+Some settings for the `scrwedrivercd_version` command are specified via environment variables.
+
+The following settings are supported:
+
+| Setting                  | Default Value               | Description                                         |
+| ------------------------ | --------------------------- | --------------------------------------------------- |
+| VERSION_DEBUG            | False                       | Enable debug logging                                |
+
 ### Example
 
 This is an example of the `setup.cfg` file before and after, with the `screwdrivercd_version` command run from a
