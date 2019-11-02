@@ -17,7 +17,7 @@ import os
 import sys
 
 from termcolor import colored
-from pypirun.cli import install_and_run
+from pypirun.cli import install_and_run, interpreter_parent
 from ..utility import create_artifact_directory, env_bool
 from ..utility.package import PackageMetadata
 
@@ -32,9 +32,9 @@ def validate_with_safety():
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
     report_dir = os.path.join(artifacts_dir, 'reports/dependency_validation')
     create_artifact_directory(report_dir)
-
-    interpreter = os.environ.get('BASE_PYTHON', sys.executable)
-
+    
+    interpreter = interpreter_parent(sys.executable)
+    interpreter = os.environ.get('BASE_PYTHON', interpreter)
 
     # Generate a full text report
     full_report_filename = os.path.join(report_dir, 'safetydb.full')
