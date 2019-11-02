@@ -1,6 +1,9 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
 """Functions for command script"""
+from ..screwdriver.environment import logging_basicConfig, update_job_status
+logging_basicConfig(check_prefix='VERSION')
+
 import logging
 import sys
 from .arguments import parse_arguments
@@ -24,6 +27,7 @@ def main():
         version.update_setup_cfg_metadata()
         if args.update_meta:
             version.update_meta_version()
+            update_job_status(status='SUCCESS', message=f'version=={version}')
             print(f'Version in setup.cfg and screwdriver v4 metadata package.version updated to: {version}', flush=True)
         else:
             print(f'Version in setup.cfg updated to: {version}')

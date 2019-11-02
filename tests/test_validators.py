@@ -2,6 +2,9 @@ import copy
 from json import dumps
 import os
 from . import ScrewdriverTestCase
+from screwdrivercd.validation.validate_dependencies import validate_with_safety
+from screwdrivercd.validation.validate_style import main as style_main
+from screwdrivercd.validation.validate_style import validate_codestyle
 from screwdrivercd.validation.validate_type import main as type_main
 from screwdrivercd.validation.validate_type import validate_type
 
@@ -30,7 +33,7 @@ packages =
 package_dir =
     =src
 """,
-    'src/mypyvalidator/__init__.py': b"""a: int=1"""
+    'src/mypyvalidator/__init__.py': b"""a: int = 1\n"""
 }
 
 # No source package tree
@@ -50,6 +53,78 @@ packages =
 # Invalid package tree
 invalid_type_config = copy.deepcopy(working_config)
 invalid_type_config['src/mypyvalidator/__init__.py'] = b"""a: int='1'"""
+
+# Insecure dependency
+insecure_dep_config = copy.deepcopy(working_config)
+insecure_dep_config['setup.cfg'] = b"""
+[metadata]
+name=mypyvalidator
+version=0.0.0
+
+[options]
+install_requires =
+    insecure-package
+    
+packages =
+    mypyvalidator
+
+package_dir =
+    =src
+"""
+
+invalid_style_config = copy.deepcopy(working_config)
+invalid_style_config['src/mypyvalidator/__init__.py'] = b"""a: int =1\n"""
+
+class DepValidatorTestcase(ScrewdriverTestCase):
+    validator_name = 'type_validation'
+
+    def test__secure_deps(self):
+        self.write_config_files(working_config)
+        result = validate_with_safety()
+        self.assertEqual(result, 0)
+
+    def test__insecure_deps(self):
+        self.write_config_files(insecure_dep_config)
+        artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
+        report_dir = os.path.join(artifacts_dir, 'reports/dependency_validation')
+        json_report_filename = os.path.join(report_dir, 'safetydb.json')
+        result = validate_with_safety()
+        self.assertGreater(result, 0)
+        self.assertTrue(os.path.exists(json_report_filename))
+
+
+class StyleValidator(ScrewdriverTestCase):
+    validator_name = 'style_validation'
+
+    def test__style__pass__srcdir_main(self):
+        os.environ['PACKAGE_DIR'] = 'src'
+        self.write_config_files(working_config)
+        result = style_main()
+        self.assertEqual(result, 0)
+
+    def test__style__pass__srcdir(self):
+        os.environ['PACKAGE_DIR'] = 'src'
+        self.write_config_files(working_config)
+        result = validate_codestyle()
+        self.assertEqual(result, 0)
+
+    def test__style__pass__srcdir__args(self):
+        os.environ['PACKAGE_DIR'] = 'src'
+        os.environ['CODESTYLE_ARGS'] = '--show-source'
+        self.write_config_files(working_config)
+        result = validate_codestyle()
+        self.assertEqual(result, 0)
+
+    def test__style__fail__srcdir(self):
+        os.environ['PACKAGE_DIR'] = 'src'
+        self.write_config_files(invalid_style_config)
+        result = validate_codestyle()
+        self.assertGreater(result, 0)
+
+    def test__style__pass__nosrc(self):
+        self.write_config_files(working_config_nosrc)
+        result = validate_codestyle()
+        self.assertEqual(result, 0)
 
 
 class TypeValidatorTestcase(ScrewdriverTestCase):

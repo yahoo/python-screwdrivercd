@@ -10,7 +10,7 @@ This wrapper runs the validation tool.  This wrapper does the following:
 - Propagates a success code if the TYPE_CHECK_ENFORCING is set to false.
 """
 from ..screwdriver.environment import logging_basicConfig, update_job_status
-logging_basicConfig()
+logging_basicConfig(check_prefix='TYPE_CHECK')
 
 import logging
 import os

@@ -205,5 +205,4 @@ Here is an example that installs the mysql client package and installs the pytho
 
     [tool.sdv4_installdeps.pip3]
         deps = ['serviceping']
-
 ```

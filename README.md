@@ -4,10 +4,14 @@
 
 
 # screwdrivercd
-Python helper utilities for screwdriver CI/CD
+
+Python helper utilities for CI/CD
 
 Implementing CI Pipeline templates for screwdriver?  This package provides a number of useful utility scripts that can
 be called from CI jobs to automate common operations.
+
+These utilities are used by the screwdrivercd python templates but can be used with other CI/CD
+systems as well.
 
 ## Table of Contents
 

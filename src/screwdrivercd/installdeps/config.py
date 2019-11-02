@@ -6,7 +6,7 @@ Read/Parse the configuration file for the screwdrivercd.installdeps tool
 import copy
 import os
 
-from collections import Mapping  # pylint: disable no-name-in-module
+from collections.abc import Mapping  # pylint: disable no-name-in-module
 from typing import Any, Dict, Optional
 
 import toml
