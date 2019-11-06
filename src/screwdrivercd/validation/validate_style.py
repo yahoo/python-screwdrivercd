@@ -51,7 +51,7 @@ def validate_with_codestyle(report_dir):
         command += extra_args.split()
 
     # Add targets
-    if src_dir not in ['', '.']:
+    if src_dir not in ['', '.'] and src_dir != package_name:
         command.append(os.path.join(src_dir, package_name.replace('.', '/')))
     else:
         command.append(package_name.replace('.', '/'))
