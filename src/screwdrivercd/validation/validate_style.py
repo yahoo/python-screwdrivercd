@@ -13,6 +13,8 @@ import os
 import subprocess  # nosec
 import sys
 
+from pypirun.cli import install_and_run, interpreter_parent
+
 from termcolor import colored
 from ..utility import create_artifact_directory, env_bool
 from ..utility.package import PackageMetadata
@@ -29,13 +31,19 @@ def validate_with_codestyle(report_dir):
     if not src_dir:
         src_dir = os.environ.get('PACKAGE_DIRECTORY', '')
 
-    interpreter = os.environ.get('BASE_PYTHON', sys.executable)
+    parent_interpreter = interpreter_parent(sys.executable)
+    interpreter = os.environ.get('BASE_PYTHON', parent_interpreter)
     bin_dir = os.path.dirname(interpreter)
+
+    pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
+    if not os.path.exists(pycodestyle_command):
+        bin_dir = os.path.dirname(parent_interpreter)
+        pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
 
     package_name = PackageMetadata().metadata['name']
 
     # Generate the command line from the environment settings
-    command = [os.path.join(bin_dir, 'pycodestyle')]
+    command = [pycodestyle_command]
 
     # Add extra arguments
     extra_args = os.environ.get('CODESTYLE_ARGS', '')
