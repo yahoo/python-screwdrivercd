@@ -27,7 +27,7 @@ def main():
         version.update_setup_cfg_metadata()
         if args.update_meta:
             version.update_meta_version()
-            update_job_status(status='SUCCESS', message=f'version=={version}')
+            # update_job_status(status='SUCCESS', message=f'version=={version}')
             print(f'Version in setup.cfg and screwdriver v4 metadata package.version updated to: {version}', flush=True)
         else:
             print(f'Version in setup.cfg updated to: {version}')

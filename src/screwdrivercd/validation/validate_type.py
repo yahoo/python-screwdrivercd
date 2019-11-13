@@ -92,7 +92,7 @@ def validate_type():
     logging_basicConfig()
 
     # Set the status message
-    update_job_status(status='SUCCESS', message='Checking type annotations')
+    # update_job_status(status='SUCCESS', message='Checking type annotations')
 
     # Make sure the report directory exists
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')

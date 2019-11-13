@@ -92,7 +92,7 @@ def validate_codestyle():
     logging_basicConfig()
 
     # Set the status message
-    update_job_status(status='SUCCESS', message='Checking code style')
+    # update_job_status(status='SUCCESS', message='Checking code style')
 
     # Make sure the report directory exists
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
@@ -106,8 +106,8 @@ def validate_codestyle():
         update_job_status(status='FAILURE', message='Code style check failed')
         return rc
     elif rc == 0:
-        print(colored('OK: Type validation sucessful', 'green'), flush=True)
-        update_job_status(status='SUCCESS', message='Type annotation check passed')
+        print(colored('OK: Code style validation sucessful', 'green'), flush=True)
+        update_job_status(status='SUCCESS', message='Code style check passed')
     return rc
 
 
