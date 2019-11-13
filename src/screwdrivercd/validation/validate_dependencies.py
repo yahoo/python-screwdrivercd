@@ -62,7 +62,7 @@ def validate_with_safety():
 
 def main():
     """
-    Type check runner utility command line entry point
+    Install dependencies utility command line entry point
 
     Returns
     -------
