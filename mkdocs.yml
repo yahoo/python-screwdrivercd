@@ -28,7 +28,6 @@ markdown_extensions:
 
 nav:
     - Quickstart: index.md
-    - Overview: usage.md
     - Integration Utilities:
         - Build Dependency Installer: Install_Dependencies.md
         - Documentation: documentation.md
@@ -42,7 +41,7 @@ plugins:
     - search
 
 theme:
-    name: readthedocs
+    name: material
     highlightjs: true
     hljs_language:
         - yaml
