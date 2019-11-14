@@ -1,7 +1,9 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
 """Functions for command script"""
-from ..screwdriver.environment import logging_basicConfig, update_job_status
+# The logging_basicConfig has to be run before other imports because some modules we use log output on import
+# pylint: disable=wrong-import-order, wrong-import-position
+from ..screwdriver.environment import logging_basicConfig
 logging_basicConfig(check_prefix='VERSION')
 
 import logging

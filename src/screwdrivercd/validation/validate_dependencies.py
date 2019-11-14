@@ -8,6 +8,8 @@ This wrapper runs the validation tool.  This wrapper does the following:
 - Runs the dependency checking tool
 - ensures all the logs and reports are stored in the build artifacts before exiting.
 """
+# The logging_basicConfig has to be run before other imports because some modules we use log output on import
+# pylint: disable=wrong-import-order, wrong-import-position
 from ..screwdriver.environment import logging_basicConfig, update_job_status
 logging_basicConfig(check_prefix='DEPENDENCY_CHECK')
 
@@ -18,8 +20,7 @@ import sys
 
 from termcolor import colored
 from pypirun.cli import install_and_run, interpreter_parent
-from ..utility import create_artifact_directory, env_bool
-from ..utility.package import PackageMetadata
+from ..utility import create_artifact_directory
 
 
 logger_name = 'validate_dependencies' if __name__ == '__main__' else __name__

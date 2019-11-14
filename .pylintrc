@@ -60,7 +60,7 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=logging-fstring-interpolation, invalid-name, trailing-whitespace, too-few-public-methods, too-many-branches, too-many-statements, unused-argument, no-self-use, duplicate-code, no-name-in-module
+disable=logging-fstring-interpolation, logging-format-interpolation, invalid-name, trailing-whitespace, too-few-public-methods, too-many-branches, too-many-statements, unused-argument, no-self-use, duplicate-code, no-name-in-module
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -457,7 +457,7 @@ valid-metaclass-classmethod-first-arg=cls
 max-args=5
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=7
+max-attributes=20
 
 # Maximum number of boolean expressions in an if statement.
 max-bool-expr=5
@@ -466,7 +466,7 @@ max-bool-expr=5
 max-branches=12
 
 # Maximum number of locals for function / method body.
-max-locals=15
+max-locals=20
 
 # Maximum number of parents for a class (see R0901).
 max-parents=7

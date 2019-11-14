@@ -32,8 +32,9 @@ nav:
           - Overview: usage.md
           - Integration Utilities:
               - Build Dependency Installer: Install_Dependencies.md
-              - Validation Wrappers: Validation_Helpers.md
+              - Documentation: documentation.md
               - Package Versioning: Versioning.md
+              - Validation Wrappers: Validation_Helpers.md
     - Contributing: Contributing.md
 
 plugins:
