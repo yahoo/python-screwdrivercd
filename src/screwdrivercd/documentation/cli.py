@@ -49,4 +49,3 @@ def main():
         except DocBuildError:
             sys.exit(1)
     update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')
-
