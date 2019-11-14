@@ -4,8 +4,12 @@
 version: 4
 shared:
     environment:
+        DOCUMENTATION_DEBUG: False
+        DOCUMENTATION_FORMATS: mkdocs
         PACKAGE_DIR: src
         PACKAGE_DIRECTORY: src
+    steps:
+        - prepublish_documentation: $BASE_PYTHON -m pip install -U .[documentation]
 
 jobs:
     validate_codestyle:
@@ -30,7 +34,7 @@ jobs:
             - postupdate_version: |
                 PACKAGE_VERSION="`meta get package.version`"
                 echo $PACKAGE_VERSION
-            - postvalidate_code: meta set package.version "$PACKAGE_VERSION"
+            - preend: meta set package.version "$PACKAGE_VERSION"
         requires: [~commit, ~pr]
 
     validate_type:
@@ -38,28 +42,21 @@ jobs:
         requires: [~commit, ~pr]
 
     validate_documentation:
+        template: python/documentation
         environment:
-            BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
-            DOCUMENTATION_DEBUG: False
-            DOCUMENTATION_FORMATS: mkdocs
             DOCUMENTATION_PUBLISH: False
-        image: quay.io/pypa/manylinux2010_x86_64
-        steps:
-            - bootstrap_python: sd-cmd exec python/python_bootstrap@stable
-            - install_local_package: $BASE_PYTHON -m pip install .[documentation]
-            - publish_documentation: $BASE_PYTHON -m screwdrivercd.documentation
         requires: [~pr]
 
     generate_version:
         template: python/generate_version
-        requires: [~commit, ~pr]
+        requires: [validate_test, validate_lint, validate_codestyle, validate_dependencies, validate_security, validate_type]
 
     publish_test_pypi:
         template: python/package_python
         environment:
             PUBLISH: True
             TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
-        requires: [generate_version, validate_test, validate_lint, validate_codestyle, validate_dependencies, validate_security, validate_type]
+        requires: [generate_version]
 
     verify_test_package:
         template: python/validate_pypi_package
@@ -69,8 +66,12 @@ jobs:
             - update_version: |
                 PACKAGE_VERSION="`meta get package.version`"
                 echo $PACKAGE_VERSION
-            # - postvalidate_code: meta set package.version "$PACKAGE_VERSION"
+            - preend: meta set package.version "$PACKAGE_VERSION"
         requires: [publish_test_pypi]
+
+    publish_documentation:
+        template: python/documentation
+        requires: [verify_test_package]
 
     publish_pypi:
         template: python/package_python

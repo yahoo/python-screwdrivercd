@@ -28,20 +28,20 @@ markdown_extensions:
 
 nav:
     - Quickstart: index.md
-    - Usage:
-          - Overview: usage.md
-          - Integration Utilities:
-              - Build Dependency Installer: Install_Dependencies.md
-              - Documentation: documentation.md
-              - Package Versioning: Versioning.md
-              - Validation Wrappers: Validation_Helpers.md
-    - Contributing: Contributing.md
+    - Integration Utilities:
+        - Build Dependency Installer: Install_Dependencies.md
+        - Documentation: documentation.md
+        - Package Versioning: Versioning.md
+        - Validation Wrappers: Validation_Helpers.md
+    - Developer Information:
+        - Code of Conduct: Code-of-Conduct.md
+        - Contributing: Contributing.md
 
 plugins:
     - search
 
 theme:
-    name: readthedocs
+    name: material
     highlightjs: true
     hljs_language:
         - yaml

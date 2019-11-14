@@ -1,8 +1,19 @@
+## Package Documentation Publisher
+
 The screwdrivercd_documentation tool is an extensible tool to publish documentation to github pages from multiple
 formats.
 
-Unlike most other screwdrivercd command line utilities, this utility can be used without having a python code package in the 
-current repository. 
+### Rationale
+
+This allows for simple templates that can generate and publish documentation published to github pages in multiple 
+formats.  This utility in addition to generating and publishing the documentation handles CI/CD operations such as
+cleanly handling errors and ensuging the logs and generated content is in the CI Pipeline build artifacts so they
+can be inspected.
+
+### screwdrivercd_documentation usage
+
+Unlike most other screwdrivercd command line utilities, this utility can be used without having a python code package 
+in the current repository. 
 
 This utility will look for both `mkdocs` and `sphinx` documentation configuration files and generate documentation 
 using all the tools it finds configuration files for.

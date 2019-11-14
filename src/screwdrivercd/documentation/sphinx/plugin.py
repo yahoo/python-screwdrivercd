@@ -3,6 +3,7 @@ Sphinx documentation generation plugin
 """
 import os
 from ..plugin import DocumentationPlugin
+from ...utility.environment import interpreter_bin_command
 
 
 class SphinxDocumentationPlugin(DocumentationPlugin):
@@ -18,7 +19,7 @@ class SphinxDocumentationPlugin(DocumentationPlugin):
         self.source_dir = os.path.join(self.source_dir, 'doc/source')
         self.build_output_dir = 'build/sphinx/html'
         self.builder = os.environ.get('DOCUMENTATION_SPHINX_BUILDER', self.builder)
-        self.build_command = [os.path.join(self.interpreter_bin_dir, 'sphinx-build'), '-b', self.builder, self.source_dir, self.build_dest]
+        self.build_command = [interpreter_bin_command('sphinx-build'), '-b', self.builder, self.source_dir, self.build_dest]
 
     @property
     def documentation_is_present(self) -> bool:

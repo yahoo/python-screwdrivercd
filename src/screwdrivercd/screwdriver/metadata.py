@@ -20,17 +20,17 @@ class Metadata(dict):
     """
     read_only = False
 
-    def __getattr__(self, key):
+    def __getattr__(self, key):  # pragma: no cover
         """Get value from screwdriver metadata"""
         key = key.replace('_', '.')
         return self.get(key)
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key, value):  # pragma: no cover
         """Set an attr to screwdriver metadata"""
         key = key.replace('_', '.')
         self.set(key, value)
 
-    def get(self, key):
+    def get(self, key):  # pragma: no cover
         """
         Get a value from the screwdriver metadata store
         """
@@ -43,7 +43,7 @@ class Metadata(dict):
         result = json.loads(response)
         return result
 
-    def set(self, key, value):
+    def set(self, key, value):  # pragma: no cover
         """
         Set a value in the screwdriver metadata store
         """

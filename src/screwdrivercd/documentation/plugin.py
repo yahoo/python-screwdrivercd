@@ -16,6 +16,7 @@ from termcolor import colored
 
 from .exceptions import DocBuildError, DocPublishError
 from .utility import clean_directory, copy_contents
+from ..utility.environment import interpreter_bin_command
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ class DocumentationPlugin:
     screwdrivercd.documentation generation/publication plugin
     """
     name: str = 'base'
-    build_command: List[str] = ['echo', 'building']
+    build_command: List[str] = [interpreter_bin_command(), '-c', 'print("building")']
     build_log_filename: str = ''
     build_output_dir = ''
     build_dest: str = ''
