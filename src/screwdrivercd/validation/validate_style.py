@@ -5,6 +5,8 @@ Code style validation wrapper for screwdrivercd
 
 This wrapper runs the validation tool.  This wrapper does the following:
 """
+# The logging_basicConfig has to be run before other imports because some modules we use log output on import
+# pylint: disable=wrong-import-order, wrong-import-position
 from ..screwdriver.environment import logging_basicConfig, update_job_status
 logging_basicConfig(check_prefix='STYLE_CHECK')
 
@@ -13,10 +15,10 @@ import os
 import subprocess  # nosec
 import sys
 
-from pypirun.cli import install_and_run, interpreter_parent
-
+from pypirun.cli import interpreter_parent
 from termcolor import colored
-from ..utility import create_artifact_directory, env_bool
+
+from ..utility import create_artifact_directory
 from ..utility.package import PackageMetadata
 
 
@@ -101,13 +103,15 @@ def validate_codestyle():
 
     rc = validate_with_codestyle(report_dir=report_dir)
 
+    if rc == 0:
+        print(colored('OK: Code style validation sucessful', 'green'), flush=True)
+        update_job_status(status='SUCCESS', message='Code style check passed')
+
     if rc > 0:
         print(colored('ERROR: Type code style check failed', 'red'), file=sys.stderr, flush=True)
         update_job_status(status='FAILURE', message='Code style check failed')
         return rc
-    elif rc == 0:
-        print(colored('OK: Code style validation sucessful', 'green'), flush=True)
-        update_job_status(status='SUCCESS', message='Code style check passed')
+
     return rc
 
 

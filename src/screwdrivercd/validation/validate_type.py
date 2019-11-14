@@ -9,6 +9,8 @@ This wrapper runs the validation tool.  This wrapper does the following:
 - ensures all the logs and reports are stored in the build artifacts before exiting.
 - Propagates a success code if the TYPE_CHECK_ENFORCING is set to false.
 """
+# The logging_basicConfig has to be run before other imports because some modules we use log output on import
+# pylint: disable=wrong-import-order, wrong-import-position
 from ..screwdriver.environment import logging_basicConfig, update_job_status
 logging_basicConfig(check_prefix='TYPE_CHECK')
 

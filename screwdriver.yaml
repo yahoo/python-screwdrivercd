@@ -37,6 +37,19 @@ jobs:
         template: python/validate_type
         requires: [~commit, ~pr]
 
+    validate_documentation:
+        environment:
+            BASE_PYTHON: /opt/python/cp37-cp37m/bin/python3
+            DOCUMENTATION_DEBUG: False
+            DOCUMENTATION_FORMATS: mkdocs
+            DOCUMENTATION_PUBLISH: False
+        image: quay.io/pypa/manylinux2010_x86_64
+        steps:
+            - bootstrap_python: sd-cmd exec python/python_bootstrap@stable
+            - install_local_package: $BASE_PYTHON -m pip install .[documentation]
+            - publish_documentation: $BASE_PYTHON -m screwdrivercd.documentation
+        requires: [~pr]
+
     generate_version:
         template: python/generate_version
         requires: [~commit, ~pr]
