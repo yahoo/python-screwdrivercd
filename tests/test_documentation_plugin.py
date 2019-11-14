@@ -74,7 +74,7 @@ class DocumentationPluginTestCase(unittest.TestCase):
             self._create_test_repo_contents()
             p = self.plugin_class()
             p.build_documentation()
-            self.assertTrue(os.path.exists(f'logs/documentation/{p.name}/{p.name}.build.log'))
+            self.assertTrue(os.path.exists(f'{p.log_dir}/{p.name}.build.log'))
 
 
 class SphinxDocumentationPluginTestCase(DocumentationPluginTestCase):
