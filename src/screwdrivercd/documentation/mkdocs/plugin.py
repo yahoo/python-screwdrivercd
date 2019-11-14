@@ -2,8 +2,8 @@
 MkDocs documentation generation plugin
 """
 import os
-import sys
 from ..plugin import DocumentationPlugin
+from ...utility.environment import interpreter_bin_command
 
 
 class MkDocsDocumentationPlugin(DocumentationPlugin):
@@ -15,7 +15,7 @@ class MkDocsDocumentationPlugin(DocumentationPlugin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.build_command = [sys.executable, '-m', 'mkdocs', 'build', '--site-dir', self.build_dir]
+        self.build_command = [interpreter_bin_command(), '-m', 'mkdocs', 'build', '--site-dir', self.build_dir]
 
     @property
     def documentation_is_present(self) -> bool:

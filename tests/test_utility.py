@@ -4,8 +4,9 @@ import os
 import tempfile
 import unittest
 
-from screwdrivercd.utility import create_artifact_directory, env_bool, env_int, flush_terminals
 from screwdrivercd.utility.contextmanagers import InTemporaryDirectory, revert_file, working_dir
+from screwdrivercd.utility.environment import env_bool, env_int, flush_terminals, interpreter_bin_command
+from screwdrivercd.utility.screwdriver import create_artifact_directory
 
 
 class TestPlatformTestTox(unittest.TestCase):
@@ -84,3 +85,20 @@ class TestPlatformTestTox(unittest.TestCase):
 
     def test__flush_terminals(self):
         flush_terminals()
+
+    def test__interpreter_bin_command__default(self):
+        result = interpreter_bin_command()
+        self.assertIsInstance(result, (str))
+        self.assertTrue(result.endswith('/python'))
+        self.assertTrue(os.path.exists(result))
+
+    def test__interpreter_bin_command__command_exists(self):
+        result = interpreter_bin_command('screwdrivercd_version')
+        self.assertIsInstance(result, (str))
+        self.assertTrue(result.endswith('/screwdrivercd_version'))
+        self.assertTrue(os.path.exists(result))
+
+    def test__interpreter_bin_command__command_missing(self):
+        result = interpreter_bin_command('screwdrivercd_test__interpreter_bin_command__command_missing')
+        self.assertIsInstance(result, (str))
+        self.assertFalse(result)  # Empty string evaluates as False
