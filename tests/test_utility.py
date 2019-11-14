@@ -98,8 +98,13 @@ class TestPlatformTestTox(unittest.TestCase):
         self.assertTrue(result.endswith('/screwdrivercd_version'))
         self.assertTrue(os.path.exists(result))
 
-    def test__interpreter_bin_command__command_missing(self):
+    def test__interpreter_bin_command__command_missing__default(self):
         result = interpreter_bin_command('screwdrivercd_test__interpreter_bin_command__command_missing')
+        self.assertIsInstance(result, (str))
+        self.assertEqual(result, 'screwdrivercd_test__interpreter_bin_command__command_missing')
+
+    def test__interpreter_bin_command__command_missing__fallback_path__false(self):
+        result = interpreter_bin_command('screwdrivercd_test__interpreter_bin_command__command_missing', fallback_path=False)
         self.assertIsInstance(result, (str))
         self.assertFalse(result)  # Empty string evaluates as False
 

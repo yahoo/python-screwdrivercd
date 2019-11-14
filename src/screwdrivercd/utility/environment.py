@@ -73,7 +73,7 @@ def flush_terminals():
     sys.stderr.flush()
 
 
-def interpreter_bin_command(command: str = 'python') -> str:
+def interpreter_bin_command(command: str = 'python', fallback_path: bool=True) -> str:
     """
     Return the full path to a command in the current interpreter's bin directory.
 
@@ -87,10 +87,14 @@ def interpreter_bin_command(command: str = 'python') -> str:
     Returns
     -------
     str:
-        Full path to the command.  If the command is not present returns an empty string.
+        Full path to the command.  If the command is not present returns command if fallback_path is True or an empty
+        string otherwise.
     """
     bin_dir = os.path.dirname(interpreter_parent(sys.executable))
-    command = os.path.join(bin_dir, command)
-    if os.path.exists(command):
+    new_command = os.path.join(bin_dir, command)
+    if os.path.exists(new_command):
+        return new_command
+    if fallback_path:
         return command
     return ''
+
