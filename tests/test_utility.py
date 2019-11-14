@@ -102,3 +102,17 @@ class TestPlatformTestTox(unittest.TestCase):
         result = interpreter_bin_command('screwdrivercd_test__interpreter_bin_command__command_missing')
         self.assertIsInstance(result, (str))
         self.assertFalse(result)  # Empty string evaluates as False
+
+    def test__environement__env_int(self):
+        os.environ['test__environement__env_int'] = '1'
+        result = env_int('test__environement__env_int')
+        del os.environ['test__environement__env_int']
+        self.assertEqual(result, 1)
+
+    def test__environement__env_int__default(self):
+        result = env_int('test__environement__env_int__default')
+        self.assertEqual(result, 0)
+
+    def test__environement__env_int__default__value(self):
+        result = env_int('test__environement__env_int__default__value', 10)
+        self.assertEqual(result, 10)
