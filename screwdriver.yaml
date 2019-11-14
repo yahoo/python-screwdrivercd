@@ -48,7 +48,7 @@ jobs:
             - bootstrap_python: sd-cmd exec python/python_bootstrap@stable
             - install_local_package: $BASE_PYTHON -m pip install .
             - publish_documentation: $BASE_PYTHON -m screwdrivercd.documentation
-        requires: [dependency_validation, style_validation, lint_validation, type_validation, security_validation, test_validation, version]
+        requires: [~pr]
 
     generate_version:
         template: python/generate_version
