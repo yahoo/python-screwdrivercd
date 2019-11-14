@@ -3,11 +3,15 @@
 """
 Screwdriver Utility Runtime environment functions
 """
+import logging
 import os
 import sys
 from typing import Union
 
 from pypirun.cli import interpreter_parent
+
+
+logger = logging.getLogger(__name__)
 
 
 def env_bool(variable_name: str, default: Union[None, bool] = None) -> Union[None, bool]:
@@ -91,10 +95,10 @@ def interpreter_bin_command(command: str = 'python', fallback_path: bool=True) -
         string otherwise.
     """
     bin_dir = os.path.dirname(interpreter_parent(sys.executable))
+    logger.info(f'Interpreter bin directory is {bin_dir!r}')
     new_command = os.path.join(bin_dir, command)
     if os.path.exists(new_command):
         return new_command
     if fallback_path:
         return command
     return ''
-
