@@ -3,6 +3,10 @@
 """
 screwdrivercd.documentation module command line utility
 """
+# The logging_basicConfig has to be run before other imports because some modules we use log output on import
+# pylint: disable=wrong-import-order, wrong-import-position
+from ..screwdriver.environment import logging_basicConfig, update_job_status
+logging_basicConfig(check_prefix='DOCUMENTATION')
 import logging
 import os
 import sys
@@ -44,3 +48,5 @@ def main():
             build_documentation(documentation_formats=documentation_formats)
         except DocBuildError:
             sys.exit(1)
+    update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')
+
