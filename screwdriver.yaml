@@ -46,7 +46,7 @@ jobs:
         image: quay.io/pypa/manylinux2010_x86_64
         steps:
             - bootstrap_python: sd-cmd exec python/python_bootstrap@stable
-            - install_local_package: $BASE_PYTHON -m pip install .
+            - install_local_package: $BASE_PYTHON -m pip install .[documentation]
             - publish_documentation: $BASE_PYTHON -m screwdrivercd.documentation
         requires: [~pr]
 
