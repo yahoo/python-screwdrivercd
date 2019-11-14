@@ -39,8 +39,11 @@ def validate_with_codestyle(report_dir):
 
     pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
     if not os.path.exists(pycodestyle_command):
-        bin_dir = os.path.dirname(parent_interpreter)
+        bin_dir = os.path.dirname(sys.executable)
         pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
+        if not os.path.exists(pycodestyle_command):
+            bin_dir = os.path.dirname(parent_interpreter)
+            pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
 
     package_name = PackageMetadata().metadata['name']
 
