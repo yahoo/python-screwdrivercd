@@ -22,6 +22,7 @@ class ScrewdriverGithubDeploykeyTestCase(ScrewdriverTestCase):
         mode = stat.filemode(os.stat(self.known_hosts_filename).st_mode)
         self.assertEqual(mode, '-rw-------')
 
+    @unittest.skip
     def test__validate_known_good_hosts(self):
         add_github_to_known_hosts(self.known_hosts_filename)
         result = validate_known_good_hosts(self.known_hosts_filename)
