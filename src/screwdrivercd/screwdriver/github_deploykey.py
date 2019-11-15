@@ -116,7 +116,7 @@ def load_github_key(git_key):
         with open(key_filename, 'wb') as fh:
             os.fchmod(fh.fileno(), 0o0600)
             fh.write(git_key)
-        output = subprocess.check_output(['ssh-keygen', '-y', '-f', key_filename], timeout=15)  # nosec
+        output = subprocess.check_output(['ssh-keygen', '-y', '-f', key_filename], stdin=subprocess.DEVNULL, timeout=15)  # nosec
         with open(f'{key_filename}.pub', 'wb') as fh:
             fh.write(output)
         subprocess.check_call(['ssh-add', key_filename], stdin=subprocess.DEVNULL, timeout=15)  # nosec
