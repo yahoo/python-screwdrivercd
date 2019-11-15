@@ -5,10 +5,14 @@ Screwdriver github deploy key setup utility
 """
 import logging
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 from urllib.parse import urlparse
+
+from ..installdeps.cli import main as installdeps_main
+from ..utility.contextmanagers import InTemporaryDirectory
 
 
 logger = logging.getLogger(__name__)
@@ -18,6 +22,25 @@ fingerprints = {
     'old github fingerprint': b'16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48',     # Old github fingerprint, For openssh < 7.4
     'new github_fingerprint': b'SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8',  # New github fingerprint for openssh >= 7.4
 }
+
+
+ssh_agent_deploy_conf = """
+[build-system]
+# Minimum requirements for the build system to execute.
+requires = ["setuptools", "wheel"]  # PEP 508 specifications.
+
+[tool.sdv4_installdeps]
+    install = ['apk', 'apt-get', 'yum']
+
+[tool.sdv4_installdeps.apk]
+    deps = ['openssh-client']
+
+[tool.sdv4_installdeps.apt-get]
+    deps = ['openssh-client']
+
+[tool.sdv4_installdeps.yum]
+    deps = ['openssh-clients']
+"""
 
 
 def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
@@ -102,6 +125,19 @@ def update_git_remote():
         subprocess.check_call(['git', 'remote', 'set-url', '--push', 'origin', new_git_url])
 
 
+def install_ssh_agent():
+    """
+    Install ssh-agent if it is missing
+    """
+    if shutil.which('ssh-agent'):  # Already installed
+        return
+
+    with InTemporaryDirectory():
+        with open('pyproject.toml', 'w') as fh:
+            fh.write(ssh_agent_deploy_conf)
+            installdeps_main()
+
+
 def setup_ssh_main() -> int:  # pragma: no cover
     """
     Github deploykey ssh setup, setup ssh so that ssh-agent can be startedx.
@@ -120,6 +156,9 @@ def setup_ssh_main() -> int:  # pragma: no cover
 
     logger.debug('Validating known good hosts')
     validate_known_good_hosts()
+
+    logger.debug('Installing ssh-agent if it is not installed')
+    install_ssh_agent()
 
     return 0
 
