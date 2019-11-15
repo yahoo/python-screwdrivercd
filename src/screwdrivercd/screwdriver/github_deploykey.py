@@ -109,7 +109,7 @@ def load_github_key(git_key):
     # return
     with tempfile.TemporaryDirectory() as tempdir:
         key_filename = os.path.join(tempdir, 'git_key')
-        with open(key_filename, 'w') as fh:
+        with open(key_filename, 'wb') as fh:
             os.fchmod(fh.fileno(), 0o0600)
             fh.write(git_key)
         subprocess.check_call(['ssh-add', key_filename])  # nosec
