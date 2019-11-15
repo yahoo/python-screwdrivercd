@@ -49,7 +49,7 @@ jobs:
             - GIT_KEY
         steps:
             - postinit_os: |
-                pip3 install -U -q .
+                $BASE_PYTHON -m pip install -U -q .
                 screwdrivercd_ssh_setup
                 eval "$(ssh-agent -s)"
                 screwdrivercd_github_deploykey
