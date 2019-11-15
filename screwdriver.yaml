@@ -45,6 +45,8 @@ jobs:
         template: python/documentation
         environment:
             DOCUMENTATION_PUBLISH: True
+        secrets:
+            - GIT_KEY
         steps:
             - postinit_os: |
                 pip3 install -U -q .
