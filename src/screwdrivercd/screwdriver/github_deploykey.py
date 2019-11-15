@@ -3,10 +3,11 @@
 """
 Screwdriver github deploy key setup utility
 """
+import base64
 import logging
 import os
 import shutil
-import subprocess
+import subprocess  # nosec
 import sys
 import tempfile
 from urllib.parse import urlparse
@@ -43,6 +44,15 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 """
 
 
+def git_key_secret() -> str:
+    git_key = os.environ.get('GIT_KEY', None)
+    if not git_key:  # Nothing to do
+        return ''
+
+    git_key_decoded = base64.b64decode(git_key)
+    return git_key_decoded
+
+
 def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
     """
     Add the github hosts to the known hosts
@@ -55,7 +65,7 @@ def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
     known_hosts_filename = os.path.expanduser(known_hosts_filename)
     known_hosts_dirname = os.path.dirname(known_hosts_filename)
     os.makedirs(os.path.expanduser(known_hosts_dirname), exist_ok=True, mode=0o700)
-    github_hosts = subprocess.check_output(['ssh-keyscan', '-H', 'github.com'])
+    github_hosts = subprocess.check_output(['ssh-keyscan', '-H', 'github.com'])  # nosec
     with open(known_hosts_filename, 'ab') as fh:
         os.fchmod(fh.fileno(), 0o0600)
         fh.write(b'\n')
@@ -74,7 +84,7 @@ def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') 
     known_hosts_filename = os.path.expanduser(known_hosts_filename)
 
     match = False
-    output = subprocess.check_output(['ssh-keygen', '-l', '-f', known_hosts_filename])
+    output = subprocess.check_output(['ssh-keygen', '-l', '-f', known_hosts_filename])  # nosec
     for desc, fingerprint in fingerprints.items():
         if fingerprint not in output:
             logger.debug(f'Known github fingerprint {desc} is missing from known-hossts', file=sys.stderr)
@@ -92,15 +102,15 @@ def load_github_key(git_key):
         with open(key_filename, 'w') as fh:
             os.fchmod(fh.fileno(), 0o0600)
             fh.write(git_key)
-        subprocess.check_call(['ssh-add', key_filename])
+        subprocess.check_call(['ssh-add', key_filename])  # nosec
 
 
 def set_git_mail_config():
     """
     Set the git mail config variables
     """
-    subprocess.check_call(['git', 'config', '--global', 'user.email', "dev-null@screwdriver.cd"])
-    subprocess.check_call(['git', 'config', '--global', 'user.name', "sd-buildbot"])
+    subprocess.check_call(['git', 'config', '--global', 'user.email', "dev-null@screwdriver.cd"])  # nosec
+    subprocess.check_call(['git', 'config', '--global', 'user.name', "sd-buildbot"])  # nosec
 
 
 def update_git_remote():
@@ -108,7 +118,7 @@ def update_git_remote():
     Update the git remote address to use the git protocol via ssh
     """
     new_git_url = None
-    remote_output = subprocess.check_output(['git', 'remote', '-v'])
+    remote_output = subprocess.check_output(['git', 'remote', '-v'])  # nosec
     for line in remote_output.split(b'\n'):
         line = line.strip()
         remote, old_git_url, remote_type = line.split()
@@ -122,7 +132,7 @@ def update_git_remote():
         new_git_url = f'git@{parsed_url.netloc}:{parsed_url.path.lstrip("/")}'
         break
     if new_git_url:
-        subprocess.check_call(['git', 'remote', 'set-url', '--push', 'origin', new_git_url])
+        subprocess.check_call(['git', 'remote', 'set-url', '--push', 'origin', new_git_url])  # nosec
 
 
 def install_ssh_agent():
@@ -148,11 +158,11 @@ def setup_ssh_main() -> int:  # pragma: no cover
     int:
         The returncode to be returned from the utility
     """
-    git_key = os.environ.get('GIT_KEY', None)
+    git_key = git_key_secret()
     if not git_key:  # Nothing to do
         return 0
 
-    logger.debug('Installing ssh-agent if it is not installed')
+    logger.debug('Installing ssh clients if it is not installed')
     install_ssh_agent()
 
     logger.debug('Adding github.com to known_hosts')
@@ -175,7 +185,7 @@ def add_deploykey_main() -> int:  # pragma: no cover
     int:
         The returncode to be returned from the utility
     """
-    git_key = os.environ.get('GIT_KEY', None)
+    git_key = git_key_secret()
     if not git_key:  # Nothing to do
         return 0
 
