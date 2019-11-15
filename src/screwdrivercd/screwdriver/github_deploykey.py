@@ -105,8 +105,8 @@ def load_github_key(git_key):
     """
     Load the github key into the ssh-agent
     """
-    subprocess.run(['ssh-add'], input=git_key)  # nosec
-    return
+    # subprocess.run(['ssh-add'], input=git_key)  # nosec
+    # return
     with tempfile.TemporaryDirectory() as tempdir:
         key_filename = os.path.join(tempdir, 'git_key')
         with open(key_filename, 'w') as fh:
@@ -146,6 +146,7 @@ def update_git_remote():
         subprocess.check_call(['git', 'remote', 'set-url', '--push', 'origin', new_git_url])  # nosec
         subprocess.check_call(['git', 'remote', 'set-url', 'origin', new_git_url])  # nosec
         subprocess.call(['git', 'remote', '-v'])  # nosec
+
 
 def install_ssh_agent():
     """
