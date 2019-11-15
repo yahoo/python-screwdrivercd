@@ -64,7 +64,9 @@ def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
     known_hosts_filename = os.path.expanduser(known_hosts_filename)
     known_hosts_dirname = os.path.dirname(known_hosts_filename)
     os.makedirs(os.path.expanduser(known_hosts_dirname), exist_ok=True, mode=0o700)
-    github_hosts = subprocess.check_output(['ssh-keyscan', '-H', 'github.com'])  # nosec
+
+    keyscan_command = shutil.which('ssh-keyscan')
+    github_hosts = subprocess.check_output([keyscan_command, '-H', 'github.com'])  # nosec
     with open(known_hosts_filename, 'ab') as fh:
         os.fchmod(fh.fileno(), 0o0600)
         fh.write(b'\n')
@@ -151,7 +153,7 @@ def install_ssh_agent():
     with InTemporaryDirectory():
         with open('pyproject.toml', 'w') as fh:
             fh.write(ssh_agent_deploy_conf)
-        # subprocess.check_output([interpreter_bin_command(), '-m', 'screwdrivercd.installdeps'], env={'INSTALLDEPS_DEBUG': 'True'})
+        # subprocess.check_output([interpreter_bin_command(), '-m', 'screwdrivercd.installdeps'], env={'INSTALLDEPS_DEBUG': 'True'})  # nosec
         installdeps_main()
 
 def setup_ssh_main() -> int:  # pragma: no cover
