@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 
 from ..installdeps.cli import main as installdeps_main
 from ..utility.contextmanagers import InTemporaryDirectory
-
+from ..utility.environment import interpreter_bin_command
 
 logger = logging.getLogger(__name__)
 
@@ -151,7 +151,7 @@ def install_ssh_agent():
     with InTemporaryDirectory():
         with open('pyproject.toml', 'w') as fh:
             fh.write(ssh_agent_deploy_conf)
-        subprocess.check_output(['screwdrivercd_install_deps'], env={'INSTALLDEPS_DEBUG': 'True'})
+        subprocess.check_output([interpreter_bin_command(), '-m', 'screwdrivercd.installdeps'], env={'INSTALLDEPS_DEBUG': 'True'})
 
 
 def setup_ssh_main() -> int:  # pragma: no cover
