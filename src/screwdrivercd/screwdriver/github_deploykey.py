@@ -218,4 +218,7 @@ def add_deploykey_main() -> int:  # pragma: no cover
     print('\n# Updating the git remote to use the ssh url')
     update_git_remote()
 
+    print('\n# Adding github.com to known_hosts')
+    add_github_to_known_hosts()
+
     return 0
