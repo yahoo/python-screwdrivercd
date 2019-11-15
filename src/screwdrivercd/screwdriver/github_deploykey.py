@@ -116,7 +116,7 @@ def load_github_key(git_key):
         key_filename = os.path.join(tempdir, 'git_key')
         m = sha256()
         m.update(git_key)
-        m.hexdigest()
+        print(f'Private key hash: {m.hexdigest()}')
         with open(key_filename, 'wb') as fh:
             os.fchmod(fh.fileno(), 0o0600)
             fh.write(git_key)
