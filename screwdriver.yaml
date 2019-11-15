@@ -53,6 +53,7 @@ jobs:
                 screwdrivercd_ssh_setup
                 eval "$(ssh-agent -s)"
                 screwdrivercd_github_deploykey
+                git remote show origin
         requires: [~pr]
 
     generate_version:
