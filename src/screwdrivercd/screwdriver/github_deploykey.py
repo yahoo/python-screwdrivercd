@@ -112,8 +112,10 @@ def load_github_key(git_key):
     """
     # subprocess.run(['ssh-add'], input=git_key)  # nosec
     # return
+    git_key_passphrase = os.environ.get('GIT_KEY_PASSPHRASE', '')
     with tempfile.TemporaryDirectory() as tempdir:
-        key_filename = os.path.join(tempdir, 'git_key')
+        os.makedirs(os.path.join(tempdir, '.ssh'), mode=0o0700)
+        key_filename = os.path.join(tempdir, '.ssh/git_key')
         m = sha256()
         m.update(git_key)
         print(f'Private key hash: {m.hexdigest()}')
@@ -122,7 +124,10 @@ def load_github_key(git_key):
             fh.write(git_key)
         with open(f'{key_filename}.pub', 'wb') as fh:
             os.fchmod(fh.fileno(), 0o0644)
-            subprocess.check_call(['ssh-keygen', '-vv', '-y', '-f', key_filename, '-P', ''], stdout=fh, timeout=15)  # nosec
+            command = ['ssh-keygen', '-vv', '-y', '-f', key_filename]
+            if git_key_passphrase:
+                command += ['-P', git_key_passphrase]
+            subprocess.check_call(command, stdout=fh, timeout=15)  # nosec
         subprocess.check_call(['ssh-add', key_filename], stdin=subprocess.DEVNULL, timeout=15)  # nosec
 
 
