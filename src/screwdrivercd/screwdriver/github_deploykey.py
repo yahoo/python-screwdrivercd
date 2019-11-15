@@ -5,6 +5,7 @@ Screwdriver github deploy key setup utility
 """
 import base64
 import logging
+logging.basicConfig(level=logging.DEBUG)
 import os
 import shutil
 import subprocess  # nosec

@@ -4,14 +4,3 @@
 # Minimum requirements for the build system to execute.
 requires = ["setuptools>40.0.0", "wheel"]  # PEP 508 specifications.
 
-[tool.sdv4_installdeps]
-    install = ['apk', 'apt-get', 'yum']
-
-    [tool.sdv4_installdeps.apk]
-        deps = ['openssh-client']
-
-    [tool.sdv4_installdeps.apt-get]
-        deps = ['openssh-client']
-
-    [tool.sdv4_installdeps.yum]
-        deps = ['openssh-clients']
