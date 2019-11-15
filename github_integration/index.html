@@ -38,7 +38,7 @@
     
     
       
-        <title>Contributing - Python Screwdriver Helpers</title>
+        <title>Github - Python Screwdriver Helpers</title>
       
     
     
@@ -79,7 +79,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#how-to-contribute" tabindex="1" class="md-skip">
+      <a href="#github-integration-utilites" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -105,7 +105,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Contributing
+                Github
               
             </span>
           
@@ -226,10 +226,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
     <label class="md-nav__link" for="nav-2">
       Integration Utilities
@@ -269,11 +271,69 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../github_integration/" title="Github" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Github
+      </label>
+    
+    <a href="./" title="Github" class="md-nav__link md-nav__link--active">
       Github
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ssh-initialization" class="md-nav__link">
+    SSH initialization
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploykey-setup" class="md-nav__link">
+    Deploykey setup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secrets" class="md-nav__link">
+    Secrets
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -310,12 +370,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
     
     <label class="md-nav__link" for="nav-3">
       Developer Information
@@ -343,96 +401,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Contributing
-      </label>
-    
-    <a href="./" title="Contributing" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../Contributing/" title="Contributing" class="md-nav__link">
       Contributing
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#code-of-conduct" class="md-nav__link">
-    Code of Conduct
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-ask-a-question" class="md-nav__link">
-    How to Ask a Question
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-contribute_1" class="md-nav__link">
-    How To Contribute
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#report-a-bug-or-request-a-feature" class="md-nav__link">
-    Report a Bug or Request a Feature
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contribute-code" class="md-nav__link">
-    Contribute Code
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#creating-a-pull-request" class="md-nav__link">
-    Creating a Pull Request
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -462,51 +435,24 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#code-of-conduct" class="md-nav__link">
-    Code of Conduct
+  <a href="#ssh-initialization" class="md-nav__link">
+    SSH initialization
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to-ask-a-question" class="md-nav__link">
-    How to Ask a Question
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-contribute_1" class="md-nav__link">
-    How To Contribute
+  <a href="#deploykey-setup" class="md-nav__link">
+    Deploykey setup
   </a>
   
     <nav class="md-nav">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#report-a-bug-or-request-a-feature" class="md-nav__link">
-    Report a Bug or Request a Feature
+  <a href="#secrets" class="md-nav__link">
+    Secrets
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contribute-code" class="md-nav__link">
-    Contribute Code
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#creating-a-pull-request" class="md-nav__link">
-    Creating a Pull Request
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -531,25 +477,33 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/yahoo/python-screwdrivercd/edit/master/docs/Contributing.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/yahoo/python-screwdrivercd/edit/master/docs/github_integration.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="how-to-contribute">How to contribute<a class="headerlink" href="#how-to-contribute" title="Permanent link">&para;</a></h1>
-<p>First, thanks for taking the time to contribute to our project! The following information provides a guide for making contributions.</p>
-<h2 id="code-of-conduct">Code of Conduct<a class="headerlink" href="#code-of-conduct" title="Permanent link">&para;</a></h2>
-<p>By participating in this project, you agree to abide by the <a href="../Code-of-Conduct/">Verizon Media Code of Conduct</a>. Everyone is welcome to submit a pull request or open an issue to improve the documentation, add improvements, or report bugs.</p>
-<h2 id="how-to-ask-a-question">How to Ask a Question<a class="headerlink" href="#how-to-ask-a-question" title="Permanent link">&para;</a></h2>
-<p>If you simply have a question that needs an answer, <a href="https://help.github.com/articles/creating-an-issue/">create an issue</a>, and label it as a question.</p>
-<h2 id="how-to-contribute_1">How To Contribute<a class="headerlink" href="#how-to-contribute_1" title="Permanent link">&para;</a></h2>
-<h3 id="report-a-bug-or-request-a-feature">Report a Bug or Request a Feature<a class="headerlink" href="#report-a-bug-or-request-a-feature" title="Permanent link">&para;</a></h3>
-<p>If you encounter any bugs while using this software, or want to request a new feature or enhancement, feel free to <a href="https://help.github.com/articles/creating-an-issue/">create an issue</a> to report it, make sure you add a label to indicate what type of issue it is.</p>
-<h3 id="contribute-code">Contribute Code<a class="headerlink" href="#contribute-code" title="Permanent link">&para;</a></h3>
-<p>Pull requests are welcome for bug fixes. </p>
-<p>If you want to implement something new, please <a href="#report-a-bug-or-request-a-feature">request a feature first</a> so we can discuss it.</p>
-<h4 id="creating-a-pull-request">Creating a Pull Request<a class="headerlink" href="#creating-a-pull-request" title="Permanent link">&para;</a></h4>
-<p>Before you submit any code, we need you to agree to our <a href="https://yahoocla.herokuapp.com/">Contributor License Agreement</a>; this ensures we can continue to protect your contributions under an open source license well into the future.</p>
-<p>Please follow <a href="https://github.com/trein/dev-best-practices/wiki/Git-Commit-Best-Practices">best practices</a> for creating git commits.</p>
-<p>When your code is ready to be submitted, you can <a href="https://help.github.com/articles/creating-a-pull-request/">submit a pull request</a> to begin the code review process.</p>
+                <h1 id="github-integration-utilites">Github integration utilites<a class="headerlink" href="#github-integration-utilites" title="Permanent link">&para;</a></h1>
+<h2 id="ssh-initialization">SSH initialization<a class="headerlink" href="#ssh-initialization" title="Permanent link">&para;</a></h2>
+<p>The <code class="codehilite"><span class="n">screwdrivercd_ssh_setup</span></code> utility initializes the ssh configuration sufficiently to start 
+<a href="https://www.ssh.com/ssh/agent">ssh-agent</a>.</p>
+<p>This utility does not have any settings.</p>
+<h2 id="deploykey-setup">Deploykey setup<a class="headerlink" href="#deploykey-setup" title="Permanent link">&para;</a></h2>
+<p>The <code class="codehilite"><span class="n">screwdrivercd_github_deploykey</span></code> setup utility will populate the github deploy key stored in
+the <code class="codehilite"><span class="n">GIT_DEPLOY_KEY</span></code> secret into the <a href="https://www.ssh.com/ssh/agent">ssh-agent</a></p>
+<p>This utility requires that <a href="https://www.ssh.com/ssh/agent">ssh-agent</a> is already running.</p>
+<h3 id="secrets">Secrets<a class="headerlink" href="#secrets" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Secret</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GIT_DEPLOY_KEY</td>
+<td>Base64 encoded github deployment private key</td>
+</tr>
+</tbody>
+</table>
                 
                   
                 
@@ -570,7 +524,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../Code-of-Conduct/" title="Code of Conduct" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../documentation/" title="Documentation" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -579,11 +533,25 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Code of Conduct
+                Documentation
               </span>
             </div>
           </a>
         
+        
+          <a href="../Versioning/" title="Package Versioning" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Package Versioning
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
         
       </nav>
     </div>
