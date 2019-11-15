@@ -3,9 +3,12 @@
 """
 Screwdriver github deploy key setup utility
 """
+# The logging_basicConfig has to be run before other imports because some modules we use log output on import
+# pylint: disable=wrong-import-order, wrong-import-position
+from ..screwdriver.environment import logging_basicConfig, update_job_status
+logging_basicConfig(check_prefix='GIT_DEPLOYKEY')
 import base64
 import logging
-logging.basicConfig(level=logging.DEBUG)
 import os
 import shutil
 import subprocess  # nosec
@@ -91,7 +94,7 @@ def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') 
     output = subprocess.check_output(['ssh-keygen', '-l', '-f', known_hosts_filename])  # nosec
     for desc, fingerprint in fingerprints.items():
         if fingerprint not in output:
-            logger.debug(f'Known github fingerprint {desc} is missing from known-hossts', file=sys.stderr)
+            logger.debug(f'Known github fingerprint {desc} is missing from known-hossts')
             continue
         match = True
     return match
