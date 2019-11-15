@@ -31,6 +31,7 @@ nav:
     - Integration Utilities:
         - Build Dependency Installer: Install_Dependencies.md
         - Documentation: documentation.md
+        - Github: github_integration.md
         - Package Versioning: Versioning.md
         - Validation Wrappers: Validation_Helpers.md
     - Developer Information:

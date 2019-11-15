@@ -27,4 +27,3 @@ Install this package using the Python package installer
 ```console
 $ pip install screwdrivercd
 ```
-

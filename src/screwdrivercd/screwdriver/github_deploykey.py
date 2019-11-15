@@ -12,14 +12,12 @@ import logging
 import os
 import shutil
 import subprocess  # nosec
-import sys
 import tempfile
 from hashlib import sha256
 from urllib.parse import urlparse
 
 from ..installdeps.cli import main as installdeps_main
 from ..utility.contextmanagers import InTemporaryDirectory
-from ..utility.environment import interpreter_bin_command
 
 logger = logging.getLogger(__name__)
 
@@ -49,15 +47,15 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 
 
 def git_key_secret() -> bytes:
-    git_key = os.environ.get('GIT_KEY', None)
+    git_key = os.environ.get('GIT_DEPLOY_KEY', None)
     if not git_key:  # Nothing to do
         return b''
 
     git_key_decoded = base64.b64decode(git_key)
     if not git_key_decoded.startswith(b'-----BEGIN RSA PRIVATE KEY-----\n'):
-        print('Decoded GIT_KEY secret does not have a private key header')
+        print('Decoded GIT_DEPLOY_KEY secret does not have a private key header')
     if not git_key_decoded.endswith(b'-----END RSA PRIVATE KEY-----\n'):
-        print('Decoded GIT_KEY secret does not have a private key footer')
+        print('Decoded GIT_DEPLOY_KEY secret does not have a private key footer')
     return git_key_decoded
 
 
@@ -112,7 +110,7 @@ def load_github_key(git_key):
     """
     # subprocess.run(['ssh-add'], input=git_key)  # nosec
     # return
-    git_key_passphrase = os.environ.get('GIT_KEY_PASSPHRASE', '')
+    git_key_passphrase = os.environ.get('GIT_DEPLOY_KEY_PASSPHRASE', '')
     with tempfile.TemporaryDirectory() as tempdir:
         os.makedirs(os.path.join(tempdir, '.ssh'), mode=0o0700)
         key_filename = os.path.join(tempdir, '.ssh/git_key')
@@ -196,7 +194,7 @@ def setup_ssh_main() -> int:  # pragma: no cover
     """
     git_key = git_key_secret()
     if not git_key:  # Nothing to do
-        print('No GIT_KEY secret present')
+        print('No GIT_DEPLOY_KEY secret present')
         return 0
 
     logger.debug('Installing ssh clients if it is not installed')
