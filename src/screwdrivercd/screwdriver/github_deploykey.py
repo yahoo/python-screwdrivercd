@@ -143,6 +143,7 @@ def update_git_remote():
         break
     if new_git_url:
         subprocess.check_call(['git', 'remote', 'set-url', '--push', 'origin', new_git_url])  # nosec
+        subprocess.check_call(['git', 'remote', 'set-url', 'origin', new_git_url])  # nosec
         subprocess.call(['git', 'remote', '-v'])  # nosec
 
 def install_ssh_agent():
