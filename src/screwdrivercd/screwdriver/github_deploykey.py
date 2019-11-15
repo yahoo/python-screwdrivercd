@@ -181,10 +181,10 @@ def setup_ssh_main() -> int:  # pragma: no cover
     logger.debug('Installing ssh clients if it is not installed')
     install_ssh_agent()
 
-    logger.debug('Adding github.com to known_hosts')
+    print('Adding github.com to known_hosts')
     add_github_to_known_hosts()
 
-    logger.debug('Validating known good hosts')
+    print('Validating known good hosts')
     validate_known_good_hosts()
 
     return 0
@@ -205,13 +205,13 @@ def add_deploykey_main() -> int:  # pragma: no cover
     if not git_key:  # Nothing to do
         return 0
 
-    logger.debug('Loading the github key into the ssh-agent')
+    print('Loading the github key into the ssh-agent')
     load_github_key(git_key)
 
-    logger.debug('Setting the git user.email and user.name config settings')
+    print('Setting the git user.email and user.name config settings')
     set_git_mail_config()
 
-    logger.debug('Updating the git remote to use the ssh url')
+    print('Updating the git remote to use the ssh url')
     update_git_remote()
 
     return 0
