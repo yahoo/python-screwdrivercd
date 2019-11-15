@@ -53,7 +53,7 @@ def git_key_secret() -> bytes:
         return ''
 
     git_key_decoded = base64.b64decode(git_key)
-    return git_key_decoded.decode(errors='ignore')
+    return git_key_decoded
 
 
 def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
