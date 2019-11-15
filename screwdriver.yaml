@@ -53,8 +53,7 @@ jobs:
                 screwdrivercd_ssh_setup
                 eval "$(ssh-agent -s)"
                 screwdrivercd_github_deploykey
-                ls -lh ~/.ssh/known-hosts
-                cat ~/.ssh/known-hosts
+                cat ~/.ssh/known_hosts
         requires: [~pr]
 
     generate_version:
