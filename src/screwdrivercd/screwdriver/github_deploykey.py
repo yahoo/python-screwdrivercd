@@ -135,7 +135,7 @@ def update_git_remote():
             continue
         if remote_type != b'(push)':
             continue
-        if 'http' not in old_git_url:
+        if b'http' not in old_git_url:
             continue
         parsed_url = urlparse(old_git_url)
         new_git_url = f'git@{parsed_url.netloc}:{parsed_url.path.lstrip("/")}'
@@ -183,10 +183,10 @@ def setup_ssh_main() -> int:  # pragma: no cover
     logger.debug('Installing ssh clients if it is not installed')
     install_ssh_agent()
 
-    print('Adding github.com to known_hosts')
+    print('\n# Adding github.com to known_hosts')
     add_github_to_known_hosts()
 
-    print('Validating known good hosts')
+    print('\n# Validating known good hosts')
     validate_known_good_hosts()
 
     return 0
@@ -207,13 +207,13 @@ def add_deploykey_main() -> int:  # pragma: no cover
     if not git_key:  # Nothing to do
         return 0
 
-    print('Loading the github key into the ssh-agent')
+    print('\n# Loading the github key into the ssh-agent')
     load_github_key(git_key)
 
-    print('Setting the git user.email and user.name config settings')
+    print('\n# Setting the git user.email and user.name config settings')
     set_git_mail_config()
 
-    print('Updating the git remote to use the ssh url')
+    print('\n# Updating the git remote to use the ssh url')
     update_git_remote()
 
     return 0
