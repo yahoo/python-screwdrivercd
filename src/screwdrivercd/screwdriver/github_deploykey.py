@@ -78,11 +78,11 @@ def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
     keyscan_command = shutil.which('ssh-keyscan')
     if not keyscan_command:
         keyscan_command = '/usr/bin/ssh-keyscan'
-    github_hosts = subprocess.check_output([keyscan_command, 'github.com'])  # nosec
+
     with open(known_hosts_filename, 'ab') as fh:
         os.fchmod(fh.fileno(), 0o0600)
         fh.write(b'\n')
-        fh.write(github_hosts)
+        subprocess.check_call([keyscan_command, 'github.com'], stdout=fh)  # nosec
 
 
 def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') -> bool:
@@ -234,5 +234,7 @@ def add_deploykey_main() -> int:  # pragma: no cover
 
     print('\n# Updating the git remote to use the ssh url')
     update_git_remote()
+
+    add_github_to_known_hosts('/root/.ssh/known_hosts')
 
     return 0
