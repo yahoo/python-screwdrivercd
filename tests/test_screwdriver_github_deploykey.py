@@ -15,7 +15,7 @@ class ScrewdriverGithubDeploykeyTestCase(ScrewdriverTestCase):
         super().setUp()
         self.known_hosts_filename = os.path.join(self.tempdir.name, '.ssh/known-hosts')
 
-    @unittest.skipIf(not os.path.exists( '/usr/bin/ssh-keyscan'))
+    @unittest.skipIf(not os.path.exists( '/usr/bin/ssh-keyscan'), 'The ssh-keyscan command is missing')
     def test__add_github_to_known_hosts(self):
         result = add_github_to_known_hosts(self.known_hosts_filename)
         self.assertTrue(os.path.exists(self.known_hosts_filename))

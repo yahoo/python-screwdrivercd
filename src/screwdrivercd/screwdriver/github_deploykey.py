@@ -143,7 +143,7 @@ def update_git_remote():
         break
     if new_git_url:
         subprocess.check_call(['git', 'remote', 'set-url', '--push', 'origin', new_git_url])  # nosec
-
+        subprocess.call(['git', 'remote', '-v'])  # nosec
 
 def install_ssh_agent():
     """
@@ -158,7 +158,7 @@ def install_ssh_agent():
     if not missing:
         return
 
-    print('Installing openssh client', flush=True)
+    print('# Installing openssh client', flush=True)
     with InTemporaryDirectory():
         with open('pyproject.toml', 'w') as fh:
             fh.write(ssh_agent_deploy_conf)
