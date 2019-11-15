@@ -20,7 +20,8 @@ The following settings are supported:
 
 This example runs the codestyle check.
 
-!!! note "screwdriver.yaml - With an enforcing type check"
+!!! example  "screwdriver.yaml - With an enforcing type check"
+
     ```yaml
     version: 4
     jobs:
@@ -43,7 +44,8 @@ not use package dependencies with security issues.
 
 This example runs the dependency check
 
-!!! note "screwdriver.yaml - With dependency check:
+!!! example "screwdriver.yaml - With dependency check
+
     ```yaml
     version: 4
     jobs:

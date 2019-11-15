@@ -44,7 +44,7 @@ jobs:
     validate_documentation:
         template: python/documentation
         environment:
-            DOCUMENTATION_PUBLISH: True
+            DOCUMENTATION_PUBLISH: False
         requires: [~pr]
 
     generate_version:
