@@ -44,7 +44,7 @@ jobs:
     validate_documentation:
         template: python/documentation
         environment:
-            DOCUMENTATION_PUBLISH: True
+            DOCUMENTATION_PUBLISH: False
         secrets:
             - GIT_KEY
         steps:
@@ -53,7 +53,6 @@ jobs:
                 screwdrivercd_ssh_setup
                 eval "$(ssh-agent -s)"
                 screwdrivercd_github_deploykey
-                git remote show origin
         requires: [~pr]
 
     generate_version:
@@ -80,11 +79,26 @@ jobs:
 
     publish_documentation:
         template: python/documentation
+        secrets:
+            - GIT_KEY
+        steps:
+            -   postinit_os: |
+                    $BASE_PYTHON -m pip install -U -q .[documentation]
+                    screwdrivercd_ssh_setup
+                    eval "$(ssh-agent -s)"
+                    screwdrivercd_github_deploykey
         requires: [verify_test_package]
 
     publish_pypi:
         template: python/package_python
         environment:
             PUBLISH: True
+        secrets:
+            - GIT_KEY
+        steps:
+            -   postinit_os: |
+                    $BASE_PYTHON -m pip install -U -q .[documentation]
+                    screwdrivercd_ssh_setup
+                    eval "$(ssh-agent -s)"
+                    screwdrivercd_github_deploykey
         requires: [verify_test_package]
-

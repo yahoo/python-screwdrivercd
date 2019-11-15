@@ -44,7 +44,7 @@ $ pip install screwdrivercd
 
 ## Usage
 
-This package contains a number of scripts which are documented in the [project documentation]().
+This package contains a number of scripts which are documented in the [project documentation](https://yahoo.github.io/python-screwdrivercd/)
 
 ## Contribute
 
