@@ -55,7 +55,7 @@ def git_key_secret() -> bytes:
     git_key_decoded = base64.b64decode(git_key)
     if not git_key_decoded.startswith(b'-----BEGIN OPENSSH PRIVATE KEY-----\n'):
         print('Decoded GIT_KEY secret does not have a private key header')
-    if not git_key_decoded.endsiwth(b'-----END OPENSSH PRIVATE KEY-----\n'):
+    if not git_key_decoded.endswith(b'-----END OPENSSH PRIVATE KEY-----\n'):
         print('Decoded GIT_KEY secret does not have a private key footer')
     return git_key_decoded
 
