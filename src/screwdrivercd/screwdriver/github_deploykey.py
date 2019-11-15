@@ -72,7 +72,7 @@ def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
     keyscan_command = shutil.which('ssh-keyscan')
     if not keyscan_command:
         keyscan_command = '/usr/bin/ssh-keyscan'
-    github_hosts = subprocess.check_output([keyscan_command, '-H', 'github.com'])  # nosec
+    github_hosts = subprocess.check_output([keyscan_command, 'github.com'])  # nosec
     with open(known_hosts_filename, 'ab') as fh:
         os.fchmod(fh.fileno(), 0o0600)
         fh.write(b'\n')
@@ -94,7 +94,7 @@ def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') 
     output = subprocess.check_output(['ssh-keygen', '-l', '-f', known_hosts_filename])  # nosec
     for desc, fingerprint in fingerprints.items():
         if fingerprint not in output:
-            logger.debug(f'Known github fingerprint {desc} is missing from known-hossts')
+            print(f'Known github fingerprint {desc} is missing from known-hossts')
             continue
         match = True
     return match
