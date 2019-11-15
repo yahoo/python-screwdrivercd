@@ -45,7 +45,7 @@ class YumInstaller(Installer):
         if install_command:
             self.install_repo_command[0] = install_command
 
-        if not os.path.exists(install_command[0]):
+        if not os.path.exists(self.install_repo_command[0]):
             LOG.debug(f'Tool to add repos, {self.install_repo_command[0]} is missing, trying to install it')
             subprocess.check_call([self.install_command[0], 'install', '-y', 'yum-utils'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # nosec - All subprocess calls use full path
             install_command = shutil.which(self.install_repo_command[0])
