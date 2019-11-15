@@ -47,7 +47,7 @@ jobs:
             DOCUMENTATION_PUBLISH: True
         steps:
             - postinit_os: |
-                $BASE_PYTHON -m pip install -U .
+                pip3 install -U -q .
                 screwdrivercd_ssh_setup
                 eval "$(ssh-agent -s)"
                 screwdrivercd_github_deploykey
