@@ -160,6 +160,7 @@ def setup_ssh_main() -> int:  # pragma: no cover
     """
     git_key = git_key_secret()
     if not git_key:  # Nothing to do
+        print('No GIT_KEY secret present')
         return 0
 
     logger.debug('Installing ssh clients if it is not installed')
