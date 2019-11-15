@@ -104,7 +104,7 @@ def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') 
     return match
 
 
-def load_github_key(git_key):
+def load_github_key(git_key):  # pragma: no cover
     """
     Load the github key into the ssh-agent
     """
@@ -136,7 +136,7 @@ def set_git_mail_config():
     subprocess.check_call(['git', 'config', '--global', 'user.name', "sd-buildbot"])  # nosec
 
 
-def update_git_remote():
+def update_git_remote():  # pragma: no cover
     """
     Update the git remote address to use the git protocol via ssh
     """
@@ -161,7 +161,7 @@ def update_git_remote():
         subprocess.call(['git', 'remote', '-v'])  # nosec
 
 
-def install_ssh_agent():
+def install_ssh_agent():  # pragma: no cover
     """
     Install ssh-agent if it is missing
     """
@@ -178,7 +178,6 @@ def install_ssh_agent():
     with InTemporaryDirectory():
         with open('pyproject.toml', 'w') as fh:
             fh.write(ssh_agent_deploy_conf)
-        # subprocess.check_output([interpreter_bin_command(), '-m', 'screwdrivercd.installdeps'], env={'INSTALLDEPS_DEBUG': 'True'})  # nosec
         installdeps_main()
 
 
