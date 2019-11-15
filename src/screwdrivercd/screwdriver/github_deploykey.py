@@ -104,7 +104,8 @@ def load_github_key(git_key):
     """
     Load the github key into the ssh-agent
     """
-    subprocess.run(['ssh-add'], input=git_key)
+    subprocess.run(['ssh-add'], input=git_key)  # nosec
+    return
     with tempfile.TemporaryDirectory() as tempdir:
         key_filename = os.path.join(tempdir, 'git_key')
         with open(key_filename, 'w') as fh:
