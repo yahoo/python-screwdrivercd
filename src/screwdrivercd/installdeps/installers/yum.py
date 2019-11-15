@@ -25,9 +25,7 @@ class YumInstaller(Installer):
     install_command_path: List[str] = ['/bin', '/usr/bin']
     use_system_path: bool = False
     supports_repositories: bool = True
-    default_repos: Optional[Dict[str, str]] = dict(
-        verizon_python_rpms='https://edge.artifactory.yahoo.com:4443/artifactory/python_rpms/python_rpms.repo;distro_version<"8.0"'
-    )
+    default_repos: Optional[Dict[str, str]] = dict()
     _repo_tool_install_failed = False
 
     def install_repo_tool(self):  # pragma: no cover - Function is OS specific
@@ -50,7 +48,7 @@ class YumInstaller(Installer):
             subprocess.check_call([self.install_command[0], 'install', '-y', 'yum-utils'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # nosec - All subprocess calls use full path
             install_command = shutil.which(self.install_repo_command[0])
             if install_command:
-                self.install_command[0] = install_command
+                self.install_repo_command[0] = install_command
             else:
                 self._repo_tool_install_failed = True
                 raise FileNotFoundError('Could not find the {self.install_repo_command[0]} utility')
