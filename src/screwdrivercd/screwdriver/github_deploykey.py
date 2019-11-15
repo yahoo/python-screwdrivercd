@@ -25,22 +25,21 @@ fingerprints = {
 }
 
 
-ssh_agent_deploy_conf = """
-[build-system]
+ssh_agent_deploy_conf = """[build-system]
 # Minimum requirements for the build system to execute.
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 
 [tool.sdv4_installdeps]
     install = ['apk', 'apt-get', 'yum']
 
-[tool.sdv4_installdeps.apk]
-    deps = ['openssh-client']
-
-[tool.sdv4_installdeps.apt-get]
-    deps = ['openssh-client']
-
-[tool.sdv4_installdeps.yum]
-    deps = ['openssh-clients']
+    [tool.sdv4_installdeps.apk]
+        deps = ['openssh-client']
+    
+    [tool.sdv4_installdeps.apt-get]
+        deps = ['openssh-client']
+    
+    [tool.sdv4_installdeps.yum]
+        deps = ['openssh-clients']
 """
 
 
@@ -152,7 +151,7 @@ def install_ssh_agent():
     with InTemporaryDirectory():
         with open('pyproject.toml', 'w') as fh:
             fh.write(ssh_agent_deploy_conf)
-            subprocess.check_output(['screwdrivercd_install_deps'])
+        subprocess.check_output(['screwdrivercd_install_deps'])
 
 
 def setup_ssh_main() -> int:  # pragma: no cover
