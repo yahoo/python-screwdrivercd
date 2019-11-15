@@ -31,9 +31,6 @@ def main():
     int, optional:
         returncode - Returncode from the publication operation, 0=success
     """
-    if env_bool('DOCUMENTATION_DEBUG', False):
-        logging.basicConfig(level=logging.DEBUG)
-
     documentation_formats = os.environ.get('DOCUMENTATION_FORMATS', None)
     if documentation_formats:
         documentation_formats = [_.strip() for _ in documentation_formats.split(',')]
