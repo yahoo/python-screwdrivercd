@@ -151,8 +151,8 @@ def install_ssh_agent():
     with InTemporaryDirectory():
         with open('pyproject.toml', 'w') as fh:
             fh.write(ssh_agent_deploy_conf)
-        subprocess.check_output([interpreter_bin_command(), '-m', 'screwdrivercd.installdeps'], env={'INSTALLDEPS_DEBUG': 'True'})
-
+        # subprocess.check_output([interpreter_bin_command(), '-m', 'screwdrivercd.installdeps'], env={'INSTALLDEPS_DEBUG': 'True'})
+        installdeps_main()
 
 def setup_ssh_main() -> int:  # pragma: no cover
     """

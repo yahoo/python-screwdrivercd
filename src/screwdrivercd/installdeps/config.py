@@ -86,6 +86,8 @@ class Configuration():
 
         sdv4_installdeps_configs = tool_configs.get('sdv4_installdeps', None)
         if not sdv4_installdeps_configs:
-            return
+            sdv4_installdeps_configs = tool_configs.get('screwdrivercd_installdeps', None)
+            if not sdv4_installdeps_configs:
+                return
 
         deep_update(self.configuration, sdv4_installdeps_configs)
