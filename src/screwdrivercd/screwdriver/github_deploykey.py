@@ -140,7 +140,8 @@ def install_ssh_agent():
 
 def setup_ssh_main() -> int:  # pragma: no cover
     """
-    Github deploykey ssh setup, setup ssh so that ssh-agent can be startedx.
+    Github deploykey ssh setup, setup ssh eiddcchttjfenrtetcgbiglgcgfureejrluufcbjbngj
+    so that ssh-agent can be startedx.
 
     Returns
     -------
@@ -151,14 +152,14 @@ def setup_ssh_main() -> int:  # pragma: no cover
     if not git_key:  # Nothing to do
         return 0
 
+    logger.debug('Installing ssh-agent if it is not installed')
+    install_ssh_agent()
+
     logger.debug('Adding github.com to known_hosts')
     add_github_to_known_hosts()
 
     logger.debug('Validating known good hosts')
     validate_known_good_hosts()
-
-    logger.debug('Installing ssh-agent if it is not installed')
-    install_ssh_agent()
 
     return 0
 
