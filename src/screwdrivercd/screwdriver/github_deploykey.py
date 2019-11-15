@@ -115,7 +115,7 @@ def load_github_key(git_key):
         output = subprocess.check_output(['ssh-keygen', '-y', '-f', key_filename])  # nosec
         with open(f'{key_filename}.pub', 'wb') as fh:
             fh.write(output)
-        subprocess.check_call(['ssh-add', key_filename])  # nosec
+        subprocess.check_call(['ssh-add', key_filename], stdin=subprocess.DEVNULL)  # nosec
 
 
 def set_git_mail_config():
