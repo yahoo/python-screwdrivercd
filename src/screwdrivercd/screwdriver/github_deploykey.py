@@ -14,6 +14,7 @@ import shutil
 import subprocess  # nosec
 import sys
 import tempfile
+from hashlib import sha256
 from urllib.parse import urlparse
 
 from ..installdeps.cli import main as installdeps_main
@@ -113,10 +114,13 @@ def load_github_key(git_key):
     # return
     with tempfile.TemporaryDirectory() as tempdir:
         key_filename = os.path.join(tempdir, 'git_key')
+        m = sha256()
+        m.update(git_key)
+        m.hexdigest()
         with open(key_filename, 'wb') as fh:
             os.fchmod(fh.fileno(), 0o0600)
             fh.write(git_key)
-        os.system(f'head -2 {key_filename}')
+        os.system(f'tail -2 {key_filename}')
         output = subprocess.check_output(['ssh-keygen', '-y', '-f', key_filename], stdin=subprocess.DEVNULL, timeout=15)  # nosec
         with open(f'{key_filename}.pub', 'wb') as fh:
             os.fchmod(fh.fileno(), 0o0644)
