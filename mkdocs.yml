@@ -48,6 +48,8 @@ theme:
         - yaml
         - toml
         - python
+        - console
+        - bash
 
 remote_branch: gh-pages
 remote_name: origin

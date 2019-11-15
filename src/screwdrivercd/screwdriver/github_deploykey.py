@@ -145,7 +145,10 @@ def update_git_remote():  # pragma: no cover
     remote_output = remote_output.decode(errors='ignore')
     for line in remote_output.split('\n'):
         line = line.strip()
-        remote, old_git_url, remote_type = line.split()
+        splitline = line.split()
+        if len(splitline) != 3:
+            continue
+        remote, old_git_url, remote_type = splitline
         if remote != 'origin':
             continue
         if remote_type != '(push)':
