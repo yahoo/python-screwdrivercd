@@ -67,7 +67,8 @@ def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
     """
     known_hosts_filename = os.path.expanduser(known_hosts_filename)
     known_hosts_dirname = os.path.dirname(known_hosts_filename)
-    os.makedirs(os.path.expanduser(known_hosts_dirname), exist_ok=True, mode=0o700)
+    os.makedirs(os.path.expanduser(known_hosts_dirname), exist_ok=True, mode=0o0700)
+    os.chmod(os.path.dirname(known_hosts_filename), 0o0700)
 
     keyscan_command = shutil.which('ssh-keyscan')
     if not keyscan_command:
