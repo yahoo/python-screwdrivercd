@@ -14,7 +14,7 @@ The following settings are supported:
 | ------------------------ | --------------------------- | --------------------------------------------------- |
 | CODESTYLE_ARGS           |                             | Additional codestyle command arguments              |
 | PACKAGE_DIRECTORY        | .                           | Directory containing the package source             |
-| STYLE_CHECK_DEBUG        | False                       | Enable debug logging                                |
+| STYLE_CHECK_DEBUG        | False                       | Enable style check debug logging                    |
 
 ### Example
 
