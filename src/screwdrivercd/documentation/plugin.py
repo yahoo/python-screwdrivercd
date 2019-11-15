@@ -33,6 +33,7 @@ class DocumentationPlugin:
     build_dest: str = ''
     publish_branch: str = 'gh-pages'
     publish_log_filename: str = ''
+    git_command_timeout: int = 30
     _clone_dir = ''
     _clone_url = ''
 
@@ -84,7 +85,7 @@ class DocumentationPlugin:
         """
         return False
 
-    def _run_command(self, command: List, log_filename: str):
+    def _run_command(self, command: List, log_filename: str, timeout: int = 0):
         """
 
         Parameters
@@ -105,9 +106,14 @@ class DocumentationPlugin:
         error_message = None
         with open(log_filename, 'ab') as log_file:
             try:
-                subprocess.check_call(command, stdout=log_file, stderr=subprocess.STDOUT)  # nosec - All subprocess calls use full path
-            except (FileNotFoundError, subprocess.CalledProcessError) as error:
+                if timeout:
+                    subprocess.check_call(command, stdout=log_file, stderr=subprocess.STDOUT, timeout=timeout)  # nosec - All subprocess calls use full path
+                else:
+                    subprocess.check_call(command, stdout=log_file, stderr=subprocess.STDOUT)  # nosec - All subprocess calls use full path
+            except (FileNotFoundError, subprocess.CalledProcessError,) as error:
                 error_message = f'Command {" ".join(self.build_command)!r} failed {error}'
+            except subprocess.TimeoutExpired as error:
+                error_message = f'Command {" ".join(self.build_command)!r} timeout after {timeout} seconds {error}'
         if error_message:
             raise DocBuildError(error_message)
 
@@ -244,7 +250,7 @@ class DocumentationPlugin:
         Push the current repository
         """
         self._log_message(f'\n- Pushing the documentation to the {self.publish_branch} branch', self.publish_log_filename)
-        self._run_command(['git', 'push', 'origin', self.publish_branch], log_filename=self.publish_log_filename)
+        self._run_command(['git', 'push', 'origin', self.publish_branch], log_filename=self.publish_log_filename, timeout=self.git_command_timeout)
 
     def disable_jekyll(self):
         """
@@ -301,6 +307,10 @@ class DocumentationPlugin:
 
         # Build the documentation
         self.build_documentation()
+
+        # Make sure there is a clone url before trying to publish
+        if not self.clone_url:
+            raise DocPublishError(f'Unable to determine a valid git clone url to publish to')
 
         # Checkout the documentation branch into a temporary directory, add the docs and commit them
         with tempfile.TemporaryDirectory() as tempdir:

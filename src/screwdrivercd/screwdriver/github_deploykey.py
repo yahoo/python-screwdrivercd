@@ -12,14 +12,12 @@ import logging
 import os
 import shutil
 import subprocess  # nosec
-import sys
 import tempfile
 from hashlib import sha256
 from urllib.parse import urlparse
 
 from ..installdeps.cli import main as installdeps_main
 from ..utility.contextmanagers import InTemporaryDirectory
-from ..utility.environment import interpreter_bin_command
 
 logger = logging.getLogger(__name__)
 
@@ -49,15 +47,15 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 
 
 def git_key_secret() -> bytes:
-    git_key = os.environ.get('GIT_KEY', None)
+    git_key = os.environ.get('GIT_DEPLOY_KEY', None)
     if not git_key:  # Nothing to do
         return b''
 
     git_key_decoded = base64.b64decode(git_key)
-    if not git_key_decoded.startswith(b'-----BEGIN OPENSSH PRIVATE KEY-----\n'):
-        print('Decoded GIT_KEY secret does not have a private key header')
-    if not git_key_decoded.endswith(b'-----END OPENSSH PRIVATE KEY-----\n'):
-        print('Decoded GIT_KEY secret does not have a private key footer')
+    if not git_key_decoded.startswith(b'-----BEGIN RSA PRIVATE KEY-----\n'):
+        print('Decoded GIT_DEPLOY_KEY secret does not have a private key header')
+    if not git_key_decoded.endswith(b'-----END RSA PRIVATE KEY-----\n'):
+        print('Decoded GIT_DEPLOY_KEY secret does not have a private key footer')
     return git_key_decoded
 
 
@@ -78,11 +76,11 @@ def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
     keyscan_command = shutil.which('ssh-keyscan')
     if not keyscan_command:
         keyscan_command = '/usr/bin/ssh-keyscan'
-    github_hosts = subprocess.check_output([keyscan_command, 'github.com'])  # nosec
+
     with open(known_hosts_filename, 'ab') as fh:
         os.fchmod(fh.fileno(), 0o0600)
         fh.write(b'\n')
-        fh.write(github_hosts)
+        subprocess.check_call([keyscan_command, 'github.com'], stdout=fh)  # nosec
 
 
 def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') -> bool:
@@ -106,25 +104,27 @@ def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') 
     return match
 
 
-def load_github_key(git_key):
+def load_github_key(git_key):  # pragma: no cover
     """
     Load the github key into the ssh-agent
     """
     # subprocess.run(['ssh-add'], input=git_key)  # nosec
     # return
+    git_key_passphrase = os.environ.get('GIT_DEPLOY_KEY_PASSPHRASE', '')
     with tempfile.TemporaryDirectory() as tempdir:
-        key_filename = os.path.join(tempdir, 'git_key')
+        os.makedirs(os.path.join(tempdir, '.ssh'), mode=0o0700)
+        key_filename = os.path.join(tempdir, '.ssh/git_key')
         m = sha256()
         m.update(git_key)
         print(f'Private key hash: {m.hexdigest()}')
         with open(key_filename, 'wb') as fh:
             os.fchmod(fh.fileno(), 0o0600)
             fh.write(git_key)
-        os.system(f'tail -2 {key_filename}')
-        output = subprocess.check_output(['ssh-keygen', '-y', '-f', key_filename], stdin=subprocess.DEVNULL, timeout=15)  # nosec
         with open(f'{key_filename}.pub', 'wb') as fh:
             os.fchmod(fh.fileno(), 0o0644)
-            fh.write(output)
+            command = ['ssh-keygen', '-vv', '-y', '-f', key_filename]
+            command += ['-P', git_key_passphrase]
+            subprocess.check_call(command, stdout=fh, timeout=15)  # nosec
         subprocess.check_call(['ssh-add', key_filename], stdin=subprocess.DEVNULL, timeout=15)  # nosec
 
 
@@ -136,7 +136,7 @@ def set_git_mail_config():
     subprocess.check_call(['git', 'config', '--global', 'user.name', "sd-buildbot"])  # nosec
 
 
-def update_git_remote():
+def update_git_remote():  # pragma: no cover
     """
     Update the git remote address to use the git protocol via ssh
     """
@@ -161,7 +161,7 @@ def update_git_remote():
         subprocess.call(['git', 'remote', '-v'])  # nosec
 
 
-def install_ssh_agent():
+def install_ssh_agent():  # pragma: no cover
     """
     Install ssh-agent if it is missing
     """
@@ -178,7 +178,6 @@ def install_ssh_agent():
     with InTemporaryDirectory():
         with open('pyproject.toml', 'w') as fh:
             fh.write(ssh_agent_deploy_conf)
-        # subprocess.check_output([interpreter_bin_command(), '-m', 'screwdrivercd.installdeps'], env={'INSTALLDEPS_DEBUG': 'True'})  # nosec
         installdeps_main()
 
 
@@ -194,7 +193,7 @@ def setup_ssh_main() -> int:  # pragma: no cover
     """
     git_key = git_key_secret()
     if not git_key:  # Nothing to do
-        print('No GIT_KEY secret present')
+        print('No GIT_DEPLOY_KEY secret present')
         return 0
 
     logger.debug('Installing ssh clients if it is not installed')
@@ -232,5 +231,7 @@ def add_deploykey_main() -> int:  # pragma: no cover
 
     print('\n# Updating the git remote to use the ssh url')
     update_git_remote()
+
+    add_github_to_known_hosts('/root/.ssh/known_hosts')
 
     return 0
