@@ -9,7 +9,7 @@ shared:
         PACKAGE_DIR: src
         PACKAGE_DIRECTORY: src
     steps:
-        - prepublish_documentation: $BASE_PYTHON -m pip install -U .[documentation]
+        - presetup_deploy_keys: $BASE_PYTHON -m pip install -U .[documentation]
 
 jobs:
     validate_codestyle:
