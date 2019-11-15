@@ -47,7 +47,7 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 """
 
 
-def git_key_secret() -> str:
+def git_key_secret() -> bytes:
     git_key = os.environ.get('GIT_KEY', None)
     if not git_key:  # Nothing to do
         return ''
@@ -104,6 +104,7 @@ def load_github_key(git_key):
     """
     Load the github key into the ssh-agent
     """
+    subprocess.run(['ssh-add'], input=git_key)
     with tempfile.TemporaryDirectory() as tempdir:
         key_filename = os.path.join(tempdir, 'git_key')
         with open(key_filename, 'w') as fh:
