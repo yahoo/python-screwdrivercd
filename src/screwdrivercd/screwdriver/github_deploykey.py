@@ -139,9 +139,16 @@ def install_ssh_agent():
     """
     Install ssh-agent if it is missing
     """
-    if shutil.which('ssh-agent'):  # Already installed
+    missing = False
+    for command in ['ssh-agent', 'ssh-keyscan']:
+        if not shutil.which(command):  # Already installed
+            missing = True
+            break
+
+    if not missing:
         return
 
+    print('Installing openssh client')
     with InTemporaryDirectory():
         with open('pyproject.toml', 'w') as fh:
             fh.write(ssh_agent_deploy_conf)
