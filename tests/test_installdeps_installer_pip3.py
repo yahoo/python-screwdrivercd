@@ -24,7 +24,7 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
     [tool.sdv4_installdeps.pip3]
         deps = [
             'serviceping',
-            'ansible;distro_version=="{distro.version()}"', 'pypirun;distro_version!="{distro.version()}"'
+            'safety;distro_version=="{distro.version()}"', 'pypirun;distro_version!="{distro.version()}"'
         ]
 '''
 
@@ -57,10 +57,10 @@ class TestPep3(unittest.TestCase):
         installer = PipInstaller(bin_dir=self.venv_bin_dir)
         result = installer.install_dependencies()
         os.system(f'ls -lR {os.path.join(self.tempdir.name, "venv")}/bin')
-        self.assertListEqual(result, ['serviceping', 'ansible'])
+        self.assertListEqual(result, ['serviceping', 'safety'])
         expected_command = os.path.join(self.tempdir.name, 'venv/bin/serviceping')
         self.assertTrue(os.path.exists(expected_command), f'Command not found {expected_command!r}')
-        expected_command = os.path.join(self.tempdir.name, 'venv/bin/ansible')
+        expected_command = os.path.join(self.tempdir.name, 'venv/bin/safety')
         self.assertTrue(os.path.exists(expected_command), f'Command not found {expected_command!r}')
         expected_command = os.path.join(self.tempdir.name, 'venv/bin/pypirun')
         self.assertFalse(os.path.exists(expected_command), f'Command found {expected_command!r}')

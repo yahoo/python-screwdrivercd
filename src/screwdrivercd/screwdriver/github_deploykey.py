@@ -1,0 +1,151 @@
+# Copyright 2019, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+"""
+Screwdriver github deploy key setup utility
+"""
+import logging
+import os
+import subprocess
+import sys
+import tempfile
+from urllib.parse import urlparse
+
+
+logger = logging.getLogger(__name__)
+
+
+fingerprints = {
+    'old github fingerprint': b'16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48',     # Old github fingerprint, For openssh < 7.4
+    'new github_fingerprint': b'SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8',  # New github fingerprint for openssh >= 7.4
+}
+
+
+def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
+    """
+    Add the github hosts to the known hosts
+
+    Parameters
+    ----------
+    known_hosts_filename: str, optional
+        The known_hosts file to update
+    """
+    known_hosts_filename = os.path.expanduser(known_hosts_filename)
+    known_hosts_dirname = os.path.dirname(known_hosts_filename)
+    os.makedirs(os.path.expanduser(known_hosts_dirname), exist_ok=True, mode=0o700)
+    github_hosts = subprocess.check_output(['ssh-keyscan', '-H', 'github.com'])
+    with open(known_hosts_filename, 'ab') as fh:
+        os.fchmod(fh.fileno(), 0o0600)
+        fh.write(b'\n')
+        fh.write(github_hosts)
+
+
+def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') -> bool:
+    """
+    Check the known hosts for the github hosts
+
+    Returns
+    -------
+    bool
+        True if at least one good host is present, False otherwise
+    """
+    known_hosts_filename = os.path.expanduser(known_hosts_filename)
+
+    match = False
+    output = subprocess.check_output(['ssh-keygen', '-l', '-f', known_hosts_filename])
+    for desc, fingerprint in fingerprints.items():
+        if fingerprint not in output:
+            logger.debug(f'Known github fingerprint {desc} is missing from known-hossts', file=sys.stderr)
+            continue
+        match = True
+    return match
+
+
+def load_github_key(git_key):
+    """
+    Load the github key into the ssh-agent
+    """
+    with tempfile.TemporaryDirectory() as tempdir:
+        key_filename = os.path.join(tempdir, 'git_key')
+        with open(key_filename, 'w') as fh:
+            os.fchmod(fh.fileno(), 0o0600)
+            fh.write(git_key)
+        subprocess.check_call(['ssh-add', key_filename])
+
+
+def set_git_mail_config():
+    """
+    Set the git mail config variables
+    """
+    subprocess.check_call(['git', 'config', '--global', 'user.email', "dev-null@screwdriver.cd"])
+    subprocess.check_call(['git', 'config', '--global', 'user.name', "sd-buildbot"])
+
+
+def update_git_remote():
+    """
+    Update the git remote address to use the git protocol via ssh
+    """
+    new_git_url = None
+    remote_output = subprocess.check_output(['git', 'remote', '-v'])
+    for line in remote_output.split(b'\n'):
+        line = line.strip()
+        remote, old_git_url, remote_type = line.split()
+        if remote != b'origin':
+            continue
+        if remote_type != b'(push)':
+            continue
+        if 'http' not in old_git_url:
+            continue
+        parsed_url = urlparse(old_git_url)
+        new_git_url = f'git@{parsed_url.netloc}:{parsed_url.path.lstrip("/")}'
+        break
+    if new_git_url:
+        subprocess.check_call(['git', 'remote', 'set-url', '--push', 'origin', new_git_url])
+
+
+def setup_ssh_main() -> int:  # pragma: no cover
+    """
+    Github deploykey ssh setup, setup ssh so that ssh-agent can be startedx.
+
+    Returns
+    -------
+    int:
+        The returncode to be returned from the utility
+    """
+    git_key = os.environ.get('GIT_KEY', None)
+    if not git_key:  # Nothing to do
+        return 0
+
+    logger.debug('Adding github.com to known_hosts')
+    add_github_to_known_hosts()
+
+    logger.debug('Validating known good hosts')
+    validate_known_good_hosts()
+
+    return 0
+
+
+def add_deploykey_main() -> int:  # pragma: no cover
+    """
+    Github deploykey setup utility, this utility adds the keys from the screwdriver secrets into the ssh-agent.
+
+    This tool requires that ssh-agent be running already.
+
+    Returns
+    -------
+    int:
+        The returncode to be returned from the utility
+    """
+    git_key = os.environ.get('GIT_KEY', None)
+    if not git_key:  # Nothing to do
+        return 0
+
+    logger.debug('Loading the github key into the ssh-agent')
+    load_github_key(git_key)
+
+    logger.debug('Setting the git user.email and user.name config settings')
+    set_git_mail_config()
+
+    logger.debug('Updating the git remote to use the ssh url')
+    update_git_remote()
+
+    return 0

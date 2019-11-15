@@ -44,7 +44,13 @@ jobs:
     validate_documentation:
         template: python/documentation
         environment:
-            DOCUMENTATION_PUBLISH: False
+            DOCUMENTATION_PUBLISH: True
+        steps:
+            - postinit_os: |
+                $BASE_PYTHON -m pip install -U .
+                screwdrivercd_ssh_setup
+                eval "$(ssh-agent -s)"
+                screwdrivercd_github_deploykey
         requires: [~pr]
 
     generate_version:
