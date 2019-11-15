@@ -302,6 +302,10 @@ class DocumentationPlugin:
         # Build the documentation
         self.build_documentation()
 
+        # Make sure there is a clone url before trying to publish
+        if not self.clone_url:
+            raise DocPublishError(f'Unable to determine a valid git clone url to publish to')
+
         # Checkout the documentation branch into a temporary directory, add the docs and commit them
         with tempfile.TemporaryDirectory() as tempdir:
             os.chdir(tempdir)
