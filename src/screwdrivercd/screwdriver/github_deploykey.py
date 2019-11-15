@@ -50,7 +50,7 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 def git_key_secret() -> bytes:
     git_key = os.environ.get('GIT_KEY', None)
     if not git_key:  # Nothing to do
-        return ''
+        return b''
 
     git_key_decoded = base64.b64decode(git_key)
     return git_key_decoded
@@ -128,14 +128,15 @@ def update_git_remote():
     """
     new_git_url = None
     remote_output = subprocess.check_output(['git', 'remote', '-v'])  # nosec
-    for line in remote_output.split(b'\n'):
+    remote_output = remote_output.decode(errors='ignore')
+    for line in remote_output.split('\n'):
         line = line.strip()
         remote, old_git_url, remote_type = line.split()
-        if remote != b'origin':
+        if remote != 'origin':
             continue
-        if remote_type != b'(push)':
+        if remote_type != '(push)':
             continue
-        if b'http' not in old_git_url:
+        if 'http' not in old_git_url:
             continue
         parsed_url = urlparse(old_git_url)
         new_git_url = f'git@{parsed_url.netloc}:{parsed_url.path.lstrip("/")}'
