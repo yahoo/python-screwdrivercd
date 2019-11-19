@@ -57,5 +57,5 @@ repo_name: GitHub
 repo_url: https://github.com/yahoo/python-screwdrivercd
 site_description: Python language Screwdriver V4 template scripts and integration
 site_name: Python Screwdriver Helpers
-strict: false
+strict: true
 use_directory_urls: true
