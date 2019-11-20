@@ -128,3 +128,7 @@ def main():
         Returncode from running the check
     """
     return validate_codestyle()
+
+
+if __name__ == '__main__':
+    main()

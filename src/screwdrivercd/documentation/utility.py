@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 def clean_directory(directory_name):
     """
-    Remove all files and folders from a directory that do not begin with.
+    Remove all files and folders from a directory that do not begin with '.'
 
     Parameters
     ----------

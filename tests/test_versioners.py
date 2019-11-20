@@ -7,11 +7,14 @@ import unittest
 from . import ScrewdriverTestCase
 
 from screwdrivercd.version.exceptions import VersionError
-from screwdrivercd.version.version_types import versioners, Version, VersionGitRevisionCount, VersionSDV4Build, VersionUTCDate
+from screwdrivercd.version.version_types import versioners, Version, VersionGitRevisionCount, VersionSDV4Build, VersionDateSDV4Build, VersionUTCDate
 
 
 class TestVersioners(ScrewdriverTestCase):
-    environ_keys = {'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'}
+    environ_keys = {
+        'BASE_PYTHON', 'PACKAGE_DIR', 'PACKAGE_DIRECTORY', 'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID',
+        'SD_PULL_REQUEST',
+    }
 
     def test__version__read_setup_version__no_version(self):
         version = Version(ignore_meta_version=True).read_setup_version()
@@ -50,7 +53,6 @@ class TestVersioners(ScrewdriverTestCase):
 
     def test__sdv4_SD_BUILD__unset(self):
         self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
-        os.system('printenv')
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
@@ -83,6 +85,36 @@ class TestVersioners(ScrewdriverTestCase):
         expected = '{now.year}.{now.month}{now.day:02}.{now.hour:02}{now.minute:02}{now.second:02}'.format(now=now)
         version = str(VersionUTCDate(ignore_meta_version=True, now=now))
         self.assertEqual(version, expected)
+
+    def test__sdv4_date(self):
+        os.environ['SD_BUILD'] = '9999'
+        now = datetime.datetime.utcnow()
+        expected = f'{now.year}.{now.month}.{os.environ["SD_BUILD"]}'
+        version = str(VersionDateSDV4Build(ignore_meta_version=True, now=now))
+        self.assertEqual(version, expected)
+
+    def test__sdv4_date__sd_build_id(self):
+        os.environ['SD_BUILD_ID'] = '9999'
+        now = datetime.datetime.utcnow()
+        expected = f'{now.year}.{now.month}.{os.environ["SD_BUILD_ID"]}'
+        version = str(VersionDateSDV4Build(ignore_meta_version=True, now=now))
+        self.assertEqual(version, expected)
+
+    def test__sdv4_date__pr(self):
+        os.environ['SD_BUILD'] = '9999'
+        os.environ['SD_PULL_REQUEST'] = '9'
+        now = datetime.datetime.utcnow()
+        expected = f'{now.year}.{now.month}.{os.environ["SD_BUILD"]}a{os.environ["SD_PULL_REQUEST"]}'
+        version = str(VersionDateSDV4Build(ignore_meta_version=True, now=now))
+        self.assertEqual(version, expected)
+
+    def test__sdv4_date__unset(self):
+        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
+        with self.assertRaises(VersionError):
+            env_keys = list(os.environ.keys())
+            env_keys.sort()
+            print(env_keys)
+            version = str(VersionDateSDV4Build(ignore_meta_version=True))
 
 
 if __name__ == '__main__':

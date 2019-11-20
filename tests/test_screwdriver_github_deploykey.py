@@ -1,15 +1,16 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for termsimport copy
+import base64
 import os
 import stat
 import unittest
 
-from screwdrivercd.screwdriver.github_deploykey import add_github_to_known_hosts, validate_known_good_hosts
+from screwdrivercd.screwdriver.github_deploykey import add_github_to_known_hosts, git_key_secret, validate_known_good_hosts
 from . import ScrewdriverTestCase
 
 
 class ScrewdriverGithubDeploykeyTestCase(ScrewdriverTestCase):
-    environ_keys = {'GIT_KEY', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'}
+    environ_keys = {'GIT_DEPLOY_KEY', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'}
 
     def setUp(self):
         super().setUp()
@@ -27,3 +28,9 @@ class ScrewdriverGithubDeploykeyTestCase(ScrewdriverTestCase):
         add_github_to_known_hosts(self.known_hosts_filename)
         result = validate_known_good_hosts(self.known_hosts_filename)
         self.assertTrue(result)
+
+    def test__git_key_secret(self):
+        test_key = b'-----BEGIN RSA PRIVATE KEY-----\nno real key here\n-----END RSA PRIVATE KEY-----\n'
+        os.environ['GIT_DEPLOY_KEY'] = base64.b64encode(test_key).decode(errors='ignore')
+        result = git_key_secret()
+        self.assertEqual(result, test_key)

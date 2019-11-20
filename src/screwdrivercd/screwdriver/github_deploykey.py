@@ -128,7 +128,7 @@ def load_github_key(git_key):  # pragma: no cover
         subprocess.check_call(['ssh-add', key_filename], stdin=subprocess.DEVNULL, timeout=15)  # nosec
 
 
-def set_git_mail_config():
+def set_git_mail_config():  # pragma: no cover
     """
     Set the git mail config variables
     """

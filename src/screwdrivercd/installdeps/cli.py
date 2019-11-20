@@ -21,7 +21,7 @@ LOG_NAME = 'platform_installdeps' if __name__ == '__main__' else __name__
 LOG = logging.getLogger(LOG_NAME)
 
 
-def main():
+def main():  # pragma: no cover
     """
     Run all installers from the command line
     """
