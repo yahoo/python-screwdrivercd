@@ -71,3 +71,7 @@ def main():
         Returncode from running the check
     """
     return validate_with_safety()
+
+
+if __name__ == '__main__':
+    main()

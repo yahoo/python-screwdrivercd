@@ -17,7 +17,7 @@ from ..utility import env_bool
 
 
 logger_name = __name__
-if logger_name == '__main__':
+if logger_name == '__main__':  # pragma: no cover
     logger_name = os.path.basename(__file__)
 logger = logging.getLogger(logger_name)
 
@@ -31,18 +31,18 @@ def main():
     int, optional:
         returncode - Returncode from the publication operation, 0=success
     """
-    documentation_formats = os.environ.get('DOCUMENTATION_FORMATS', None)
+    documentation_formats = os.environ.get('DOCUMENTATION_FORMATS', 'mkdocs,sphinx')
     if documentation_formats:
         documentation_formats = [_.strip() for _ in documentation_formats.split(',')]
 
-    if env_bool('DOCUMENTATION_PUBLISH', True):
+    if env_bool('DOCUMENTATION_PUBLISH', True):  # pragma: no cover
         try:
             publish_documentation(documentation_formats=documentation_formats)
         except (DocBuildError, DocPublishError):
-            sys.exit(1)
+            return 1
     else:
         try:
             build_documentation(documentation_formats=documentation_formats)
         except DocBuildError:
-            sys.exit(1)
+            return 1
     update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')

@@ -54,6 +54,35 @@ class CliTestCase(unittest.TestCase):
                 fh.write('# Title\n')
             cli.main()
 
+    def test__build__mkdocs__docsdir(self):
+        os.environ['DOCUMENTATION_FORMATS'] = 'mkdocs'
+        os.environ['DOCUMENTATION_PUBLISH'] = 'False'
+        sys.argv = ['sdv4_documentation']
+        with tempfile.TemporaryDirectory() as tempdir:
+            os.chdir(tempdir)
+            os.makedirs('docs')
+            with open('docs/mkdocs.yml', 'w') as fh:
+                fh.write('site_name: test\n')
+
+            with open('docs/index.md', 'w') as fh:
+                fh.write('# Title\n')
+            cli.main()
+
+    def test__build__mkdocs__fail(self):
+        os.environ['DOCUMENTATION_FORMATS'] = 'mkdocs'
+        os.environ['DOCUMENTATION_PUBLISH'] = 'False'
+        sys.argv = ['sdv4_documentation']
+        with tempfile.TemporaryDirectory() as tempdir:
+            os.chdir(tempdir)
+            os.makedirs('docs')
+            with open('mkdocs.yml', 'w') as fh:
+                fh.write('site_name: test\nstrict: true\nnav:\n    - foo: bar.md\n')
+
+            with open('docs/index.md', 'w') as fh:
+                fh.write('# Title\n[bad_link](bar.md)\n')
+            result = cli.main()
+            self.assertNotEqual(result, 0)
+
     def test__build__sphinx__none(self):
         os.environ['DOCUMENTATION_FORMATS'] = 'sphinx'
         os.environ['DOCUMENTATION_PUBLISH'] = 'False'

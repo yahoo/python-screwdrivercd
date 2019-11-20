@@ -1,15 +1,21 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
 import os
+import subprocess
+import sys
 import tempfile
-import unittest
 
+from screwdrivercd.screwdriver.environment import update_job_status
 from screwdrivercd.utility.contextmanagers import InTemporaryDirectory, revert_file, working_dir
 from screwdrivercd.utility.environment import env_bool, env_int, flush_terminals, interpreter_bin_command
+from screwdrivercd.utility.package import run_setup_command, setup_query, PackageMetadata
 from screwdrivercd.utility.screwdriver import create_artifact_directory
+from screwdrivercd.utility.run import run_and_log_output
+
+from . import ScrewdriverTestCase
 
 
-class TestPlatformTestTox(unittest.TestCase):
+class TestPlatformTestTox(ScrewdriverTestCase):
 
     def test_working_dir(self):
         """
@@ -121,3 +127,73 @@ class TestPlatformTestTox(unittest.TestCase):
     def test__environement__env_int__default__value(self):
         result = env_int('test__environement__env_int__default__value', 10)
         self.assertEqual(result, 10)
+
+    def test__create_artifact_directory_env(self):
+        os.environ['SD_ARTIFACTS_DIR'] = f'{self.tempdir.name}/test_artifacts'
+        self.assertFalse(os.path.exists(os.environ['SD_ARTIFACTS_DIR']))
+        create_artifact_directory()
+        self.assertTrue(os.path.exists(os.environ['SD_ARTIFACTS_DIR']))
+
+    def test__create_artifact_directory_passed(self):
+        self.assertFalse(os.path.exists(f'{self.tempdir.name}/test_artifacts'))
+        create_artifact_directory(f'{self.tempdir.name}/test_artifacts')
+        self.assertTrue(os.path.exists(f'{self.tempdir.name}/test_artifacts'))
+
+    def test__run__run_log_output__success(self):
+        with InTemporaryDirectory():
+            result = run_and_log_output(['echo', 'hello'], 'echo.log')
+            self.assertTrue(os.path.exists('echo.log'))
+            with open('echo.log') as fh:
+                log_output = fh.read()
+            self.assertEqual(log_output, 'hello\n')
+
+    def test__run__run_log_output__fail(self):
+        testscript_content = """import sys
+print('hello')
+sys.exit(1)
+"""
+        with InTemporaryDirectory():
+            with open('testscript.py', 'w') as fh:
+                fh.write(testscript_content)
+            with self.assertRaises(subprocess.CalledProcessError):
+                result = run_and_log_output([sys.executable, 'testscript.py'], 'test.log')
+            self.assertTrue(os.path.exists('test.log'))
+            with open('test.log') as fh:
+                test_output = fh.read()
+            self.assertEqual(test_output, 'hello\n')
+
+    def test__setup_query(self):
+        with InTemporaryDirectory():
+            with open('setup.py', 'w') as setup_py_handle:
+                setup_py_handle.write('from setuptools import setup\nsetup(name="foo")\n')
+            result = setup_query('--name')
+            self.assertEqual(result, 'foo')
+
+    def test__setup_query__cli_args(self):
+        with InTemporaryDirectory():
+            with open('setup.py', 'w') as setup_py_handle:
+                setup_py_handle.write('from setuptools import setup\nsetup(name="foo")\n')
+            result = setup_query('--name', cli_args='--verbose')
+            self.assertEqual(result, 'foo')
+
+    def test__PackageMetadata__archive(self):
+        with InTemporaryDirectory():
+            with open('setup.py', 'w') as setup_py_handle:
+                setup_py_handle.write('from setuptools import setup\nsetup(name="foo", version="0.0.0")\n')
+            setup_query('sdist')
+            expected_filename = f'dist/foo-0.0.0.tar.gz'
+            self.assertTrue(os.path.exists(expected_filename))
+            PackageMetadata(expected_filename)
+
+    def test__PackageMetadata__archive_zip(self):
+        with InTemporaryDirectory():
+            with open('setup.py', 'w') as setup_py_handle:
+                setup_py_handle.write('from setuptools import setup\nsetup(name="foo", version="0.0.0")\n')
+            setup_query('sdist', cli_args=['--formats', 'zip'])
+            expected_filename = f'dist/foo-0.0.0.zip'
+            self.assertTrue(os.path.exists(expected_filename))
+            PackageMetadata(expected_filename)
+
+    def test__update_job_status__invalid_status(self):
+        with self.assertRaises(KeyError):
+            update_job_status('BADDD', message='mojo')

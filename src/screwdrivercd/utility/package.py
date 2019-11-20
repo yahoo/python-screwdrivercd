@@ -27,7 +27,7 @@ def run_setup_command(command, cli_args=None, stderr_log=None) -> bytes:
     command = [sys.executable, 'setup.py', command]
     if cli_args:
         command += cli_args
-    if not stderr_log:
+    if not stderr_log:  # pragma: no cover
         stderr_log = f'{os.environ.get("SD_ARTIFACTS_DIR", ".")}/logs/artifactory_publish.stderr.log'
     if not os.path.exists(os.path.dirname(stderr_log)):
         os.makedirs(os.path.dirname(stderr_log))
