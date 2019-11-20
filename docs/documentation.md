@@ -20,7 +20,7 @@ using all the tools it finds configuration files for.
 
 If using `mkdocs`:
 
- - This template will look for the `mkdocs.yml` in the root of the repository.
+ - This template will look for the `mkdocs.yml` in the root of the repository and inside the `docs` directory.
 
 If using `sphinx`:
 

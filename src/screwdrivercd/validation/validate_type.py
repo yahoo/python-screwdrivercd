@@ -127,3 +127,7 @@ def main():
         Returncode from running the check
     """
     return validate_type()
+
+
+if __name__ == '__main__':
+    main()

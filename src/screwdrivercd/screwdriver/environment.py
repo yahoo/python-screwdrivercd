@@ -6,6 +6,7 @@ Screwdriver environment functions
 import json
 import logging
 import os
+import shutil
 from ..utility import env_bool
 from .metadata import Metadata
 
@@ -55,6 +56,9 @@ def update_job_status(status='SUCCESS', message='Everything looks good!'):
     """
     if status not in ['SUCCESS', 'FAILURE']:
         raise KeyError(f'Status {status} not found in ["SUCCESS", "FAILURE"]')
+
+    if not shutil.which('meta'):
+        return
 
     metadata = Metadata()
     metadata.set(f'meta.status.{get_env_job_name()}', json.dumps(dict(status=status, message=message)))

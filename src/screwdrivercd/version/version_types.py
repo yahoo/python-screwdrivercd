@@ -176,11 +176,11 @@ class VersionUpdateRevision(Version):
         if version:
             try:
                 version[-1] = self.revision_value()
-            except VersionError:
+            except VersionError as error:
                 if self.log_errors:
                     LOG.exception(f'Unable to get revision value for versioner {self.name!r}')
                 else:
-                    raise
+                    raise error
         return version
 
 
@@ -256,9 +256,36 @@ class VersionUTCDate(Version):
         return [f'{now.year}', f'{now.month}{now.day:02}', f'{now.hour:02}{now.minute:02}{now.second:02}']
 
 
+class VersionDateSDV4Build(Version):
+    """
+    Version updater that generates a version based on the current year and month and the screwdriver build ID
+    """
+    name = 'sdv4_date'
+
+    def __init__(self, *args, **kwargs):
+        self.now = kwargs.pop('now', None)
+        super().__init__(*args, **kwargs)
+
+    def generate(self):
+        now = self.now if self.now else datetime.utcnow()
+        revision = os.environ.get('SD_BUILD', None)
+        if not revision:
+            revision = os.environ.get('SD_BUILD_ID', None)
+        print(f'Revision={revision!r}')
+        if not revision:
+            raise VersionError('Unable to generate version, no SD_BUILD or SD_BUILD_ID value set in the environment variables')
+        return [f'{now.year}', f'{now.month}', revision]
+
+
 versioners = {
     'default': VersionGitRevisionCount,
     VersionGitRevisionCount.name: VersionGitRevisionCount,
     VersionUTCDate.name: VersionUTCDate,
-    VersionSDV4Build.name: VersionSDV4Build
+    VersionSDV4Build.name: VersionSDV4Build,
+    VersionDateSDV4Build.name: VersionDateSDV4Build
 }
+
+# Make sure the versioners are listed all lowercase to make identifying them easier
+for key, value in  list(versioners.items()):
+    if key.lower() not in versioners.keys():
+        versioners[key.lower()] = value
