@@ -89,14 +89,14 @@ class TestVersioners(ScrewdriverTestCase):
     def test__sdv4_date(self):
         os.environ['SD_BUILD'] = '9999'
         now = datetime.datetime.utcnow()
-        expected = f'{now.year}.{now.month}.{os.environ["SD_BUILD"]}'
+        expected = f'{str(now.year)[-2:]}.{now.month}.{os.environ["SD_BUILD"]}'
         version = str(VersionDateSDV4Build(ignore_meta_version=True, now=now))
         self.assertEqual(version, expected)
 
     def test__sdv4_date__sd_build_id(self):
         os.environ['SD_BUILD_ID'] = '9999'
         now = datetime.datetime.utcnow()
-        expected = f'{now.year}.{now.month}.{os.environ["SD_BUILD_ID"]}'
+        expected = f'{str(now.year)[-2:]}.{now.month}.{os.environ["SD_BUILD_ID"]}'
         version = str(VersionDateSDV4Build(ignore_meta_version=True, now=now))
         self.assertEqual(version, expected)
 
@@ -104,16 +104,13 @@ class TestVersioners(ScrewdriverTestCase):
         os.environ['SD_BUILD'] = '9999'
         os.environ['SD_PULL_REQUEST'] = '9'
         now = datetime.datetime.utcnow()
-        expected = f'{now.year}.{now.month}.{os.environ["SD_BUILD"]}a{os.environ["SD_PULL_REQUEST"]}'
+        expected = f'{str(now.year)[-2:]}.{now.month}.{os.environ["SD_BUILD"]}a{os.environ["SD_PULL_REQUEST"]}'
         version = str(VersionDateSDV4Build(ignore_meta_version=True, now=now))
         self.assertEqual(version, expected)
 
     def test__sdv4_date__unset(self):
         self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         with self.assertRaises(VersionError):
-            env_keys = list(os.environ.keys())
-            env_keys.sort()
-            print(env_keys)
             version = str(VersionDateSDV4Build(ignore_meta_version=True))
 
 

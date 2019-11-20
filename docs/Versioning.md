@@ -42,10 +42,22 @@ The following settings are supported:
 | ------------------------ | --------------------------- | --------------------------------------------------- |
 | VERSION_DEBUG            | False                       | Enable debug logging                                |
 
+### setup.cfg settings
+
+The setup.cfg go under the `screwdrivercd.verison` setting.
+
+| Setting       | Default Value      | Description                                                             |
+| ------------- | ------------------ | ----------------------------------------------------------------------- |
+| version_type  | git_revision_count | The versioning format to generate, choices:                             |
+|               |                    | git_revision_count - Update the last digit the number of git revisions                    |
+|               |                    | sdv4_sd_build - Update the last digit with the value of the SD_BUILD environment variable                       |
+|               |                    | utc_date - Generate a version based on the date,  format: year.monthday.hourminutesecond                        |
+|               |                    | sdv4_date - Generate a version based on the date and SD_BUILD environment variable, format: year.month.SD_BUILD |
+
 ### Example
 
 This is an example of the `setup.cfg` file before and after, with the `screwdrivercd_version` command run from a
-screwdriver pipeline with a BUILD_ID of 1319
+screwdriver pipeline with a BUILD_ID of 1319.
 
 
 !!! note "setup.cfg - Before"
