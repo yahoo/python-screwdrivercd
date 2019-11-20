@@ -274,7 +274,7 @@ class VersionDateSDV4Build(Version):
         print(f'Revision={revision!r}')
         if not revision:
             raise VersionError('Unable to generate version, no SD_BUILD or SD_BUILD_ID value set in the environment variables')
-        return [f'{now.year}', f'{now.month}', revision]
+        return [f'{str(now.year)[-2:]}', f'{now.month}', revision]
 
 
 versioners = {
