@@ -22,7 +22,7 @@ if logger_name == '__main__':  # pragma: no cover
 logger = logging.getLogger(logger_name)
 
 
-def main():
+def main():  # pragma: no cover
     """
     screwdrivercd.documentation cli main entrypoint
 
@@ -32,6 +32,7 @@ def main():
         returncode - Returncode from the publication operation, 0=success
     """
     documentation_formats = os.environ.get('DOCUMENTATION_FORMATS', 'mkdocs,sphinx')
+
     if documentation_formats:
         documentation_formats = [_.strip() for _ in documentation_formats.split(',')]
 

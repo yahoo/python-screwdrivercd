@@ -4,7 +4,9 @@ import copy
 from json import dumps
 import os
 from . import ScrewdriverTestCase
+from screwdrivercd.packaging.build_python import build_sdist_package
 from screwdrivercd.validation.validate_dependencies import validate_with_safety
+from screwdrivercd.validation.validate_package_quality import validate_package_quality
 from screwdrivercd.validation.validate_style import main as style_main
 from screwdrivercd.validation.validate_style import validate_codestyle
 from screwdrivercd.validation.validate_type import main as type_main
@@ -193,3 +195,35 @@ class TypeValidatorTestcase(ScrewdriverTestCase):
         result = validate_type()
         self.assertGreater(result, 0)
         self.assertTrue(os.path.exists(f'{self.artifacts_dir}/reports/{self.validator_name}/mypy.xml'))
+
+
+class PackageQualityValidatorTestCase(ScrewdriverTestCase):
+    validator_name = 'package_quality_validator'
+
+    def test__quality__no_package_default_fail(self):
+        result = validate_package_quality()
+        self.assertEqual(result, 1)
+
+    def test__quality__no_package_fail(self):
+        os.environ['VALIDATE_PACKAGE_QUALITY_FAIL_MISSING'] = 'True'
+        result = validate_package_quality()
+        self.assertEqual(result, 1)
+
+    def test__quality__no_package_nofail(self):
+        os.environ['VALIDATE_PACKAGE_QUALITY_FAIL_MISSING'] = 'False'
+        result = validate_package_quality()
+        self.assertEqual(result, 0)
+
+    def test__quality__fail(self):
+        os.environ['PYROMA_MIN_SCORE'] = '9'
+        self.write_config_files(working_config)
+        build_sdist_package()
+        result = validate_package_quality()
+        self.assertNotEqual(result, 0)
+
+    def test__quality__pass__0(self):
+        os.environ['PYROMA_MIN_SCORE'] = '0'
+        self.write_config_files(working_config)
+        build_sdist_package()
+        result = validate_package_quality()
+        self.assertEqual(result, 0)

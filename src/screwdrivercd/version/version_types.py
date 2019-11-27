@@ -33,7 +33,7 @@ class Version:
     def __str__(self):
         return self.version
 
-    def commit_changed_setup_cfg(self):
+    def commit_changed_setup_cfg(self):  # pragma: no cover
         """
         Git commit the setup.cfg
         """
@@ -138,7 +138,7 @@ class Version:
             return
         try:
             subprocess.check_call(['meta', 'set', 'package.version', new_version])  # nosec
-        except FileNotFoundError:
+        except FileNotFoundError:  # pragma: no cover
             LOG.warning('The screwdriver meta command is missing, unable to set version in screwdriver metadata')
 
     @property

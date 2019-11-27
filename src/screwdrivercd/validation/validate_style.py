@@ -3,7 +3,7 @@
 """
 Code style validation wrapper for screwdrivercd
 
-This wrapper runs the validation tool.  This wrapper does the following:
+This wrapper runs the pycodestyle validation tool.
 """
 # The logging_basicConfig has to be run before other imports because some modules we use log output on import
 # pylint: disable=wrong-import-order, wrong-import-position
@@ -38,7 +38,7 @@ def validate_with_codestyle(report_dir):
     bin_dir = os.path.dirname(interpreter)
 
     pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
-    if not os.path.exists(pycodestyle_command):
+    if not os.path.exists(pycodestyle_command):  # pragma: no cover
         bin_dir = os.path.dirname(sys.executable)
         pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
         if not os.path.exists(pycodestyle_command):
@@ -118,9 +118,9 @@ def validate_codestyle():
     return rc
 
 
-def main():
+def main() -> int:
     """
-    Type check runner utility command line entry point
+    Codestyle check runner utility command line entry point
 
     Returns
     -------
@@ -131,4 +131,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

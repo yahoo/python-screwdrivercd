@@ -37,6 +37,7 @@ nav:
     - Developer Information:
         - Code of Conduct: Code-of-Conduct.md
         - Contributing: Contributing.md
+    - Changes: changelog.md
 
 plugins:
     - search

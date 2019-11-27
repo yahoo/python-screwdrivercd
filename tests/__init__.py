@@ -19,8 +19,12 @@ class ScrewdriverTestCase(unittest.TestCase):
     orig_environ =None
     tempdir = None
     environ_keys = {
-        'BASE_PYTHON', 'PACKAGE_DIR', 'PACKAGE_DIRECTORY', 'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID',
-        'SD_PULL_REQUEST',
+        'BASE_PYTHON', 'CHANGELOG_FILENAME',
+        'PACKAGE_DIR', 'PACKAGE_DIRECTORY',
+        'PYROMA_MIN_SCORE',
+        'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST',
+        'TEST_UTILITY_ENV_BOOL',
+        'VALIDATE_PACKAGE_QUALITY_FAIL_MISSING'
     }
     meta_version = None
 

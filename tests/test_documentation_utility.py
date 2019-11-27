@@ -7,49 +7,48 @@ import unittest
 
 from screwdrivercd.documentation.utility import clean_directory, copy_contents
 from screwdrivercd.utility import env_bool
+from . import ScrewdriverTestCase
 
-class UtilityTestCase(unittest.TestCase):
-    used_env_vars = ['TEST_UTILITY_ENV_BOOL']
+class UtilityTestCase(ScrewdriverTestCase):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._pwd = os.getcwd()
+    def setUp(self):
+        super().setUp()
+        self.testfiles = [
+            f'{self.tempdir.name}/testfile',
+            f'{self.tempdir.name}/.testfile',
+        ]
 
-    def tearDown(self):
-        os.chdir(self._pwd)
-
-    def clear_used_env_keys(self):
-        for varname in self.used_env_vars:
-            if varname in os.environ.keys():
-                del os.environ[varname]
+    def _create_testfiles(self):
+        for filename in self.testfiles:
+            pathlib.Path(filename).touch()
+            self.assertTrue(os.path.exists(filename))
 
     def test_clean_directory(self):
-        with tempfile.TemporaryDirectory() as tempdir:
-            os.chdir(tempdir)
-            testfile = f'{tempdir}/testfile'
-            pathlib.Path(testfile).touch()
-            self.assertTrue(os.path.exists(testfile))
-            clean_directory(tempdir)
-            self.assertFalse(os.path.exists(testfile))
+        self._create_testfiles()
+        clean_directory(self.tempdir.name)
+        self.assertFalse(os.path.exists(f'{self.tempdir.name}/testfile'))
+        self.assertTrue(os.path.exists(f'{self.tempdir.name}/.testfile'))
 
     def test_copy_contents(self):
-        with tempfile.TemporaryDirectory() as sourcedir:
-            with tempfile.TemporaryDirectory() as destdir:
-                pathlib.Path(f'{sourcedir}/testfile').touch()
-                self.assertFalse(os.path.exists(f'{destdir}/testfile'))
-                copy_contents(sourcedir, destdir)
-                self.assertTrue(os.path.exists(f'{destdir}/testfile'))
+        os.makedirs('source')
+        os.makedirs('dest')
+        pathlib.Path(f'source/testfile').touch()
+        pathlib.Path(f'source/.testfile').touch()
 
-    def test_env_bool_default_true(self):
-        self.assertTrue(env_bool('TEST_UTILITY_ENV_BOOL', True))
+        self.assertFalse(os.path.exists(f'dest/testfile'))
+        self.assertFalse(os.path.exists(f'dest/.testfile'))
+        copy_contents('source', 'dest')
+        self.assertTrue(os.path.exists(f'dest/testfile'))
+        self.assertTrue(os.path.exists(f'dest/.testfile'))
 
-    def test_env_bool_default_false(self):
-        self.assertFalse(env_bool('TEST_UTILITY_ENV_BOOL', False))
+    def test_copy_contents__skip_dotfiles(self):
+        os.makedirs('source')
+        os.makedirs('dest')
+        pathlib.Path(f'source/testfile').touch()
+        pathlib.Path(f'source/.testfile').touch()
 
-    def test_env_bool_true(self):
-        os.environ['TEST_UTILITY_ENV_BOOL'] = 'True'
-        self.assertTrue(env_bool('TEST_UTILITY_ENV_BOOL', False))
-
-    def test_env_bool_false(self):
-        os.environ['TEST_UTILITY_ENV_BOOL'] = 'False'
-        self.assertFalse(env_bool('TEST_UTILITY_ENV_BOOL', True))
+        self.assertFalse(os.path.exists(f'dest/testfile'))
+        self.assertFalse(os.path.exists(f'dest/.testfile'))
+        copy_contents('source', 'dest', skip_dotfiles=True)
+        self.assertTrue(os.path.exists(f'dest/testfile'))
+        self.assertFalse(os.path.exists(f'dest/.testfile'))

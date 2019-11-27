@@ -59,9 +59,7 @@ def copy_contents(src, dest, skip_dotfiles=False):
             dirname = dirname[2:]
         destdir = os.path.join(dest, dirname)
         logger.debug('Dest directory: %s', destdir)
-        if not os.path.exists(destdir):
-            logger.debug('Creating directory: %s', destdir)
-            os.makedirs(destdir)
+        os.makedirs(destdir, exist_ok=True)
         for fname in filelist:
             if skip_dotfiles and fname.startswith('.'):
                 continue
