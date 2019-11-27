@@ -31,7 +31,7 @@ jobs:
 
     validate_test:
         template: python/validate_unittest
-        images: manylinux2014
+        image: manylinux2014
         steps:
             - postupdate_version: |
                 PACKAGE_VERSION="`meta get package.version`"
