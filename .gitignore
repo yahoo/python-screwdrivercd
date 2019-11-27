@@ -51,8 +51,8 @@ output/*/index.html
 doc/build
 
 # pbr generates these
-AUTHORS
-ChangeLog
+/AUTHORS
+/ChangeLog
 
 # Editors
 *~
@@ -89,3 +89,4 @@ coverage.xml
 
 /.mypy_cache
 /reports
+/artifacts

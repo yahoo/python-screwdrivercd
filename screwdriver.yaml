@@ -4,6 +4,7 @@
 version: 4
 shared:
     environment:
+        CHANGELOG_FILENAME: docs/changelog.md
         DOCUMENTATION_DEBUG: False
         DOCUMENTATION_FORMATS: mkdocs
         PACKAGE_DIR: src

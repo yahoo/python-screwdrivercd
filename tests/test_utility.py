@@ -124,9 +124,19 @@ class TestPlatformTestTox(ScrewdriverTestCase):
         result = env_int('test__environement__env_int__default')
         self.assertEqual(result, 0)
 
-    def test__environement__env_int__default__value(self):
-        result = env_int('test__environement__env_int__default__value', 10)
-        self.assertEqual(result, 10)
+    def test_environment_env_bool_default_true(self):
+        self.assertTrue(env_bool('TEST_UTILITY_ENV_BOOL', True))
+
+    def test_environment_env_bool_default_false(self):
+        self.assertFalse(env_bool('TEST_UTILITY_ENV_BOOL', False))
+
+    def test_environment_env_bool_true(self):
+        os.environ['TEST_UTILITY_ENV_BOOL'] = 'True'
+        self.assertTrue(env_bool('TEST_UTILITY_ENV_BOOL', False))
+
+    def test_environment_env_bool_false(self):
+        os.environ['TEST_UTILITY_ENV_BOOL'] = 'False'
+        self.assertFalse(env_bool('TEST_UTILITY_ENV_BOOL', True))
 
     def test__create_artifact_directory_env(self):
         os.environ['SD_ARTIFACTS_DIR'] = f'{self.tempdir.name}/test_artifacts'

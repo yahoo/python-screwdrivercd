@@ -57,7 +57,7 @@ class DocumentationPlugin:
         str:
             Clone url, will be an empty string if it cannot be found
         """
-        if not self._clone_dir:
+        if not self._clone_dir:  # pragma: no cover
             self._clone_dir = self.get_clone_dir()
         return self._clone_dir
 
@@ -71,12 +71,12 @@ class DocumentationPlugin:
         str:
             Clone url, will be an empty string if it cannot be found
         """
-        if not self._clone_url:
+        if not self._clone_url:  # pragma: no cover
             self._clone_url = self.get_clone_url()
         return self._clone_url
 
     @property
-    def documentation_is_present(self) -> bool:
+    def documentation_is_present(self) -> bool:  # pragma: no cover
         """
         Returns
         =======
@@ -96,8 +96,6 @@ class DocumentationPlugin:
         log_filename: str
             Filename to write the log entry to
         """
-        if not log_filename:
-            log_filename = self.build_log_filename
         log_dir = os.path.dirname(log_filename)
         if log_dir:
             os.makedirs(log_dir, exist_ok=True)
@@ -106,13 +104,13 @@ class DocumentationPlugin:
         error_message = None
         with open(log_filename, 'ab') as log_file:
             try:
-                if timeout:
+                if timeout:  # pragma: no cover
                     subprocess.check_call(command, stdout=log_file, stderr=subprocess.STDOUT, timeout=timeout)  # nosec - All subprocess calls use full path
                 else:
                     subprocess.check_call(command, stdout=log_file, stderr=subprocess.STDOUT)  # nosec - All subprocess calls use full path
             except (FileNotFoundError, subprocess.CalledProcessError,) as error:
                 error_message = f'Command {" ".join(self.build_command)!r} failed {error}'
-            except subprocess.TimeoutExpired as error:
+            except subprocess.TimeoutExpired as error:  # pragma: no cover
                 error_message = f'Command {" ".join(self.build_command)!r} timeout after {timeout} seconds {error}'
         if error_message:
             raise DocBuildError(error_message)

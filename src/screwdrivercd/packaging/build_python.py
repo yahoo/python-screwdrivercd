@@ -40,11 +40,13 @@ def build_sdist_package():
     run_and_log_output(command=[sys.executable, 'setup.py', 'sdist'] + setup_args, logfile=f'{build_log_dir}/sdist_build.log')
     if os.path.exists('dist'):
         for filename in os.listdir('dist'):
-            if filename in before:
+            if filename in before:  # pragma: no cover
                 continue
+            source_filename = f'dist/{filename}'
             dest_filename = f'{package_artifacts}/{filename}'
-            print(f'Moving dist/{filename} -> {dest_filename}')
-            os.rename(f'dist/{filename}', dest_filename)
+            os.makedirs(package_artifacts, exist_ok=True)
+            print(f'Moving {source_filename} -> {dest_filename}')
+            os.rename(source_filename, dest_filename)
             return [dest_filename], []
     return [], []
 
@@ -73,7 +75,7 @@ def build_wheel_packages():
             dest_filename = f'{package_artifacts}/{filename}'
             print(f'Moving dist/{filename} -> {dest_filename}')
             os.rename(f'dist/{filename}', f'{dest_filename}')
-            return [dest_filename]
+            return [dest_filename], []
 
     if manylinux and plat:
         print('\n# Generating manylinux wheels', flush=True)
@@ -116,7 +118,7 @@ def build_wheel_packages():
 
     if failed:
         print(f'Package build failed for {failed}')
-    return list(built_packages)
+    return list(built_packages), failed
 
 
 def main():

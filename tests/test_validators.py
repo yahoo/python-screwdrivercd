@@ -200,7 +200,29 @@ class TypeValidatorTestcase(ScrewdriverTestCase):
 class PackageQualityValidatorTestCase(ScrewdriverTestCase):
     validator_name = 'package_quality_validator'
 
-    def test__quality(self):
+    def test__quality__no_package_default_fail(self):
+        result = validate_package_quality()
+        self.assertEqual(result, 1)
+
+    def test__quality__no_package_fail(self):
+        os.environ['VALIDATE_PACKAGE_QUALITY_FAIL_MISSING'] = 'True'
+        result = validate_package_quality()
+        self.assertEqual(result, 1)
+
+    def test__quality__no_package_nofail(self):
+        os.environ['VALIDATE_PACKAGE_QUALITY_FAIL_MISSING'] = 'False'
+        result = validate_package_quality()
+        self.assertEqual(result, 0)
+
+    def test__quality__fail(self):
+        os.environ['PYROMA_MIN_SCORE'] = '9'
+        self.write_config_files(working_config)
+        build_sdist_package()
+        result = validate_package_quality()
+        self.assertNotEqual(result, 0)
+
+    def test__quality__pass__0(self):
+        os.environ['PYROMA_MIN_SCORE'] = '0'
         self.write_config_files(working_config)
         build_sdist_package()
         result = validate_package_quality()

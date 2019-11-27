@@ -18,7 +18,7 @@ from termcolor import colored
 
 from typing import List
 
-from ..utility.environment import env_int, interpreter_bin_command
+from ..utility.environment import env_int, env_bool, interpreter_bin_command
 from ..utility.run import run_and_log_output
 
 logger_name = 'validate_package_quality' if __name__ == '__main__' else __name__
@@ -43,7 +43,14 @@ def validate_package_quality(package_dir: str='') -> int:
     report_dir = os.path.join(artifacts_dir, 'reports/package_quality_validation')
     package_dir = os.path.join(artifacts_dir, 'packages')
     pyroma_min_score = env_int('PYROMA_MIN_SCORE', 8)
+    fail_if_no_packages = env_bool('VALIDATE_PACKAGE_QUALITY_FAIL_MISSING', True)
 
+    if not os.path.exists(package_dir):
+        print(f'Package directory {package_dir!r} is not present, no packages to validate')
+        if fail_if_no_packages:
+            return 1
+        else:
+            return 0
     return_codes: List[int] = []
     for package in os.listdir(package_dir):
         if package.endswith('.whl'):
