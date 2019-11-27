@@ -9,6 +9,7 @@ import os
 import subprocess  # nosec
 from pathlib import Path
 from typing import Dict, List
+import sys
 
 from ..utility.package import setup_query
 
@@ -40,13 +41,13 @@ def create_first_commit_tag_if_missing() -> None:
         return
 
     first_commit_hash = subprocess.check_output(['git', 'rev-list', '--max-parents=0', 'HEAD'], stderr=subprocess.DEVNULL).decode(errors='ignore').strip()  # nosec
-    output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])
+    output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
 
 
 def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') -> List[str]:
     changed = []
 
-    with subprocess.Popen(['git', 'diff', f'{commit1}..{commit2}', changelog_dir], stdout=subprocess.PIPE) as diff_command:
+    with subprocess.Popen(['git', 'diff', f'{commit1}..{commit2}', changelog_dir], stdout=subprocess.PIPE) as diff_command:  # nosec
         for line in diff_command.stdout.readlines():
             line = line.decode(errors='ignore').strip()
             if line.startswith('+++'):
@@ -135,4 +136,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

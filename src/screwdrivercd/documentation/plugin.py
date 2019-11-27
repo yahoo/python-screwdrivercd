@@ -16,6 +16,7 @@ from termcolor import colored
 
 from .exceptions import DocBuildError, DocPublishError
 from .utility import clean_directory, copy_contents
+from ..changelog.generate import write_changelog
 from ..utility.environment import interpreter_bin_command
 
 
@@ -182,6 +183,16 @@ class DocumentationPlugin:
             if not os.path.exists(self.clone_dir):
                 raise DocPublishError(f"Repo directory {self.clone_dir} is missing after git clone")
 
+    def generate_changelog(self):
+        """
+        Generate a changelog if the CHANGELOG_FILENAME is set
+        """
+        changelog_filename = os.environ.get('CHANGELOG_FILENAME', '')
+        if not changelog_filename:
+            return
+
+        write_changelog(changelog_filename)
+
     def get_clone_url(self) -> str:
         """
         Determine the git clone url for the current git repo
@@ -278,6 +289,8 @@ class DocumentationPlugin:
         os.chdir(self.source_dir)
         os.makedirs(self.build_dest, exist_ok=True)
         os.makedirs(self.log_dir, exist_ok=True)
+
+        self.generate_changelog()
 
         # self.remove_build_log()
 

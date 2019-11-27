@@ -13,7 +13,6 @@ import sys
 
 from .exceptions import DocBuildError, DocPublishError
 from .plugin import build_documentation, publish_documentation
-from ..changelog.generate import write_changelog
 from ..utility import env_bool
 
 
@@ -33,13 +32,9 @@ def main():  # pragma: no cover
         returncode - Returncode from the publication operation, 0=success
     """
     documentation_formats = os.environ.get('DOCUMENTATION_FORMATS', 'mkdocs,sphinx')
-    documentation_changelog = os.environ.get('CHANGELOG_FILENAME', '')
 
     if documentation_formats:
         documentation_formats = [_.strip() for _ in documentation_formats.split(',')]
-
-    if documentation_changelog:
-        write_changelog(documentation_changelog)
 
     if env_bool('DOCUMENTATION_PUBLISH', True):  # pragma: no cover
         try:
