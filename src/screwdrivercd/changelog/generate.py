@@ -8,7 +8,7 @@ import logging
 import os
 import subprocess  # nosec
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Union
 import sys
 
 from ..utility.package import setup_query
@@ -44,7 +44,7 @@ def create_first_commit_tag_if_missing() -> None:
     output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
 
 
-def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') -> List[str]:
+def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') -> List[Path]:
     changed = []
 
     with subprocess.Popen(['git', 'diff', f'{commit1}..{commit2}', changelog_dir], stdout=subprocess.PIPE) as diff_command:  # nosec

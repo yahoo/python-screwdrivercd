@@ -191,7 +191,7 @@ class DocumentationPlugin:
         if not changelog_filename:
             return
 
-        self._log_message(f'\n- Writing changelog to {changelog_filename!r}', self.publish_log_filename)
+        self._log_message(f'\n- Writing changelog to {changelog_filename!r}', self.build_log_filename)
         write_changelog(changelog_filename)
 
     def get_clone_url(self) -> str:
@@ -286,12 +286,12 @@ class DocumentationPlugin:
             The root directory of the generated documenation
         """
         self._log_message(f'\n- Building the {self.name} format documentation', self.build_log_filename)
+        self.generate_changelog()
+
         cwd = os.getcwd()
         os.chdir(self.source_dir)
         os.makedirs(self.build_dest, exist_ok=True)
         os.makedirs(self.log_dir, exist_ok=True)
-
-        self.generate_changelog()
 
         # self.remove_build_log()
 
