@@ -8,18 +8,18 @@ import shlex
 import subprocess  # nosec
 import sys
 
+from typing import List
+
 from ..utility.package import setup_query
 from ..utility.run import run_and_log_output
 
 
-def build_sdist_package(package_name, setup_args, build_log_dir, package_artifacts):
+def build_sdist_package():
     """
     Build a Python sdist format package
 
     Parameters
     ----------
-    package_name
-    setup_args
     build_log_dir
     package_artifacts
 
@@ -28,6 +28,11 @@ def build_sdist_package(package_name, setup_args, build_log_dir, package_artifac
     str
         Path to the created package or None if creation failed
     """
+    artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', 'artifacts')
+    package_artifacts = os.path.join(artifacts_dir, 'packages')
+    build_log_dir = os.path.join(artifacts_dir, 'logs/build')
+    setup_args = shlex.split(os.environ.get('SETUP_ARGS', ''))
+
     before = []
     if os.path.exists('dist'):
         before = os.listdir('dist')
@@ -35,19 +40,28 @@ def build_sdist_package(package_name, setup_args, build_log_dir, package_artifac
     run_and_log_output(command=[sys.executable, 'setup.py', 'sdist'] + setup_args, logfile=f'{build_log_dir}/sdist_build.log')
     if os.path.exists('dist'):
         for filename in os.listdir('dist'):
-            if filename in before:
+            if filename in before:  # pragma: no cover
                 continue
+            source_filename = f'dist/{filename}'
             dest_filename = f'{package_artifacts}/{filename}'
-            print(f'Moving dist/{filename} -> {dest_filename}')
-            os.rename(f'dist/{filename}', dest_filename)
-            return [dest_filename]
+            os.makedirs(package_artifacts, exist_ok=True)
+            print(f'Moving {source_filename} -> {dest_filename}')
+            os.rename(source_filename, dest_filename)
+            return [dest_filename], []
+    return [], []
 
 
-def build_wheel_packages(package_name, setup_args, build_log_dir, package_artifacts):
+def build_wheel_packages():
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', 'artifacts')
     manylinux = os.environ.get('MANYLINUX', 'True').lower() in ['1', 'true', 'on']
     plat = os.environ.get('AUDITWHEEL_PLAT', '')
+    package_artifacts = os.path.join(artifacts_dir, 'packages')
+    build_log_dir = os.path.join(artifacts_dir, 'logs/build')
+    setup_args = shlex.split(os.environ.get('SETUP_ARGS', ''))
     wheel_build_dir = os.path.join(artifacts_dir, 'wheelbuild')
+
+    # Get values from the setup.py/setup.cfg
+    package_name = setup_query('--name')
 
     print('# Generating wheel package', flush=True)
     failed = set()
@@ -61,7 +75,7 @@ def build_wheel_packages(package_name, setup_args, build_log_dir, package_artifa
             dest_filename = f'{package_artifacts}/{filename}'
             print(f'Moving dist/{filename} -> {dest_filename}')
             os.rename(f'dist/{filename}', f'{dest_filename}')
-            return [dest_filename]
+            return [dest_filename], []
 
     if manylinux and plat:
         print('\n# Generating manylinux wheels', flush=True)
@@ -104,7 +118,7 @@ def build_wheel_packages(package_name, setup_args, build_log_dir, package_artifa
 
     if failed:
         print(f'Package build failed for {failed}')
-    return list(built_packages)
+    return list(built_packages), failed
 
 
 def main():
@@ -113,28 +127,34 @@ def main():
     package_artifacts = os.path.join(artifacts_dir, 'packages')
     wheel_build_dir = os.path.join(artifacts_dir, 'wheelbuild')
     build_log_dir = os.path.join(artifacts_dir, 'logs/build')
-    setup_args = shlex.split(os.environ.get('SETUP_ARGS', ''))
     package_types = [_.strip().lower() for _ in os.environ.get('PACKAGE_TYPES', 'sdist,wheel').split(',')]
-
-    # Get values from the setup.py/setup.cfg
-    package_name = setup_query('--name')
 
     os.makedirs(package_artifacts, exist_ok=True)
     os.makedirs(build_log_dir, exist_ok=True)
     os.makedirs(wheel_build_dir, exist_ok=True)
     os.makedirs('dist', exist_ok=True)
 
-    failed = set()
+    built_packages = failed_packages = []
     for package_type in package_types:
+        built: List[str] = []
+        failed: List[str] = []
         if package_type == 'sdist':
             print(f'# Building sdist package', flush=True)
-            result = build_sdist_package(package_name, setup_args, build_log_dir, package_artifacts)
-            print(f'    Created package: {result}')
+            built, failed = build_sdist_package()
         elif package_type == 'wheel':
-            print('Building wheel package(s)', flush=True)
-            result = build_wheel_packages(package_name, setup_args, build_log_dir, package_artifacts)
-            for package in result:
-                print(f'    Created package: {package}')
+            print('# Building wheel package(s)', flush=True)
+            built, failed = build_wheel_packages()
+        if built:
+            built_packages += built
+            print('    Created packages:')
+            for package in built:
+                print(f'        {package}', flush=True)
+        if failed:
+            failed_packages += failed
+            print('    Failed to create packages:')
+            for package in failed:
+                print(f'        {package}', flush=True)
+    return len(failed_packages)
 
 
 if __name__ == '__main__':
