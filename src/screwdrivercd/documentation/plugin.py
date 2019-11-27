@@ -191,6 +191,7 @@ class DocumentationPlugin:
         if not changelog_filename:
             return
 
+        self._log_message(f'\n- Writing changelog to {changelog_filename!r}', self.publish_log_filename)
         write_changelog(changelog_filename)
 
     def get_clone_url(self) -> str:

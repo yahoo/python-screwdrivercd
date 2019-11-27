@@ -48,8 +48,8 @@ def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') 
     changed = []
 
     with subprocess.Popen(['git', 'diff', f'{commit1}..{commit2}', changelog_dir], stdout=subprocess.PIPE) as diff_command:  # nosec
-        for line in diff_command.stdout.readlines():
-            line = line.decode(errors='ignore').strip()
+        for binline in diff_command.stdout.readlines():
+            line = binline.decode(errors='ignore').strip()
             if line.startswith('+++'):
                 line = line.lstrip('+++ b/')
                 filepath = Path(line)
@@ -90,7 +90,6 @@ def release_changes(changelog_dir: str) -> Dict[str, List[str]]:
                 changes[commit][change_type] = {}
             changes[commit][change_type][changeid] = change.read_text().rstrip()
 
-        # changes[commit] = changed
         previous_commit = commit
     return changes
 
