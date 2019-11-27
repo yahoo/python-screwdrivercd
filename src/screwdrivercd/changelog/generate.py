@@ -97,7 +97,14 @@ def release_changes(changelog_dir: str) -> Dict[str, Dict[str, Dict[str, str]]]:
 def changelog_contents() -> str:
     changelog_dir = os.environ.get('CHANGELOG_DIR', 'changelog.d')
     changelog_releases = os.environ.get('CHANGELOG_RELEASES', 'all')
-    package_name = setup_query('--name')
+    changelog_name = os.environ.get('CHANGELOG_NAME', '')
+    if not changelog_name and os.path.exists('setup.py'):
+        try:
+            changelog_name = setup_query('--name')
+        except subprocess.CalledProcessError:
+            changelog_name = ''
+    if not changelog_name:
+        changelog_name = 'Unknown'
     release_dates = git_tag_dates()
 
     output = ''
@@ -105,7 +112,7 @@ def changelog_contents() -> str:
         if not changes:
             continue
         date = release_dates[release]
-        output += f'# {package_name} {release} ({date}){os.linesep}'
+        output += f'# {changelog_name} {release} ({date}){os.linesep}'
         output += f'{os.linesep}---{os.linesep}'
 
         for change_type, change_desc in CHANGE_TYPES.items():
