@@ -60,7 +60,7 @@ def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') 
     return changed
 
 
-def release_changes(changelog_dir: str) -> Dict[str, List[str]]:
+def release_changes(changelog_dir: str) -> Dict[str, Dict[str, Dict[str, str]]]:
     create_first_commit_tag_if_missing()
     tags = git_tag_dates()
 
@@ -68,7 +68,7 @@ def release_changes(changelog_dir: str) -> Dict[str, List[str]]:
     commits = list(tags.keys())
     commits.sort()
 
-    changes = {}
+    changes: Dict[str, Dict[str, Dict[str, str]]] = {}
     for commit in commits:
         date = tags[commit]
         changed = changed_files(previous_commit, commit, changelog_dir=changelog_dir)
