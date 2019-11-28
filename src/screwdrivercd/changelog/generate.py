@@ -7,10 +7,12 @@ Code to generate a changelog for a git repository
 import logging
 import os
 import subprocess  # nosec
+import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Union
-import sys
 
+from ..utility.environment import env_bool
 from ..utility.package import setup_query
 
 
@@ -28,11 +30,16 @@ CHANGE_TYPES = dict(
 def git_tag_dates() -> Dict[str, str]:
     tags = {}
 
-    with subprocess.Popen(['git', 'tag', '--list', '--format', '%(creatordate:short)|%(refname:short)'], stdout=subprocess.PIPE) as tag_command:  # nosec
+    # command = ['git', 'tag', '--list', '--format', '%(creatordate:short)|%(refname:short)', '--sort', 'taggerdate']
+    command = ['git', 'log', '--date-order', '--tags', '--simplify-by-decoration', '--pretty=format:%ct|%D']
+    with subprocess.Popen(command, stdout=subprocess.PIPE) as tag_command:  # nosec
         for line in tag_command.stdout.readlines():
-            date, commit = line.decode(errors='ignore').strip().split('|')
-            tags[commit] = date
-
+            date, all_tags = line.decode(errors='ignore').strip().split('|')
+            for tag in all_tags.split(','):
+                tag = tag.strip()
+                if tag.startswith('tag: '):
+                    tag = tag[5:]
+                tags[tag] = date
     return tags
 
 
@@ -60,17 +67,21 @@ def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') 
     return changed
 
 
-def release_changes(changelog_dir: str) -> Dict[str, Dict[str, Dict[str, str]]]:
+def release_changes(changelog_dir: str, only_versions: bool=True) -> Dict[str, Dict[str, Dict[str, str]]]:
     create_first_commit_tag_if_missing()
     tags = git_tag_dates()
 
     previous_commit = commit = 'first_commit'
     commits = list(tags.keys())
-    commits.sort()
+    commits.reverse()
 
     changes: Dict[str, Dict[str, Dict[str, str]]] = {}
     for commit in commits:
-        date = tags[commit]
+        if only_versions:
+            if not commit.startswith('v'):
+                if commit != 'first_commit':
+                    continue
+
         changed = changed_files(previous_commit, commit, changelog_dir=changelog_dir)
         if not changed:
             previous_commit = commit
@@ -94,9 +105,12 @@ def release_changes(changelog_dir: str) -> Dict[str, Dict[str, Dict[str, str]]]:
     return changes
 
 
-def changelog_contents() -> str:
+def changelog_contents(changelog_releases: str='') -> str:
+    if not changelog_releases:
+        changelog_releases = os.environ.get('CHANGELOG_RELEASES', 'all')
+
+    only_versions = env_bool('CHANGELOG_ONLY_VERSION_TAGS', True)
     changelog_dir = os.environ.get('CHANGELOG_DIR', 'changelog.d')
-    changelog_releases = os.environ.get('CHANGELOG_RELEASES', 'all')
     changelog_name = os.environ.get('CHANGELOG_NAME', '')
     if not changelog_name and os.path.exists('setup.py'):
         try:
@@ -108,10 +122,19 @@ def changelog_contents() -> str:
     release_dates = git_tag_dates()
 
     output = ''
-    for release, changes in release_changes(changelog_dir).items():
-        if not changes:
+    release_changelog = release_changes(changelog_dir, only_versions=only_versions)
+    if changelog_releases != 'all':
+        if changelog_releases in release_changelog.keys():
+            release_changelog = {changelog_releases: release_changelog[changelog_releases]}
+
+    releases = list(release_changelog.keys())
+    releases.reverse()
+
+    for release in releases:
+        changes = release_changelog[release]
+        if not changes or release in ['first_commit', 'last_commit']:
             continue
-        date = release_dates[release]
+        date = datetime.fromtimestamp(int(release_dates[release]))
         output += f'# {changelog_name} {release} ({date}){os.linesep}'
         output += f'{os.linesep}---{os.linesep}'
 
@@ -126,11 +149,11 @@ def changelog_contents() -> str:
     return output
 
 
-def write_changelog(filename):
+def write_changelog(filename, changelog_releases: str=''):
     report_dir = os.path.dirname(filename)
     os.makedirs(report_dir, exist_ok=True)
     with open(filename, 'w') as report_handle:
-        report_handle.write(changelog_contents())
+        report_handle.write(changelog_contents(changelog_releases=changelog_releases))
 
 
 def main():
