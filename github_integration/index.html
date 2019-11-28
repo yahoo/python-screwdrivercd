@@ -455,6 +455,18 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../changelog/" title="Changes" class="md-nav__link">
+      Changes
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -564,12 +576,12 @@
                 
                 <h1 id="github-integration-utilites">Github integration utilites<a class="headerlink" href="#github-integration-utilites" title="Permanent link">&para;</a></h1>
 <h2 id="ssh-initialization">SSH initialization<a class="headerlink" href="#ssh-initialization" title="Permanent link">&para;</a></h2>
-<p>The <code class="codehilite"><span class="n">screwdrivercd_ssh_setup</span></code> utility initializes the ssh configuration sufficiently to start 
+<p>The <code class="codehilite"><span class="err">screwdrivercd_ssh_setup</span></code> utility initializes the ssh configuration sufficiently to start 
 <a href="https://www.ssh.com/ssh/agent">ssh-agent</a>.</p>
 <p>This utility does not have any settings.</p>
 <h2 id="deploykey-setup">Deploykey setup<a class="headerlink" href="#deploykey-setup" title="Permanent link">&para;</a></h2>
-<p>The <code class="codehilite"><span class="n">screwdrivercd_github_deploykey</span></code> setup utility will populate the github deploy key stored in
-the <code class="codehilite"><span class="n">GIT_DEPLOY_KEY</span></code> secret into the <a href="https://www.ssh.com/ssh/agent">ssh-agent</a></p>
+<p>The <code class="codehilite"><span class="err">screwdrivercd_github_deploykey</span></code> setup utility will populate the github deploy key stored in
+the <code class="codehilite"><span class="err">GIT_DEPLOY_KEY</span></code> secret into the <a href="https://www.ssh.com/ssh/agent">ssh-agent</a></p>
 <p>This utility requires that <a href="https://www.ssh.com/ssh/agent">ssh-agent</a> is already running.</p>
 <h3 id="secrets">Secrets<a class="headerlink" href="#secrets" title="Permanent link">&para;</a></h3>
 <table>

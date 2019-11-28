@@ -424,6 +424,18 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../changelog/" title="Changes" class="md-nav__link">
+      Changes
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -515,15 +527,15 @@ can be inspected.</p>
 <h3 id="screwdrivercd_documentation-usage">screwdrivercd_documentation usage<a class="headerlink" href="#screwdrivercd_documentation-usage" title="Permanent link">&para;</a></h3>
 <p>Unlike most other screwdrivercd command line utilities, this utility can be used without having a python code package 
 in the current repository. </p>
-<p>This utility will look for both <code class="codehilite"><span class="n">mkdocs</span></code> and <code class="codehilite"><span class="n">sphinx</span></code> documentation configuration files and generate documentation 
+<p>This utility will look for both <code class="codehilite"><span class="err">mkdocs</span></code> and <code class="codehilite"><span class="err">sphinx</span></code> documentation configuration files and generate documentation 
 using all the tools it finds configuration files for.</p>
-<p>If using <code class="codehilite"><span class="n">mkdocs</span></code>:</p>
+<p>If using <code class="codehilite"><span class="err">mkdocs</span></code>:</p>
 <ul>
-<li>This template will look for the <code class="codehilite"><span class="n">mkdocs</span><span class="p">.</span><span class="n">yml</span></code> in the root of the repository and inside the <code class="codehilite"><span class="n">docs</span></code> directory.</li>
+<li>This template will look for the <code class="codehilite"><span class="err">mkdocs.yml</span></code> in the root of the repository and inside the <code class="codehilite"><span class="err">docs</span></code> directory.</li>
 </ul>
-<p>If using <code class="codehilite"><span class="n">sphinx</span></code>:</p>
+<p>If using <code class="codehilite"><span class="err">sphinx</span></code>:</p>
 <ul>
-<li>This template will look for the sphinx <code class="codehilite"><span class="n">conf</span><span class="p">.</span><span class="n">py</span></code> file <code class="codehilite"><span class="n">doc</span><span class="o">/</span><span class="k">source</span></code> directory of the repository.</li>
+<li>This template will look for the sphinx <code class="codehilite"><span class="err">conf.py</span></code> file <code class="codehilite"><span class="err">doc/source</span></code> directory of the repository.</li>
 </ul>
 <h3 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h3>
 <p>The follow environment variables can be used to tune the behavior of the utility.</p>
@@ -584,8 +596,8 @@ generation fails. </p>
 </tr>
 </tbody>
 </table>
-<p>The generated documentation is written into the build artifacts in the <code class="codehilite"><span class="n">documentation</span><span class="o">/</span><span class="err">{</span><span class="n">tool</span><span class="err">}</span></code> directory.</p>
-<p>So, documentation built using the <a href="">mkdocs</a> tool will be found in the build artifacts in the <code class="codehilite"><span class="n">documentation</span><span class="o">/</span><span class="n">mkdocs</span></code>
+<p>The generated documentation is written into the build artifacts in the <code class="codehilite"><span class="err">documentation/{tool}</span></code> directory.</p>
+<p>So, documentation built using the <a href="">mkdocs</a> tool will be found in the build artifacts in the <code class="codehilite"><span class="err">documentation/mkdocs</span></code>
 directory.  </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -593,7 +605,7 @@ directory.  </p>
 does not serve css and javascript for the documents so while content can easily be viewed aspects of the
 theme of the content will likely not be fully visible.</p>
 </div>
-<p>The logs from generating the documentation are stored in the build_artifacts in the <code class="codehilite"><span class="n">logs</span><span class="o">/</span><span class="err">{</span><span class="n">tool</span><span class="err">}</span></code> directory.</p>
+<p>The logs from generating the documentation are stored in the build_artifacts in the <code class="codehilite"><span class="err">logs/{tool}</span></code> directory.</p>
 <p>Here is an example of the artifacts from a build of documentation using the mkdocs tool:
 <img alt="" src="../images/documentation_artifacts.png" /></p>
                 

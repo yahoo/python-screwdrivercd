@@ -482,6 +482,18 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../changelog/" title="Changes" class="md-nav__link">
+      Changes
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -618,9 +630,9 @@
                 
                 <h1 id="validation-helpers">Validation helpers<a class="headerlink" href="#validation-helpers" title="Permanent link">&para;</a></h1>
 <h2 id="code-style-validation-screwdrivercd_validate_style">Code Style Validation - screwdrivercd_validate_style<a class="headerlink" href="#code-style-validation-screwdrivercd_validate_style" title="Permanent link">&para;</a></h2>
-<p>The <code class="codehilite"><span class="n">screwdrivercd_validate_style</span></code> command runs the codestyle command from the codestyle package.</p>
+<p>The <code class="codehilite"><span class="err">screwdrivercd_validate_style</span></code> command runs the codestyle command from the codestyle package.</p>
 <h3 id="environment-settings">Environment Settings<a class="headerlink" href="#environment-settings" title="Permanent link">&para;</a></h3>
-<p>All settings for the <code class="codehilite"><span class="n">scrwedrivercd_validate_type</span></code> command are specified via environment variables.</p>
+<p>All settings for the <code class="codehilite"><span class="err">scrwedrivercd_validate_type</span></code> command are specified via environment variables.</p>
 <p>The following settings are supported:</p>
 <table>
 <thead>
@@ -675,17 +687,17 @@
 </tbody>
 </table>
 <h2 id="dependency-validation-screwdrivercd_validate_deps">Dependency Validation - screwdrivercd_validate_deps<a class="headerlink" href="#dependency-validation-screwdrivercd_validate_deps" title="Permanent link">&para;</a></h2>
-<p>The <code class="codehilite"><span class="n">screwdriver_validate_deps</span></code> command runs the <a href="https://github.com/pyupio/safety">safety</a> utility to validate the package does
+<p>The <code class="codehilite"><span class="err">screwdriver_validate_deps</span></code> command runs the <a href="https://github.com/pyupio/safety">safety</a> utility to validate the package does
 not use package dependencies with security issues.</p>
 <h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
 <p>This example runs the dependency check</p>
 <p>!!! example "screwdriver.yaml - With dependency check</p>
-<div class="codehilite"><pre><span></span><span class="o">```</span><span class="n">yaml</span>
-<span class="k">version</span><span class="p">:</span> <span class="mi">4</span>
-<span class="n">jobs</span><span class="p">:</span>
-    <span class="n">style_check</span><span class="p">:</span>
-        <span class="k">template</span><span class="p">:</span> <span class="n">python</span><span class="o">/</span><span class="n">validate_dependencies</span>
-<span class="o">```</span>
+<div class="codehilite"><pre><span></span><span class="err">```yaml</span>
+<span class="c">version: 4</span>
+<span class="c">jobs:</span>
+<span class="c">    style_check:</span>
+<span class="c">        template: python/validate_dependencies</span>
+<span class="err">```</span>
 </pre></div>
 
 
@@ -705,9 +717,9 @@ not use package dependencies with security issues.</p>
 </tbody>
 </table>
 <h2 id="type-validation-screwdrivercd_validate_type">Type Validation - screwdrivercd_validate_type<a class="headerlink" href="#type-validation-screwdrivercd_validate_type" title="Permanent link">&para;</a></h2>
-<p>The <code class="codehilite"><span class="n">screwdrivercd_validate_type</span></code> command runs type annotation validations using the mypy tool.</p>
+<p>The <code class="codehilite"><span class="err">screwdrivercd_validate_type</span></code> command runs type annotation validations using the mypy tool.</p>
 <h3 id="environment-settings_1">Environment Settings<a class="headerlink" href="#environment-settings_1" title="Permanent link">&para;</a></h3>
-<p>All settings for the <code class="codehilite"><span class="n">scrwedrivercd_validate_type</span></code> command are specified via environment variables.</p>
+<p>All settings for the <code class="codehilite"><span class="err">scrwedrivercd_validate_type</span></code> command are specified via environment variables.</p>
 <p>The following settings are supported:</p>
 <table>
 <thead>
