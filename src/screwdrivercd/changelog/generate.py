@@ -109,7 +109,7 @@ def changelog_contents(changelog_releases: str='') -> str:
     if not changelog_releases:
         changelog_releases = os.environ.get('CHANGELOG_RELEASES', 'all')
 
-    only_versions = env_bool('CHANGELOG_ONLY_VERSION_TAGS', True)
+    only_versions = bool(env_bool('CHANGELOG_ONLY_VERSION_TAGS', True))
     changelog_dir = os.environ.get('CHANGELOG_DIR', 'changelog.d')
     changelog_name = os.environ.get('CHANGELOG_NAME', '')
     if not changelog_name and os.path.exists('setup.py'):
