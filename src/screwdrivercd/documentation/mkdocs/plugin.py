@@ -15,7 +15,7 @@ class MkDocsDocumentationPlugin(DocumentationPlugin):
     build_output_dir = ''
     possible_config_files = ['mkdocs.yml', 'docs/mkdocs.yml']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # pragma: no cover
         super().__init__(*args, **kwargs)
         self.build_command = [interpreter_bin_command(), '-m', 'mkdocs', 'build', '--config-file', self.config_file, '--site-dir', self.build_dir]
 

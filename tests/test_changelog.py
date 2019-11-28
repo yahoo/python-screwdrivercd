@@ -48,18 +48,17 @@ class ScrewdriverChangelogTestCase(ScrewdriverTestCase):
         self.write_config_files({'changelog.d/2.feature.md': b'Added another new feature\n'})
         os.system('git add changelog.d/2.feature.md')
         os.system('git commit -a -m "second commit"')
-        os.system('git tag v0.0.1')
+        os.system('git tag -a -m "new tag" v0.0.1')
 
         self.write_config_files({'changelog.d/3.feature.md': b'Added a second new feature\n'})
         os.system('git add changelog.d/3.feature.md')
         os.system('git commit -a -m "third commit"')
-        os.system('git tag v0.1.0')
+        os.system('git tag -a -m "new tag" v0.1.0')
 
         self.write_config_files({'changelog.d/4.bugfix.md': b'Fixed the second new feature\n'})
         os.system('git add changelog.d/4.bugfix.md')
         os.system('git commit -a -m "forth commit"')
-        os.system('git tag v0.1.1')
-
+        os.system('git tag -a -m "new tag" v0.1.1')
 
     def test__changelog_generate_main(self):
         self.create_example_repo()
@@ -72,9 +71,52 @@ class ScrewdriverChangelogTestCase(ScrewdriverTestCase):
 
         print(changelog_contents)
 
+        self.assertNotIn('# mypyvalidator first_commit (', changelog_contents)
+        self.assertNotIn('# mypyvalidator new (', changelog_contents)
         self.assertIn('# mypyvalidator v0.0.1 (', changelog_contents)
         self.assertIn('# mypyvalidator v0.1.0 (', changelog_contents)
         self.assertIn('# mypyvalidator v0.1.1 (', changelog_contents)
+
+    def test__changelog_generate_main__nofilter_nonversons(self):
+        os.environ['CHANGELOG_ONLY_VERSION_TAGS'] = 'False'
+
+        self.create_example_repo()
+
+        self.write_config_files({'changelog.d/6.bugfix.md': b'Make sure version filter can be turned off\n'})
+        os.system('git add changelog.d/6.bugfix.md')
+        os.system('git commit -a -m "sixth commit"')
+        os.system('git tag -a -m "latest tag" latest')
+
+        changelog_generate_main()
+
+        self.assertTrue(os.path.exists('artifacts/reports/changelog/changelog.md'))
+        with open('artifacts/reports/changelog/changelog.md') as fh:
+            changelog_contents = fh.read()
+
+        os.system('git log --date-order --tags --simplify-by-decoration --pretty=format:"%ct|%D"')
+        print(changelog_contents)
+
+        self.assertNotIn('# mypyvalidator first_commit (', changelog_contents)
+        self.assertIn('# mypyvalidator latest (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.0.1 (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.1.0 (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.1.1 (', changelog_contents)
+
+    def test_generate_main__single_version(self):
+        os.environ['CHANGELOG_RELEASES'] = 'v0.1.0'
+        self.create_example_repo()
+
+        changelog_generate_main()
+
+        self.assertTrue(os.path.exists('artifacts/reports/changelog/changelog.md'))
+        with open('artifacts/reports/changelog/changelog.md') as fh:
+            changelog_contents = fh.read()
+
+        print(changelog_contents)
+
+        self.assertNotIn('# mypyvalidator v0.0.1 (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.1.0 (', changelog_contents)
+        self.assertNotIn('# mypyvalidator v0.1.1 (', changelog_contents)
 
     def test_create_first_commit_tag_if_missing__missing(self):
         self.create_example_repo()

@@ -183,17 +183,6 @@ class DocumentationPlugin:
             if not os.path.exists(self.clone_dir):
                 raise DocPublishError(f"Repo directory {self.clone_dir} is missing after git clone")
 
-    def generate_changelog(self):
-        """
-        Generate a changelog if the CHANGELOG_FILENAME is set
-        """
-        changelog_filename = os.environ.get('CHANGELOG_FILENAME', '')
-        if not changelog_filename:
-            return
-
-        self._log_message(f'\n- Writing changelog to {changelog_filename!r}', self.build_log_filename)
-        write_changelog(changelog_filename)
-
     def get_clone_url(self) -> str:
         """
         Determine the git clone url for the current git repo
@@ -286,7 +275,6 @@ class DocumentationPlugin:
             The root directory of the generated documenation
         """
         self._log_message(f'\n- Building the {self.name} format documentation', self.build_log_filename)
-        self.generate_changelog()
 
         cwd = os.getcwd()
         os.chdir(self.source_dir)
@@ -358,10 +346,22 @@ def documentation_plugins(documentation_formats=None):
         yield instance
 
 
+def generate_changelog():
+    """
+    Generate a changelog if the CHANGELOG_FILENAME is set
+    """
+    changelog_filename = os.environ.get('CHANGELOG_FILENAME', '')
+    if not changelog_filename:
+        return
+
+    write_changelog(changelog_filename)
+
+
 def build_documentation(documentation_formats=None):
     """
     Generate documentation using all plugins that can generate documentation
     """
+    generate_changelog()
     for documentation_plugin in documentation_plugins(documentation_formats=documentation_formats):
         if documentation_plugin.documentation_is_present:
 
@@ -395,6 +395,7 @@ def publish_documentation(documentation_formats=None):
     Publish documentation using all plugins that can generate documentation
     """
     clear_before_build = True
+    generate_changelog()
     for documentation_plugin in documentation_plugins(documentation_formats=documentation_formats):
         if documentation_plugin.documentation_is_present:
             print(f'Publishing {documentation_plugin.name!r} documentation: ', end='', flush=True)

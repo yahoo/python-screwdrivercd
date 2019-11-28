@@ -77,7 +77,7 @@ def main() -> int:
     int:
         Returncode from running the check
     """
-    return validate_package_quality()
+    return validate_package_quality()  # pragma: no cover
 
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ class SphinxDocumentationPlugin(DocumentationPlugin):
     build_dest = 'build/sphinx/html'
     builder = 'html'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # pragma: no cover
         super().__init__(*args, **kwargs)
         self.source_dir = os.path.join(self.source_dir, 'doc/source')
         self.build_output_dir = 'build/sphinx/html'

@@ -4,7 +4,7 @@ import copy
 from json import dumps
 import os
 from . import ScrewdriverTestCase
-from screwdrivercd.packaging.build_python import build_sdist_package
+from screwdrivercd.packaging.build_python import build_sdist_package, build_wheel_packages
 from screwdrivercd.validation.validate_dependencies import validate_with_safety
 from screwdrivercd.validation.validate_package_quality import validate_package_quality
 from screwdrivercd.validation.validate_style import main as style_main
@@ -225,5 +225,13 @@ class PackageQualityValidatorTestCase(ScrewdriverTestCase):
         os.environ['PYROMA_MIN_SCORE'] = '0'
         self.write_config_files(working_config)
         build_sdist_package()
+        result = validate_package_quality()
+        self.assertEqual(result, 0)
+
+    def test__quality__skip_wheel_pass__0(self):
+        os.environ['PYROMA_MIN_SCORE'] = '0'
+        self.write_config_files(working_config)
+        build_sdist_package()
+        build_wheel_packages()
         result = validate_package_quality()
         self.assertEqual(result, 0)
