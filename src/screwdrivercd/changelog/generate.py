@@ -111,6 +111,7 @@ def changelog_contents(changelog_releases: str='') -> str:
 
     only_versions = bool(env_bool('CHANGELOG_ONLY_VERSION_TAGS', True))
     changelog_dir = os.environ.get('CHANGELOG_DIR', 'changelog.d')
+    header_filename = os.path.join(changelog_dir, 'HEADER.md')
     changelog_name = os.environ.get('CHANGELOG_NAME', '')
     if not changelog_name and os.path.exists('setup.py'):
         try:
@@ -122,10 +123,18 @@ def changelog_contents(changelog_releases: str='') -> str:
     release_dates = git_tag_dates()
 
     output = ''
+    header = ''
     release_changelog = release_changes(changelog_dir, only_versions=only_versions)
-    if changelog_releases != 'all':
+    if changelog_releases == 'all':
+        if os.path.exists(header_filename):
+            with open(header_filename) as fh:
+                header = fh.read()
+    else:
         if changelog_releases in release_changelog.keys():
             release_changelog = {changelog_releases: release_changelog[changelog_releases]}
+
+    if header:
+        output += header + os.linesep
 
     releases = list(release_changelog.keys())
     releases.reverse()
@@ -135,14 +144,14 @@ def changelog_contents(changelog_releases: str='') -> str:
         if not changes or release in ['first_commit', 'last_commit']:
             continue
         date = datetime.fromtimestamp(int(release_dates[release]))
-        output += f'# {changelog_name} {release} ({date}){os.linesep}'
         output += f'{os.linesep}---{os.linesep}'
+        output += f'## {changelog_name} {release} ({date:%Y-%m-%d}){os.linesep}'
 
         for change_type, change_desc in CHANGE_TYPES.items():
             if change_type not in changes.keys():
                 continue
 
-            output += f'## {change_desc}{os.linesep}'
+            output += f'### {change_desc}{os.linesep}'
             for changeid, change_text in changes[change_type].items():
                 output += f'- {change_text}{os.linesep}'
         output += f'{os.linesep}'
