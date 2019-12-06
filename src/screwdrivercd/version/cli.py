@@ -3,7 +3,7 @@
 """Functions for command script"""
 # The logging_basicConfig has to be run before other imports because some modules we use log output on import
 # pylint: disable=wrong-import-order, wrong-import-position
-from ..screwdriver.environment import logging_basicConfig
+from ..screwdriver.environment import logging_basicConfig,  update_job_status
 logging_basicConfig(check_prefix='VERSION')
 
 import logging
@@ -29,7 +29,7 @@ def main():
         version.update_setup_cfg_metadata()
         if args.update_meta:
             version.update_meta_version()
-            # update_job_status(status='SUCCESS', message=f'version=={version}')
+            update_job_status(status='SUCCESS', message=f'version=={version}')
             print(f'Version in setup.cfg and screwdriver v4 metadata package.version updated to: {version}', flush=True)
         else:
             print(f'Version in setup.cfg updated to: {version}')
