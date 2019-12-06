@@ -30,6 +30,7 @@ nav:
     - Quickstart: index.md
     - Integration Utilities:
         - Build Dependency Installer: Install_Dependencies.md
+        - Changelog Generator: changelog_generator.md
         - Documentation: documentation.md
         - Github: github_integration.md
         - Package Versioning: Versioning.md
