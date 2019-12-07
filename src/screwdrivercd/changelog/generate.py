@@ -14,6 +14,7 @@ from typing import Dict, List, Union
 
 from ..utility.environment import env_bool
 from ..utility.package import setup_query
+from ..utility.run import run_and_log_output
 
 
 LOG = logging.getLogger(__name__)
@@ -27,14 +28,23 @@ CHANGE_TYPES = dict(
 )
 
 
+def git_fetch_tags():
+    artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
+    log_filename = os.path.join(artifacts_dir, 'logs/changelog/fetch_tags.log')
+
+    command = ['git', 'fetch', '--tags']
+    run_and_log_output(command, logfile=log_filename)
+
+
 def git_tag_dates() -> Dict[str, str]:
     tags = {}
 
-    # command = ['git', 'tag', '--list', '--format', '%(creatordate:short)|%(refname:short)', '--sort', 'taggerdate']
-    command = ['git', 'log', '--date-order', '--tags', '--simplify-by-decoration', '--pretty=format:%ct|%D']
+    command = ['git', 'log', '--date-order', '--tags', '--simplify-by-decoration', '--pretty=format:%ct|%d']
     with subprocess.Popen(command, stdout=subprocess.PIPE) as tag_command:  # nosec
         for line in tag_command.stdout.readlines():
             date, all_tags = line.decode(errors='ignore').strip().split('|')
+            all_tags = all_tags.strip().lstrip('(').rstrip(')')
+
             for tag in all_tags.split(','):
                 tag = tag.strip()
                 if tag.startswith('tag: '):
@@ -48,7 +58,8 @@ def create_first_commit_tag_if_missing() -> None:
         return
 
     first_commit_hash = subprocess.check_output(['git', 'rev-list', '--max-parents=0', 'HEAD'], stderr=subprocess.DEVNULL).decode(errors='ignore').strip()  # nosec
-    output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
+    if first_commit_hash:
+        output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
 
 
 def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') -> List[Path]:
@@ -170,6 +181,7 @@ def main():
     report_dir = os.path.join(artifacts_dir, 'reports/changelog')
     report_filename = os.environ.get('CHANGELOG_FILENAME', os.path.join(report_dir, 'changelog.md'))
 
+    git_fetch_tags()
     write_changelog(report_filename)
 
 
