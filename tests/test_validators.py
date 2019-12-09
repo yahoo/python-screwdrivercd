@@ -202,7 +202,7 @@ class PackageQualityValidatorTestCase(ScrewdriverTestCase):
 
     def test__quality__no_package_default_fail(self):
         result = validate_package_quality()
-        self.assertEqual(result, 1)
+        self.assertEqual(result, 0)
 
     def test__quality__no_package_fail(self):
         os.environ['VALIDATE_PACKAGE_QUALITY_FAIL_MISSING'] = 'True'

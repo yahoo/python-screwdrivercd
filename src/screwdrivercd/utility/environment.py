@@ -6,7 +6,7 @@ Screwdriver Utility Runtime environment functions
 import logging
 import os
 import sys
-from typing import Union
+from typing import Dict, Union
 
 from pypirun.cli import interpreter_parent
 
@@ -105,3 +105,35 @@ def interpreter_bin_command(command: str = 'python', fallback_path: bool=True) -
     if fallback_path:
         return command
     return ''
+
+
+def standard_directories(command: str='') -> Dict[str, str]:
+    """
+    Dictionary of standard directory locations for a command
+
+    Parameters
+    ----------
+    command: str, optional
+        The name of the command to get the directories for, if no command is given the base directory will be used
+
+    Returns
+    -------
+    dict of str
+        A dictionary of directory types and paths
+    """
+    sep = ''
+    if command:
+        sep = os.sep
+
+    artifacts_dir: str = os.environ.get('SD_ARTIFACTS_DIR', '')
+    directories: Dict[str, str] = {
+        'artifacts': artifacts_dir,
+        'documentation': os.path.join(artifacts_dir, f'documentation'),
+        'logs': os.path.join(artifacts_dir, f'logs{sep}{command}'),
+        'packages': os.path.join(artifacts_dir, f'packages'),
+        'reports': os.path.join(artifacts_dir, f'reports{sep}{command}'),
+    }
+    for directory in directories.values():
+        os.makedirs(directory, exist_ok=True)
+
+    return directories

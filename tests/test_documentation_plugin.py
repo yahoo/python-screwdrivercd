@@ -88,7 +88,49 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         p.build_documentation()
         self.assertTrue(os.path.exists(f'{p.log_dir}/{p.name}.build.log'))
 
+    def test__remove_build_log(self):
+        p = self.plugin_class()
+        p.build_log_filename = os.path.join(self.tempdir.name, 'build.log')
+        Path(p.build_log_filename).touch()
+        self.assertTrue(os.path.exists(p.build_log_filename))
+        p.remove_build_log()
+        self.assertFalse(os.path.exists(p.build_log_filename))
 
+    def test__remove_publish_log(self):
+        p = self.plugin_class()
+        p.publish_log_filename = os.path.join(self.tempdir.name, 'publish.log')
+        Path(p.publish_log_filename).touch()
+        self.assertTrue(os.path.exists(p.publish_log_filename))
+        p.remove_publish_log()
+        self.assertFalse(os.path.exists(p.publish_log_filename))
+
+    def test__clean_directory(self):
+        p = self.plugin_class()
+        testdir = Path(self.tempdir.name) / 'testdir'
+        testdir.mkdir(exist_ok=True)
+        testfile = testdir / 'testfile'
+        testfile.touch()
+        p.clean_directory(str(testdir))
+        self.assertFalse(testfile.exists())
+
+    def test__copy_contents(self):
+        dir1 = Path(self.tempdir.name) / 'dir1'
+        dir2 = Path(self.tempdir.name) / 'dir2'
+        srctestfile = dir1 / 'testfile'
+        srctestdotfile = dir1 / '.testfile'
+        dsttestfile = dir2 / 'testfile'
+        dsttestdotfile = dir2 / '.testfile'
+
+        dir1.mkdir(exist_ok=True)
+        dir2.mkdir(exist_ok=True)
+        srctestfile.touch()
+        srctestdotfile.touch()
+
+        p = self.plugin_class()
+        p.copy_contents(str(dir1), str(dir2))
+
+        self.assertTrue(dsttestfile.exists())
+        self.assertTrue(dsttestdotfile.exists())
 
 
 class SphinxDocumentationPluginTestCase(DocumentationPluginTestCase):

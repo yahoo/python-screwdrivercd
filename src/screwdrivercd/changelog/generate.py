@@ -18,7 +18,6 @@ from ..utility.run import run_and_log_output
 
 
 LOG = logging.getLogger(__name__)
-
 CHANGE_TYPES = dict(
     feature='Features',
     bugfix='Bugfixes',
@@ -101,6 +100,8 @@ def release_changes(changelog_dir: str, only_versions: bool=True) -> Dict[str, D
         changes[commit] = {}
         for change in changed:
             filename = change.parts[-1]
+            if filename in ['README.md', 'FOOTER.md', 'HEADER.md']:
+                continue
             split_filename = str(filename).split('.')
             changeid = split_filename[0]
             change_type = split_filename[1]
@@ -117,32 +118,59 @@ def release_changes(changelog_dir: str, only_versions: bool=True) -> Dict[str, D
 
 
 def changelog_contents(changelog_releases: str='') -> str:
+    """
+    Generate the changelog and return the contents as a string
+
+    Parameters
+    ----------
+    changelog_releases: str, optional
+        Comma separated list of releases to include in the changelog.  If
+        not provided, will use all the releases.
+
+    Returns
+    -------
+    str:
+        The generated changelog in markdown format.
+    """
     if not changelog_releases:
         changelog_releases = os.environ.get('CHANGELOG_RELEASES', 'all')
 
     only_versions = bool(env_bool('CHANGELOG_ONLY_VERSION_TAGS', True))
     changelog_dir = os.environ.get('CHANGELOG_DIR', 'changelog.d')
+
     header_filename = os.path.join(changelog_dir, 'HEADER.md')
+    footer_filename = os.path.join(changelog_dir, 'FOOTER.md')
+
     changelog_name = os.environ.get('CHANGELOG_NAME', '')
     if not changelog_name and os.path.exists('setup.py'):
         try:
             changelog_name = setup_query('--name')
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError:  # pragma: no cover
             changelog_name = ''
-    if not changelog_name:
+    if not changelog_name:  # pragma: no cover
         changelog_name = 'Unknown'
     release_dates = git_tag_dates()
 
     output = ''
+    footer = ''
     header = ''
     release_changelog = release_changes(changelog_dir, only_versions=only_versions)
     if changelog_releases == 'all':
         if os.path.exists(header_filename):
             with open(header_filename) as fh:
                 header = fh.read()
+        if os.path.exists(footer_filename):
+            with open(footer_filename) as fh:
+                footer = fh.read()
     else:
-        if changelog_releases in release_changelog.keys():
-            release_changelog = {changelog_releases: release_changelog[changelog_releases]}
+        selected_releases = set([_.strip() for _ in changelog_releases.split(',')])
+        available_releases = set(list(release_changelog.keys()))
+
+        new_release_changelog = {}
+        for release in available_releases.intersection(selected_releases):
+            new_release_changelog[release] = release_changelog[release]
+
+        release_changelog = new_release_changelog
 
     if header:
         output += header + os.linesep
@@ -152,7 +180,7 @@ def changelog_contents(changelog_releases: str='') -> str:
 
     for release in releases:
         changes = release_changelog[release]
-        if not changes or release in ['first_commit', 'last_commit']:
+        if not changes or release in ['first_commit', 'last_commit']:  # pragma: no cover
             continue
         date = datetime.fromtimestamp(int(release_dates[release]))
         output += f'{os.linesep}---{os.linesep}'
@@ -166,6 +194,9 @@ def changelog_contents(changelog_releases: str='') -> str:
             for changeid, change_text in changes[change_type].items():
                 output += f'- {change_text}{os.linesep}'
         output += f'{os.linesep}'
+    if footer:
+        output += os.linesep + footer
+
     return output
 
 

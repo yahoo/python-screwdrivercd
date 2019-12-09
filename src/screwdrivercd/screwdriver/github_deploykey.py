@@ -5,8 +5,9 @@ Screwdriver github deploy key setup utility
 """
 # The logging_basicConfig has to be run before other imports because some modules we use log output on import
 # pylint: disable=wrong-import-order, wrong-import-position
-from ..screwdriver.environment import logging_basicConfig, update_job_status
+from ..screwdriver.environment import logging_basicConfig
 logging_basicConfig(check_prefix='GIT_DEPLOYKEY')
+
 import base64
 import logging
 import os
@@ -59,7 +60,7 @@ def git_key_secret() -> bytes:
     return git_key_decoded
 
 
-def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
+def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):  # pragma: no cover
     """
     Add the github hosts to the known hosts
 

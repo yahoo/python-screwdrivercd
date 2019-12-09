@@ -17,7 +17,7 @@ from termcolor import colored
 from .exceptions import DocBuildError, DocPublishError
 from .utility import clean_directory, copy_contents
 from ..changelog.generate import write_changelog
-from ..utility.environment import interpreter_bin_command
+from ..utility.environment import interpreter_bin_command, standard_directories
 
 
 logger = logging.getLogger(__name__)
@@ -40,9 +40,10 @@ class DocumentationPlugin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        directories = standard_directories('documentation')
         self.interpreter_bin_dir = os.path.dirname(sys.executable)
-        self.build_dir = os.path.join(os.environ.get('SD_ARTIFACTS_DIR', ''), f'documentation/{self.name}')
-        self.log_dir = os.path.join(os.environ.get('SD_ARTIFACTS_DIR', ''), f'logs/documentation/{self.name}')
+        self.build_dir = directories['documentation']
+        self.log_dir = directories['logs']
         self.build_log_filename = os.path.join(self.log_dir, f'{self.name}.build.log')
         self.publish_log_filename = os.path.join(self.log_dir, f'{self.name}.publish.log')
         self.build_dest = os.path.join(self.build_dir, self.build_output_dir)
@@ -197,7 +198,7 @@ class DocumentationPlugin:
         os.chdir(self.source_dir)
         try:
             output = subprocess.check_output(['git', 'remote', 'show', 'origin'], stderr=subprocess.DEVNULL)  # nosec - All subprocess calls use full path
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError:  # pragma: no cover
             os.chdir(cwd)
             return ''
         for line in output.decode(errors='ignore').split(os.linesep):
@@ -241,10 +242,10 @@ class DocumentationPlugin:
         message: str, optional
             The commit message to use
         """
-        self._log_message('\n- Comitting git changes', self.publish_log_filename)
+        self._log_message('\n- Committing git changes', self.publish_log_filename)
         self._run_command(['git', 'commit', '-a', '-m', message], log_filename=self.publish_log_filename)
 
-    def git_push_documentation(self):
+    def git_push_documentation(self):  # pragma: no cover
         """
         Push the current repository
         """
@@ -290,7 +291,7 @@ class DocumentationPlugin:
 
         return self.build_dest
 
-    def publish_documentation(self, clear_before_build=True):
+    def publish_documentation(self, clear_before_build=True):  # pragma: no cover
         """
         Build and publsh the documentation
 

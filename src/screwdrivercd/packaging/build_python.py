@@ -77,7 +77,7 @@ def build_wheel_packages():
             os.rename(f'dist/{filename}', f'{dest_filename}')
             return [dest_filename], []
 
-    if manylinux and plat:
+    if manylinux and plat:  # pragma: no cover
         print('\n# Generating manylinux wheels', flush=True)
         for entry in os.listdir('/opt/python'):
             interpreter_dir = os.path.join('/opt/python', entry)
