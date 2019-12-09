@@ -114,6 +114,16 @@ class TestConfig(unittest.TestCase):
             self.assertListEqual(result.configuration['yum']['deps'], ['yahoo_python36;distro_version<"7.5', 'yahoo_python37;distro_version>="7.5"', 'mysql;distro_version<"7"', 'mariadb;distro_version>="7"'])
             self.assertListEqual(result.configuration['pip3']['deps'], [])
 
+    def test__configuration__test__deps__scrwdrivercd_installdeps(self):
+        with InTemporaryDirectory():
+            with open('pyproject.toml', 'w') as file_handle:
+                file_handle.write(TEST_CONFIG.replace('sdv4_installdeps', 'screwdrivercd_installdeps'))
+            result = Configuration()
+            self.assertListEqual(result.configuration['apk']['deps'], ['python3', 'mysql-client'])
+            self.assertListEqual(result.configuration['apt-get']['deps'], ['python3', 'mysql-client'])
+            self.assertListEqual(result.configuration['yinst']['deps'], ['python36', 'dist_utils'])
+            self.assertListEqual(result.configuration['yum']['deps'], ['yahoo_python36;distro_version<"7.5', 'yahoo_python37;distro_version>="7.5"', 'mysql;distro_version<"7"', 'mariadb;distro_version>="7"'])
+            self.assertListEqual(result.configuration['pip3']['deps'], [])
 
 if __name__ == '__main__':
     unittest.main()

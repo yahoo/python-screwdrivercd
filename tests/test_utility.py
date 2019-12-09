@@ -5,9 +5,11 @@ import subprocess
 import sys
 import tempfile
 
+from pprint import pprint
+
 from screwdrivercd.screwdriver.environment import update_job_status
 from screwdrivercd.utility.contextmanagers import InTemporaryDirectory, revert_file, working_dir
-from screwdrivercd.utility.environment import env_bool, env_int, flush_terminals, interpreter_bin_command
+from screwdrivercd.utility.environment import env_bool, env_int, flush_terminals, interpreter_bin_command, standard_directories
 from screwdrivercd.utility.package import run_setup_command, setup_query, PackageMetadata
 from screwdrivercd.utility.screwdriver import create_artifact_directory
 from screwdrivercd.utility.run import run_and_log_output
@@ -207,3 +209,26 @@ sys.exit(1)
     def test__update_job_status__invalid_status(self):
         with self.assertRaises(KeyError):
             update_job_status('BADDD', message='mojo')
+
+    def test__standard_directories__no_command(self):
+        os.environ['SD_ARTIFACTS_DIR'] = self.tempdir.name
+        result = standard_directories()
+        self.assertEqual(result['artifacts'], f'{self.tempdir.name}')
+        self.assertEqual(result['documentation'], f'{self.tempdir.name}/documentation')
+        self.assertEqual(result['logs'], f'{self.tempdir.name}/logs')
+        self.assertEqual(result['packages'], f'{self.tempdir.name}/packages')
+        self.assertEqual(result['reports'], f'{self.tempdir.name}/reports')
+        for value in result.values():
+            self.assertTrue(os.path.exists(value))
+
+    def test__standard_directories__command(self):
+        os.environ['SD_ARTIFACTS_DIR'] = self.tempdir.name
+        result = standard_directories(command='foo')
+        pprint(result)
+        self.assertEqual(result['artifacts'], f'{self.tempdir.name}')
+        self.assertEqual(result['documentation'], f'{self.tempdir.name}/documentation')
+        self.assertEqual(result['logs'], f'{self.tempdir.name}/logs{os.sep}foo')
+        self.assertEqual(result['packages'], f'{self.tempdir.name}/packages')
+        self.assertEqual(result['reports'], f'{self.tempdir.name}/reports{os.sep}foo')
+        for value in result.values():
+            self.assertTrue(os.path.exists(value))

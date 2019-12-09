@@ -177,7 +177,7 @@ class Installer():
                 LOG.debug(f'Enabling {repo_name!r} repo')
             self.add_repo(repo_name=repo_name, repo_url=repo_url)
 
-    def add_repo(self, repo_name, repo_url):
+    def add_repo(self, repo_name, repo_url):  # pragma: no cover
         """
         Add a repository to the host configuration
 
@@ -188,7 +188,6 @@ class Installer():
 
         repo_url: str
             The url of the repository to add
-
         """
 
     def determine_bin_directory(self):
@@ -224,12 +223,10 @@ class Installer():
         """
         self.determine_bin_directory()
         if self.install_command[0].startswith('/'):
-            # LOG.debug(f'Install command {self.install_command[0]} is already a full path')
             return
 
         if self.bin_dir:
             full_command = os.path.abspath(os.path.join(self.bin_dir, self.install_command[0]))
-            # LOG.debug(f'Updating install command to: {full_command}')
             self.install_command[0] = full_command
         else:
             if self.use_system_path:
@@ -251,7 +248,6 @@ class Installer():
                 continue
 
             if req.env_matches:
-                # LOG.debug(f'Dependency {dependency} matches the environment')
                 dependency = dependency.split(';')[0]
                 new_dependencies.append(dependency)
                 continue

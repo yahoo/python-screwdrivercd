@@ -27,7 +27,7 @@ def working_dir(new_path):
 
 
 @contextmanager
-def revert_file(filename):
+def revert_file(filename):  # pragma: no cover
     """
     A context manager that reverts a file's contents.
     """

@@ -13,7 +13,7 @@ from .metadata import Metadata
 
 def get_env_job_name(default='') -> str:
     """
-    Get the job name from the scrwdriver environment that matches the name as reported to github
+    Get the job name from the screwdriver environment that matches the name as reported to github
 
     Returns
     -------

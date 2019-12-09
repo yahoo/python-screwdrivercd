@@ -22,7 +22,7 @@ def clean_directory(directory_name):
         Directory to be cleaned up.
     """
     for filename in os.listdir(directory_name):
-        if filename.startswith('.'):
+        if filename.startswith('.'):  # pragma: no cover
             continue
         full_filename = os.path.join(directory_name, filename)
         logger.debug('Removing file: %s', full_filename)
@@ -55,7 +55,7 @@ def copy_contents(src, dest, skip_dotfiles=False):
 
     for dirname, subdirlist, filelist in os.walk('.'):  # pylint: disable=W0612
         logger.debug('Found directory: %s', dirname)
-        if dirname.startswith('./'):
+        if dirname.startswith('./'):  # pragma: no cover
             dirname = dirname[2:]
         destdir = os.path.join(dest, dirname)
         logger.debug('Dest directory: %s', destdir)
