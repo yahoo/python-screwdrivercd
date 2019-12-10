@@ -5,7 +5,7 @@ systems in a single configuration file.
 
 ## Rationale
 
-This utility provides a single place to configure gloabal/operating system dependencies
+This utility provides a single place to configure global/operating system dependencies
 and simplifies creating CI/CD Pipelines that install and build the same package for multiple different
 operating system environments in a coherent manner.
 

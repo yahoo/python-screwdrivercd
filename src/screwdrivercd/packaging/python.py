@@ -3,7 +3,12 @@
 """
 Python packaging command line wrapper
 """
+import sys
 from .build_python import main
 
 
 main()
+
+
+if __name__ == '__main__':
+    sys.exit(main())

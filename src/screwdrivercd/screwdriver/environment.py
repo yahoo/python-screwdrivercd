@@ -21,9 +21,6 @@ def get_env_job_name(default='') -> str:
         Job name, will be an empty string if a name is not present in the environment
     """
     job_name = os.environ.get('SD_JOB_NAME', default).split(':')[-1]
-    # pr = os.environ.get('SD_PULL_REQUEST', '')
-    # if pr:
-    #     return f'PR:{job_name}'
     return job_name
 
 
@@ -38,7 +35,7 @@ def logging_basicConfig(**kwargs):
     return logging.basicConfig(**kwargs)
 
 
-def update_job_status(status='SUCCESS', message='Everything looks good!'):
+def update_job_status(status='SUCCESS', message='Everything looks good!'):  # pragma: no cover
     """
     Update the job status in the screwdriver metadata
 

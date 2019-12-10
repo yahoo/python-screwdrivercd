@@ -6,7 +6,7 @@ screwdrivercd utility functions
 import os
 
 
-def create_artifact_directory(artifact_directory: str = ''):
+def create_artifact_directory(artifact_directory: str = '') -> None:
     """
     Create the artifact directory if it is not present
 
@@ -18,6 +18,6 @@ def create_artifact_directory(artifact_directory: str = ''):
     """
     if not artifact_directory:
         artifact_directory = os.environ.get('SD_ARTIFACTS_DIR', 'artifacts')
+
     artifact_directory = str(artifact_directory)
-    if not os.path.exists(artifact_directory):
-        os.makedirs(artifact_directory, exist_ok=True)
+    os.makedirs(artifact_directory, exist_ok=True)
