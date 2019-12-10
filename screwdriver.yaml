@@ -60,7 +60,7 @@ jobs:
         steps:
             - publish_packages: |
                 $BASE_PYTHON -m pip install -U .
-                $BASE_PYTHON -m screwdrivercd.packaging.python_publish
+                $BASE_PYTHON -m screwdrivercd.packaging.publish_python
                 
         requires: [~pr, ~commit]
 
