@@ -64,7 +64,7 @@ def poll_until_available(package: str, packages: Set[str], endpoint: str='https:
     """
     start = datetime.utcnow()
     end = start + timedelta(seconds=timeout)
-    completed = set()
+    completed: Set[str] = set()
 
     while datetime.utcnow() < end:
         for filename in packages - completed:
@@ -88,10 +88,7 @@ def main(twine_command: str='') -> int:
     directories = standard_directories(command='publish_python')
     user = os.environ.get('PYPI_USER', None)
     password = os.environ.get('PYPI_PASSWORD', None)
-    publish_timeout = os.environ.get('PUBLISH_PYTHON_TIMEOUT', None)
-    if not publish_timeout:  # pragma: no cover
-        publish_timeout = os.environ.get('ARTIFACTORY_TIMEOUT', 300)
-    publish_timeout = int(publish_timeout)
+    publish_timeout = int(os.environ.get('PUBLISH_PYTHON_TIMEOUT', os.environ.get('ARTIFACTORY_TIMEOUT', "300")))
 
     twine_repository_url = os.environ.get('TWINE_REPOSITORY_URL', 'https://upload.pypi.org/legacy/')
 
@@ -156,7 +153,7 @@ def main(twine_command: str='') -> int:
     if endpoint.startswith('https://upload.'):
         endpoint = f'https://{endpoint[15:]}'
 
-    publish_failed = []
+    publish_failed: List[str] = []
     if publish_timeout:
         publish_failed = list(poll_until_available(package_name, set(published), endpoint=endpoint, timeout=publish_timeout))
 

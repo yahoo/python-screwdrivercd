@@ -61,7 +61,7 @@ def validate_with_safety():
     return rc
 
 
-def main():
+def main():  # pragma: no cover
     """
     Install dependencies utility command line entry point
 
@@ -74,4 +74,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
