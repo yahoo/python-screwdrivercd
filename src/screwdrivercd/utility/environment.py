@@ -100,7 +100,7 @@ def interpreter_bin_command(command: str = 'python', fallback_path: bool=True) -
         return new_command
     bin_dir = os.path.dirname(interpreter_parent(sys.executable))
     new_command = os.path.join(bin_dir, command)
-    if os.path.exists(new_command):
+    if os.path.exists(new_command):  # pragma: no cover
         return new_command
     if fallback_path:
         return command

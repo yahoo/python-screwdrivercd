@@ -35,7 +35,7 @@ def logging_basicConfig(**kwargs):
     return logging.basicConfig(**kwargs)
 
 
-def update_job_status(status='SUCCESS', message='Everything looks good!'):
+def update_job_status(status='SUCCESS', message='Everything looks good!'):  # pragma: no cover
     """
     Update the job status in the screwdriver metadata
 
@@ -54,7 +54,7 @@ def update_job_status(status='SUCCESS', message='Everything looks good!'):
     if status not in ['SUCCESS', 'FAILURE']:
         raise KeyError(f'Status {status} not found in ["SUCCESS", "FAILURE"]')
 
-    if not shutil.which('meta'):  # pragma: no cover
+    if not shutil.which('meta'):
         return
 
     metadata = Metadata()
