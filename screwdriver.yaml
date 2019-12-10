@@ -54,12 +54,12 @@ jobs:
 
     publish_test_pypi:
         template: python/package_python
-        image: manylinux2014
         environment:
             PUBLISH: True
             TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
         steps:
             - publish_packages: |
+                $BASE_PYTHON -m pip install -U .
                 $BASE_PYTHON -m screwdrivercd.packaging.publish_python
                 
         requires: [~pr, ~commit]
