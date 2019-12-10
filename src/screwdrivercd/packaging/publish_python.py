@@ -66,9 +66,10 @@ def poll_until_available(package: str, packages: Set[str], endpoint: str='https:
     end = start + timedelta(seconds=timeout)
     completed: Set[str] = set()
 
+    delay = 1
     while datetime.utcnow() < end:
         for filename in packages - completed:
-            if package_exists(package, filename):
+            if package_exists(package, filename, endpoint=endpoint):
                 completed.add(filename)
 
         if completed == packages:
@@ -77,7 +78,12 @@ def poll_until_available(package: str, packages: Set[str], endpoint: str='https:
         elapsed = datetime.utcnow() - start
         not_published = packages - completed
         print(f'\t{elapsed}: Published: {list(completed)}, Waiting for: {list(not_published)}', flush=True)
-        time.sleep(poll_interval)
+        
+        if delay < poll_interval:
+            delay = delay * 2
+        if delay > poll_interval:
+            delay = poll_interval
+        time.sleep(delay)
     return packages - completed
 
 
@@ -158,6 +164,7 @@ def main(twine_command: str='') -> int:
 
     publish_failed: List[str] = []
     if publish_timeout:
+        print(f'Polling {endpoint} for updated pacakge')
         publish_failed = list(poll_until_available(package_name, set(published), endpoint=endpoint, timeout=publish_timeout))
 
     if publish_failed:  # pragma: no cover
