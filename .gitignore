@@ -90,3 +90,5 @@ coverage.xml
 /.mypy_cache
 /reports
 /artifacts
+
+/venv
