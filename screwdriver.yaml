@@ -57,7 +57,7 @@ jobs:
         environment:
             PUBLISH: True
             TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
-        requires: [generate_version]
+        requires: [~pr, ~commit]
 
     verify_test_package:
         template: python/validate_pypi_package
