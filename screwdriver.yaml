@@ -58,7 +58,7 @@ jobs:
             PUBLISH: True
             TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
         steps:
-            - publish_package: |
+            - publish_packages: |
                 $BASE_PYTHON -m pip install -U .
                 $BASE_PYTHON -m screwdrivercd.packaging.python_publish
                 
