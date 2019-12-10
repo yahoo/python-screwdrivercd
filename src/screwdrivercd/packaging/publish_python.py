@@ -130,11 +130,12 @@ def main(twine_command: str='') -> int:
         print(f'Uploading {filename}', flush=True)
         command = [twine_command, 'upload', '--verbose', os.path.join(directories['packages'], filename)]
 
-        print(f'Running: {" ".join(command)}')
+        print(f'Making sure the TWINE environment is setup')
         os.environ['TWINE_USERNAME'] = user
         os.environ['TWINE_PASSWORD'] = password
         os.environ['TWINE_REPOSITORY_URL'] = twine_repository_url
-
+       
+        print(f'Running: {" ".join(command)}')
         log_filename = os.path.join(directories['logs'], f'twine_{filename}.log')
         with open(log_filename, 'ab') as output_handle:
             try:
