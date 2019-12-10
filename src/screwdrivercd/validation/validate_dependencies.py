@@ -51,7 +51,7 @@ def validate_with_safety():
     rc = install_and_run(package='safety,.', command=f'safety check --json -o "{json_report_filename}"', interpreter=interpreter, upgrade_setuptools=True, upgrade_pip=True)
 
     bad_packages = -1
-    if os.path.exists(json_report_filename):
+    if os.path.exists(json_report_filename):  # pragma: no cover
         with open(json_report_filename) as fh:
             results = json.load(fh)
             bad_packages = len(results)

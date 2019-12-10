@@ -5,6 +5,7 @@ from json import dumps
 import os
 from . import ScrewdriverTestCase
 from screwdrivercd.packaging.build_python import build_sdist_package, build_wheel_packages
+from screwdrivercd.utility.environment import standard_directories
 from screwdrivercd.validation.validate_dependencies import validate_with_safety
 from screwdrivercd.validation.validate_package_quality import validate_package_quality
 from screwdrivercd.validation.validate_style import main as style_main
@@ -199,6 +200,13 @@ class TypeValidatorTestcase(ScrewdriverTestCase):
 
 class PackageQualityValidatorTestCase(ScrewdriverTestCase):
     validator_name = 'package_quality_validator'
+
+    def test__quality__no_package_directory(self):
+        package_dir = standard_directories('publish_python')['packages']
+        if os.path.exists(package_dir):
+            os.rename(package_dir, package_dir + '.disabled')
+        result = validate_package_quality()
+        self.assertEqual(result, 0)
 
     def test__quality__no_package_default_fail(self):
         result = validate_package_quality()

@@ -6,20 +6,93 @@ Python packaging publish command line wrapper
 from ..screwdriver.environment import logging_basicConfig, update_job_status
 logging_basicConfig(check_prefix='PUBLISH_PYTHON')
 
+import logging
 import os
 import subprocess  # nosec
 import sys
+import time
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Set
+
+import requests
+from pkg_resources import safe_name
 
 from ..utility.environment import env_bool, interpreter_bin_command, standard_directories
+from ..utility.package import setup_query
+
+
+logger = logging.getLogger(__name__)
+
+
+def package_exists(package: str, package_filename: str, endpoint: str='https://pypi.org/simple') -> bool:
+    url = f'{endpoint}/{safe_name(package)}/'
+
+    # Stream the index
+    req = requests.get(url, stream=True)
+    for line in req.iter_lines():
+        line = line.decode(errors='ignore')
+        if package_filename in line:
+            return True
+    return False
+
+
+def poll_until_available(package: str, packages: Set[str], endpoint: str='https://pypi.org/simple', timeout=300, poll_interval=15) -> Set[str]:
+    """
+    Poll the packaging repository until package files show up in the index
+
+    Parameters
+    ----------
+    package: str
+        The package the package files are published for
+
+    packages: set of str
+        Packages to poll for
+
+    endpoint: str, optional
+        The packaging repository endpoint to poll, default=https://pypi.org/simple
+
+    timeout: int, optional
+        Timeout in seconds, default=300
+
+    poll_interval: int, optional
+        Frequency to poll the package repository
+
+    Returns
+    ------
+    set:
+        Set of packages that failed to publish, empty set if no packages failed
+    """
+    start = datetime.utcnow()
+    end = start + timedelta(seconds=timeout)
+    completed = set()
+
+    while datetime.utcnow() < end:
+        for filename in packages - completed:
+            if package_exists(package, filename):
+                completed.add(filename)
+
+        if completed == packages:
+            return set()
+
+        elapsed = datetime.utcnow() - start
+        not_published = packages - completed
+        print(f'\t{elapsed}: Published: {list(completed)}, Waiting for: {list(not_published)}', flush=True)
+        time.sleep(poll_interval)
+    return packages - completed
 
 
 def main(twine_command: str='') -> int:
-    if not twine_command:
+    if not twine_command:  # pragma: no cover
         twine_command = interpreter_bin_command('twine')
 
     directories = standard_directories(command='publish_python')
     user = os.environ.get('PYPI_USER', None)
     password = os.environ.get('PYPI_PASSWORD', None)
+    publish_timeout = os.environ.get('PUBLISH_PYTHON_TIMEOUT', None)
+    if not publish_timeout:  # pragma: no cover
+        publish_timeout = os.environ.get('ARTIFACTORY_TIMEOUT', 300)
+    publish_timeout = int(publish_timeout)
+
     twine_repository_url = os.environ.get('TWINE_REPOSITORY_URL', 'https://upload.pypi.org/legacy/')
 
     if not os.path.exists(directories['packages']):
@@ -47,12 +120,14 @@ def main(twine_command: str='') -> int:
         print('Unable to publish to PYPI, password secret is not set', flush=True)
         return bad_cred_rc
 
-    if not os.path.exists(twine_command):
+    if not os.path.exists(twine_command):  # pragma: no cover
         print('The twine command is missing', flush=True)
         return 1
 
     print(f'Publishing to {twine_repository_url} as user {user}', flush=True)
 
+    package_name = setup_query('--name')
+    published = []
     failed = []
     for filename in os.listdir(directories['packages']):
         print(f'Uploading {filename}', flush=True)
@@ -65,6 +140,7 @@ def main(twine_command: str='') -> int:
         with open(log_filename, 'ab') as output_handle:
             try:
                 subprocess.check_call(command, env=twine_env, stdout=output_handle, stderr=subprocess.STDOUT)  # nosec
+                published.append(filename)
             except subprocess.CalledProcessError as error:
                 print(f'Upload of package file {filename!r} failed, returncode {error.returncode}', flush=True)
                 output_handle.write(f'Upload of package file {filename!r} failed, returncode {error.returncode}'.encode(errors='ignore'))
@@ -74,8 +150,25 @@ def main(twine_command: str='') -> int:
                 if error.stderr:
                     output_handle.write(error.stderr)
 
+    endpoint = twine_repository_url.rstrip('/')
+    if endpoint.endswith('/legacy'):
+        endpoint = endpoint[:-7] + '/simple'
+    if endpoint.startswith('https://upload.'):
+        endpoint = f'https://{endpoint[15:]}'
+
+    publish_failed = []
+    if publish_timeout:
+        publish_failed = list(poll_until_available(package_name, set(published), endpoint=endpoint, timeout=publish_timeout))
+
+    if publish_failed:  # pragma: no cover
+        failed += publish_failed
+
     if failed:
         update_job_status(status='FAILURE', message=f'{len(failed)} packages failed')
         return len(failed)
 
     return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

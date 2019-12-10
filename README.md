@@ -1,4 +1,5 @@
 [![Build Status](https://cd.screwdriver.cd/pipelines/3063/badge?nocache=true)](https://cd.screwdriver.cd/pipelines/3063)
+[![Package](https://img.shields.io/badge/package-pypi-blue.svg)](https://pypi.org/project/screwdrivercd/)
 [![Codecov](https://codecov.io/gh/yahoo/python-screwdrivercd/branch/master/graph/badge.svg?nocache=true)](https://codecov.io/gh/yahoo/python-screwdrivercd)
 [![Codestyle](https://img.shields.io/badge/code%20style-pep8-blue.svg)](https://www.python.org/dev/peps/pep-0008/)
 [![Documentation](https://img.shields.io/badge/Documentation-latest-blue.svg)](https://yahoo.github.io/python-screwdrivercd/)

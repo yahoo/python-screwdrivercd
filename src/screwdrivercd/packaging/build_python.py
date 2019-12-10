@@ -149,7 +149,7 @@ def main():
             print('    Created packages:')
             for package in built:
                 print(f'        {package}', flush=True)
-        if failed:
+        if failed:  # pragma: no cover
             failed_packages += failed
             print('    Failed to create packages:')
             for package in failed:
@@ -158,4 +158,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
