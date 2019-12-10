@@ -131,13 +131,14 @@ def main(twine_command: str='') -> int:
         command = [twine_command, 'upload', '--verbose', os.path.join(directories['packages'], filename)]
 
         print(f'Running: {" ".join(command)}')
-        twine_env = dict(os.environ)
-        twine_env = twine_env.update({'TWINE_USERNAME': user, 'TWINE_PASSWORD': password, 'TWINE_REPOSITORY_URL': twine_repository_url})
+        os.environ['TWINE_USERNAME'] = user
+        os.environ['TWINE_PASSWORD'] = password
+        os.environ['TWINE_REPOSITORY_URL'] = twine_repository_url
 
         log_filename = os.path.join(directories['logs'], f'twine_{filename}.log')
         with open(log_filename, 'ab') as output_handle:
             try:
-                subprocess.check_call(command, env=twine_env, stdout=output_handle, stderr=subprocess.STDOUT)  # nosec
+                subprocess.check_call(command, stdout=output_handle, stderr=subprocess.STDOUT)  # nosec
                 published.append(filename)
             except subprocess.CalledProcessError as error:
                 print(f'Upload of package file {filename!r} failed, returncode {error.returncode}', flush=True)
