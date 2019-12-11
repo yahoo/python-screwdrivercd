@@ -38,7 +38,7 @@
     
     
       
-        <title>Usage - Python Screwdriver Helpers</title>
+        <title>Release Tagging - Python Screwdriver Helpers</title>
       
     
     
@@ -79,10 +79,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#usage-overview" tabindex="1" class="md-skip">
-        Skip to content
-      </a>
-    
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
@@ -105,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Usage
+                Release Tagging
               
             </span>
           
@@ -226,10 +222,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
     <label class="md-nav__link" for="nav-2">
       Integration Utilities
@@ -305,11 +303,18 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../release_tagging/" title="Release Tagging" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+    <a href="./" title="Release Tagging" class="md-nav__link md-nav__link--active">
       Release Tagging
     </a>
+    
   </li>
 
         
@@ -397,49 +402,18 @@
               </div>
             
             
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-<nav class="md-nav md-nav--secondary">
-  
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage-overview" class="md-nav__link">
-    Usage overview
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/yahoo/python-screwdrivercd/edit/master/docs/usage.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/yahoo/python-screwdrivercd/edit/master/docs/release_tagging.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                  <h1>Usage</h1>
+                  <h1>Release Tagging</h1>
                 
-                <h2 id="usage-overview">Usage overview<a class="headerlink" href="#usage-overview" title="Permanent link">&para;</a></h2>
-<p>The screwdrivercd package provides a number of CI/CD helper scripts, since these scripts are intended
-to be used in Screwdriver CI/CD pipelines they take all arguments from environment variables and not
-command line arguments.</p>
+                <p>The <code class="codehilite"><span class="err">screwdrivercd_release</span></code> utility is used to create a release tag in the current
+repository.</p>
                 
                   
                 
@@ -457,6 +431,41 @@ command line arguments.</p>
       
         
 <footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Versioning/" title="Package Versioning" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Package Versioning
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Validation_Helpers/" title="Validation Wrappers" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Validation Wrappers
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
