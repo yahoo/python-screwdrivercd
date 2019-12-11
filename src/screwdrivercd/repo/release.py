@@ -4,7 +4,7 @@
 Source code repository management utilities
 """
 import os
-import subprocess
+import subprocess  # nosec
 import sys
 
 from tempfile import TemporaryDirectory
@@ -17,7 +17,7 @@ def create_release_tag(version: str, git_command: str='git', message: str=''):
 
     if not message:
         try:
-            message = subprocess.check_output([git_command, 'log', '-n', '1']).decode(errors='ignore').split('\n')[4].strip()
+            message = subprocess.check_output([git_command, 'log', '-n', '1']).decode(errors='ignore').split('\n')[4].strip()  # nosec
         except (subprocess.CalledProcessError, KeyError):
             message = f'New release {version}'
 
@@ -26,12 +26,12 @@ def create_release_tag(version: str, git_command: str='git', message: str=''):
         with open(tfilename, 'w') as fh:
             fh.write(message)
         command = [git_command, 'tag', '-a', f'v{version}', '-F', tfilename, '-f']
-        subprocess.call(command)
+        subprocess.call(command)  # nosec
 
 
 def push_release_tag(git_command: str='git', timeout=60):
     try:
-        subprocess.check_call([git_command, 'push', '-f', '--tags'], timeout=timeout)
+        subprocess.check_call([git_command, 'push', '-f', '--tags'], timeout=timeout)  # nosec
     except subprocess.TimeoutExpired:
         print('\tTimeout occurred pushing tags to the remote', flush=True)
         return
@@ -54,7 +54,7 @@ def main(meta_command: str='meta') -> int:
         print('Git deployment key is not present, cannot commit tags to the git repo')
         return 0
 
-    version = subprocess.check_output([meta_command, 'get', 'package.version']).decode(errors='ignore').strip()
+    version = subprocess.check_output([meta_command, 'get', 'package.version']).decode(errors='ignore').strip()  # nosec
     if version == 'null':  # pragma: no cover
         print('No release version in metadata', flush=True)
         return 0
