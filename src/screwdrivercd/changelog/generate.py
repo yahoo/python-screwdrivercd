@@ -61,6 +61,26 @@ def create_first_commit_tag_if_missing() -> None:
         output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
 
 
+def previous_release(release: str='') -> str:
+    new_tags = {}
+    for key, value in git_tag_dates().items():
+        if key.startswith('v') or key[0].isdigit():
+            new_tags[value] = key
+
+    times = list(new_tags.keys())
+    times.sort()
+    if release:
+        previous = ''
+        for t in times:
+            if new_tags[t] == release:
+                return previous
+            previous = new_tags[t]
+    else:
+        if len(times) > 1:
+            return new_tags[times[-2]]
+    return ''
+
+
 def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') -> List[Path]:
     changed = []
 
@@ -135,6 +155,7 @@ def changelog_contents(changelog_releases: str='') -> str:
     if not changelog_releases:
         changelog_releases = os.environ.get('CHANGELOG_RELEASES', 'all')
 
+
     only_versions = bool(env_bool('CHANGELOG_ONLY_VERSION_TAGS', True))
     changelog_dir = os.environ.get('CHANGELOG_DIR', 'changelog.d')
 
@@ -183,7 +204,8 @@ def changelog_contents(changelog_releases: str='') -> str:
         if not changes or release in ['first_commit', 'last_commit']:  # pragma: no cover
             continue
         date = datetime.fromtimestamp(int(release_dates[release]))
-        output += f'{os.linesep}---{os.linesep}'
+        if len(releases) > 1:
+            output += f'{os.linesep}---{os.linesep}'
         output += f'## {changelog_name} {release} ({date:%Y-%m-%d}){os.linesep}'
 
         for change_type, change_desc in CHANGE_TYPES.items():
