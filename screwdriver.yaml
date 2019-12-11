@@ -11,6 +11,9 @@ shared:
         PACKAGE_DIRECTORY: src
     steps:
         - presetup_deploy_keys: $BASE_PYTHON -m pip install -U .[documentation]
+        - publish_packages: |
+            $BASE_PYTHON -m pip install -U .
+            $BASE_PYTHON -m screwdrivercd.packaging.publish_python
 
 jobs:
     validate_codestyle:
@@ -57,12 +60,7 @@ jobs:
         environment:
             PUBLISH: True
             TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
-        steps:
-            - publish_packages: |
-                $BASE_PYTHON -m pip install -U .
-                $BASE_PYTHON -m screwdrivercd.packaging.publish_python
-                
-        requires: [~pr, ~commit]
+        requires: [generate_version]
 
     verify_test_package:
         template: python/validate_pypi_package
