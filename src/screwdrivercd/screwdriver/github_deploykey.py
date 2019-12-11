@@ -48,7 +48,7 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 
 
 def git_key_secret() -> bytes:
-    git_key = os.environ.get('GIT_DEPLOY_KEY', None)
+    git_key = os.environ.get('GIT_DEPLOY_KEY', '')
     if not git_key:  # Nothing to do
         return b''
 
@@ -84,7 +84,7 @@ def add_github_to_known_hosts(known_hosts_filename: str = '~/.ssh/known-hosts'):
         subprocess.check_call([keyscan_command, 'github.com'], stdout=fh)  # nosec
 
 
-def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') -> bool:
+def validate_known_good_hosts(known_hosts_filename: str = '~/.ssh/known-hosts') -> bool:  # pragma: no cover
     """
     Check the known hosts for the github hosts
 

@@ -61,26 +61,6 @@ def create_first_commit_tag_if_missing() -> None:
         output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
 
 
-def previous_release(release: str='') -> str:
-    new_tags = {}
-    for key, value in git_tag_dates().items():
-        if key.startswith('v') or key[0].isdigit():
-            new_tags[value] = key
-
-    times = list(new_tags.keys())
-    times.sort()
-    if release:
-        previous = ''
-        for t in times:
-            if new_tags[t] == release:
-                return previous
-            previous = new_tags[t]
-    else:
-        if len(times) > 1:
-            return new_tags[times[-2]]
-    return ''
-
-
 def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') -> List[Path]:
     changed = []
 
