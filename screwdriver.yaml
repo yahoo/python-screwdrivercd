@@ -11,10 +11,6 @@ shared:
         PACKAGE_DIRECTORY: src
     steps:
         - presetup_deploy_keys: $BASE_PYTHON -m pip install -U .[documentation]
-        - publish_packages: |
-            $BASE_PYTHON -m pip install -U .
-            $BASE_PYTHON -m screwdrivercd.packaging.publish_python
-        - tag_release: $BASE_PYTHON -m screwdrivercd.repo.release
 
 jobs:
     validate_codestyle:
