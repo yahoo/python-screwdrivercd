@@ -34,3 +34,19 @@ class ScrewdriverGithubDeploykeyTestCase(ScrewdriverTestCase):
         os.environ['GIT_DEPLOY_KEY'] = base64.b64encode(test_key).decode(errors='ignore')
         result = git_key_secret()
         self.assertEqual(result, test_key)
+
+    def test__git_key_secret__nobegin(self):
+        test_key = b'no real key here\n-----END RSA PRIVATE KEY-----\n'
+        os.environ['GIT_DEPLOY_KEY'] = base64.b64encode(test_key).decode(errors='ignore')
+        result = git_key_secret()
+        self.assertEqual(result, test_key)
+
+    def test__git_key_secret__noend(self):
+        test_key = b'-----BEGIN RSA PRIVATE KEY-----\nno real key here\n'
+        os.environ['GIT_DEPLOY_KEY'] = base64.b64encode(test_key).decode(errors='ignore')
+        result = git_key_secret()
+        self.assertEqual(result, test_key)
+
+    def test__git_key_secret__empty(self):
+        result = git_key_secret()
+        self.assertEqual(result, b'')

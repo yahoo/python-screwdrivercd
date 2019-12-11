@@ -135,6 +135,7 @@ def changelog_contents(changelog_releases: str='') -> str:
     if not changelog_releases:
         changelog_releases = os.environ.get('CHANGELOG_RELEASES', 'all')
 
+
     only_versions = bool(env_bool('CHANGELOG_ONLY_VERSION_TAGS', True))
     changelog_dir = os.environ.get('CHANGELOG_DIR', 'changelog.d')
 
@@ -183,7 +184,8 @@ def changelog_contents(changelog_releases: str='') -> str:
         if not changes or release in ['first_commit', 'last_commit']:  # pragma: no cover
             continue
         date = datetime.fromtimestamp(int(release_dates[release]))
-        output += f'{os.linesep}---{os.linesep}'
+        if len(releases) > 1:
+            output += f'{os.linesep}---{os.linesep}'
         output += f'## {changelog_name} {release} ({date:%Y-%m-%d}){os.linesep}'
 
         for change_type, change_desc in CHANGE_TYPES.items():

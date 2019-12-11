@@ -3,3 +3,4 @@
 """
 Source code repository management utilities
 """
+__all__ = ['release']

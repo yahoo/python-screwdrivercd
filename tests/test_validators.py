@@ -202,7 +202,7 @@ class PackageQualityValidatorTestCase(ScrewdriverTestCase):
     validator_name = 'package_quality_validator'
 
     def test__quality__no_package_directory(self):
-        package_dir = standard_directories('publish_python')['packages']
+        package_dir = standard_directories('package_quality_validation')['packages']
         if os.path.exists(package_dir):
             os.rename(package_dir, package_dir + '.disabled')
         result = validate_package_quality()
@@ -243,3 +243,4 @@ class PackageQualityValidatorTestCase(ScrewdriverTestCase):
         build_wheel_packages()
         result = validate_package_quality()
         self.assertEqual(result, 0)
+

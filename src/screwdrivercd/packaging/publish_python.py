@@ -81,7 +81,7 @@ def poll_until_available(package: str, packages: Set[str], endpoint: str='https:
 
         if delay < poll_interval:
             delay = delay * 2
-        if delay > poll_interval:
+        if delay > poll_interval:  # pragma: no cover
             delay = poll_interval
         time.sleep(delay)
     return packages - completed

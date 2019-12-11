@@ -11,7 +11,7 @@ from ..utility import env_bool
 from .metadata import Metadata
 
 
-def get_env_job_name(default='') -> str:
+def get_env_job_name(default='') -> str:  # pragma: no cover
     """
     Get the job name from the screwdriver environment that matches the name as reported to github
 
