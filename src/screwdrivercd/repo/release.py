@@ -70,4 +70,4 @@ def main(meta_command: str='meta') -> int:
 
 
 if __name__ == '__main__':
-    sys.exit(main)
+    sys.exit(main())
