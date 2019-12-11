@@ -66,18 +66,24 @@ def poll_until_available(package: str, packages: Set[str], endpoint: str='https:
     end = start + timedelta(seconds=timeout)
     completed: Set[str] = set()
 
+    delay = 1
     while datetime.utcnow() < end:
         for filename in packages - completed:
-            if package_exists(package, filename):
+            if package_exists(package, filename, endpoint=endpoint):
                 completed.add(filename)
-
-        if completed == packages:
-            return set()
 
         elapsed = datetime.utcnow() - start
         not_published = packages - completed
         print(f'\t{elapsed}: Published: {list(completed)}, Waiting for: {list(not_published)}', flush=True)
-        time.sleep(poll_interval)
+        
+        if completed == packages:
+            return set()
+
+        if delay < poll_interval:
+            delay = delay * 2
+        if delay > poll_interval:
+            delay = poll_interval
+        time.sleep(delay)
     return packages - completed
 
 
@@ -121,25 +127,27 @@ def main(twine_command: str='') -> int:
         print('The twine command is missing', flush=True)
         return 1
 
-    print(f'Publishing to {twine_repository_url} as user {user}', flush=True)
+    print(f'\n# Publishing to {twine_repository_url} as user {user}', flush=True)
 
     package_name = setup_query('--name')
     published = []
     failed = []
     for filename in os.listdir(directories['packages']):
-        print(f'Uploading {filename}', flush=True)
+        print(f'\tUploading {filename}', flush=True)
         command = [twine_command, 'upload', '--verbose', os.path.join(directories['packages'], filename)]
 
-        print(f'Running: {" ".join(command)}')
-        twine_env = {'TWINE_USERNAME': user, 'TWINE_PASSWORD': password, 'TWINE_REPOSITORY_URL': twine_repository_url}
-
+        os.environ['TWINE_USERNAME'] = user
+        os.environ['TWINE_PASSWORD'] = password
+        os.environ['TWINE_REPOSITORY_URL'] = twine_repository_url
+       
+        print(f'\tRunning: {" ".join(command)}')
         log_filename = os.path.join(directories['logs'], f'twine_{filename}.log')
         with open(log_filename, 'ab') as output_handle:
             try:
-                subprocess.check_call(command, env=twine_env, stdout=output_handle, stderr=subprocess.STDOUT)  # nosec
+                subprocess.check_call(command, stdout=output_handle, stderr=subprocess.STDOUT)  # nosec
                 published.append(filename)
             except subprocess.CalledProcessError as error:
-                print(f'Upload of package file {filename!r} failed, returncode {error.returncode}', flush=True)
+                print(f'\tUpload of package file {filename!r} failed, returncode {error.returncode}', flush=True)
                 output_handle.write(f'Upload of package file {filename!r} failed, returncode {error.returncode}'.encode(errors='ignore'))
                 failed.append(filename)
                 if error.stdout:
@@ -155,6 +163,7 @@ def main(twine_command: str='') -> int:
 
     publish_failed: List[str] = []
     if publish_timeout:
+        print(f'\n# Polling {endpoint}/{package_name}/ for updated pacakge')
         publish_failed = list(poll_until_available(package_name, set(published), endpoint=endpoint, timeout=publish_timeout))
 
     if publish_failed:  # pragma: no cover
