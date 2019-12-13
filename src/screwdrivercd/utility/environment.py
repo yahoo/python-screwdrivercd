@@ -125,7 +125,7 @@ def standard_directories(command: str='') -> Dict[str, str]:
     if command:
         sep = os.sep
 
-    artifacts_dir: str = os.environ.get('SD_ARTIFACTS_DIR', '')
+    artifacts_dir: str = os.environ.get('SD_ARTIFACTS_DIR', 'artifacts')
     directories: Dict[str, str] = {
         'artifacts': artifacts_dir,
         'documentation': os.path.join(artifacts_dir, f'documentation'),
