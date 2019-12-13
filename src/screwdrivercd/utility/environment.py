@@ -134,6 +134,7 @@ def standard_directories(command: str='') -> Dict[str, str]:
         'reports': os.path.join(artifacts_dir, f'reports{sep}{command}'),
     }
     for directory in directories.values():
-        os.makedirs(directory, exist_ok=True)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
 
     return directories
