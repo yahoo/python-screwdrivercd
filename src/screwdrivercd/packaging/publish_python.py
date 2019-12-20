@@ -106,6 +106,10 @@ def main(twine_command: str='') -> int:
         print('Publish is disabled, skipping publish operation', flush=True)
         return 0
 
+    if not env_bool('PUBLISH', True):
+        print('Publish is disabled, skipping publish operation', flush=True)
+        return 0
+
     bad_cred_rc = 0
     if env_bool('PUBLISH_PYTHON_FAIL_MISSING_CRED', False):
         bad_cred_rc = 1
