@@ -9,6 +9,7 @@ from ..screwdriver.environment import logging_basicConfig
 logging_basicConfig(check_prefix='GIT_DEPLOYKEY')
 
 import base64
+import distro
 import logging
 import os
 import shutil
@@ -205,6 +206,12 @@ def setup_ssh_main() -> int:  # pragma: no cover
 
     print('\n# Adding github.com to known_hosts')
     add_github_to_known_hosts()
+
+    # The validation below does not work with the version of ssh-keygen on centos 5
+    # so on that operating system we skip the validation.
+    if distro.id() in ['rhel']:
+        if distro.major_version() in ['5']:
+            return 0
 
     print('\n# Validating known good hosts')
     validate_known_good_hosts()
