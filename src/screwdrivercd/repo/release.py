@@ -50,7 +50,7 @@ def main(meta_command: str='meta') -> int:
         print('Tagging is disabled for this job')
         return 0
 
-    if not os.environ.get('GIT_DEPLOY_KEY', ''):
+    if not os.environ.get('GIT_DEPLOY_KEY', '') and not os.environ.get('SSH_AUTH_SOCK', ''):
         print('Git deployment key is not present, cannot commit tags to the git repo')
         return 0
 
