@@ -11,6 +11,7 @@ from tempfile import TemporaryDirectory
 
 from ..changelog.generate import changelog_contents
 from ..utility.environment import env_bool
+from ..version.version_types import Version
 
 
 def create_release_tag(version: str, git_command: str='git', message: str=''):
@@ -50,12 +51,13 @@ def main(meta_command: str='meta') -> int:
         print('Tagging is disabled for this job')
         return 0
 
-    if not os.environ.get('GIT_DEPLOY_KEY', '') and not os.environ.get('SSH_AUTH_SOCK', ''):
-        print('Git deployment key is not present, cannot commit tags to the git repo')
-        return 0
+    if not os.environ.get('SSH_AUTH_SOCK', ''):  # If ssh-agent isn't already configured, we use the GIT_DEPLOY_KEY
+        if not os.environ.get('GIT_DEPLOY_KEY', ''):
+            print('Git deployment key is not present, cannot commit tags to the git repo')
+            return 0
 
-    version = subprocess.check_output([meta_command, 'get', 'package.version']).decode(errors='ignore').strip()  # nosec
-    if version == 'null':  # pragma: no cover
+    version = Version(meta_command=meta_command).meta_version
+    if not version:  # pragma: no cover
         print('No release version in metadata', flush=True)
         return 0
 

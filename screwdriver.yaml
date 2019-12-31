@@ -64,11 +64,6 @@ jobs:
         template: python/validate_pypi_package
         environment:
             PYPI_INDEX_URL: https://test.pypi.org/simple
-        steps:
-            - update_version: |
-                PACKAGE_VERSION="`meta get package.version`"
-                echo $PACKAGE_VERSION
-            - preend: meta set package.version "$PACKAGE_VERSION"
         requires: [publish_test_pypi]
 
     publish_pypi:

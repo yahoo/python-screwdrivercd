@@ -13,17 +13,19 @@ from .exceptions import VersionError
 LOG = logging.getLogger(__name__)
 
 
-class Version:
+class Version():
     """
     Base Screwdriver Versioning class
     """
     name: Union[str, None] = None
     default_version: List[str] = ['0', '0', '0']
     setup_cfg_filename: str = 'setup.cfg'
+    _meta_version: str = ''
 
-    def __init__(self, setup_cfg_filename=None, ignore_meta_version=False, update_sdv4_meta=True):
+    def __init__(self, setup_cfg_filename=None, ignore_meta_version: bool=False, update_sdv4_meta: bool=True, meta_command: str='meta'):
         if setup_cfg_filename:  # pragma: no cover
             self.setup_cfg_filename = setup_cfg_filename
+        self.meta_command = meta_command
         self.ignore_meta_version = ignore_meta_version
         self.update_sdv4_meta = update_sdv4_meta
 
@@ -89,9 +91,11 @@ class Version:
         """
         if not self.meta_version:  # pragma: no cover
             if not self.pull_request_number:
-                self.meta_version = self.generated_version
+                new_version = self.generated_version
             else:  # pragma: no cover
-                self.meta_version = f'{self.generated_version}a{self.pull_request_number}'
+                new_version = f'{self.generated_version}a{self.pull_request_number}'
+            print(f'Updating the screwdriver metadata: package.version={new_version}', flush=True)
+            self.meta_version = new_version
 
     @property
     def pull_request_number(self):
@@ -118,28 +122,31 @@ class Version:
         return '.'.join(self.generate())
 
     @property
-    def meta_version(self):
+    def meta_version(self) -> str:
         """
         The version from the screwdriver metadata package.version value or None if not present.
         """
         if self.ignore_meta_version:
-            return None
+            return ''
+        if self._meta_version:
+            return self._meta_version
         try:  # pragma: no cover
-            version = subprocess.check_output(['meta', 'get', 'package.version']).decode(errors='ignore').strip()  # nosec
-        except FileNotFoundError:  # pragma: no cover
-            version = None
-        if not version or version == 'null':  # pragma: no cover
-            version = None
-        return version  # pragma: no cover
+            self._meta_version = subprocess.check_output([self.meta_command, 'get', 'package.version']).decode(errors='ignore').strip()  # nosec
+        except (FileNotFoundError, subprocess.CalledProcessError):  # pragma: no cover
+            pass
+        if self._meta_version == 'null':
+            self._meta_version = ''
+        return self._meta_version  # pragma: no cover
 
     @meta_version.setter
     def meta_version(self, new_version):
         if not self.update_sdv4_meta:  # pragma: no cover
             return
         try:
-            subprocess.check_call(['meta', 'set', 'package.version', new_version])  # nosec
+            subprocess.check_call([self.meta_command, 'set', 'package.version', new_version])  # nosec
         except FileNotFoundError:  # pragma: no cover
             LOG.warning('The screwdriver meta command is missing, unable to set version in screwdriver metadata')
+        self._meta_version = new_version
 
     @property
     def version(self):
