@@ -90,7 +90,6 @@ class TestPlatformRepoRelease(ScrewdriverTestCase):
     def test__release__main__git_deploy_key__missing(self):
         os.environ['PUBLISH'] = 'True'
         os.environ['PACKAGE_TAG'] = 'True'
-        os.environ['GIT_DEPLOY_KEY'] = ''
         result = release_main()
         self.assertEqual(result, 0)
 
