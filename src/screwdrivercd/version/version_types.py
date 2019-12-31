@@ -271,7 +271,6 @@ class VersionDateSDV4Build(Version):
         revision = os.environ.get('SD_BUILD', None)
         if not revision:
             revision = os.environ.get('SD_BUILD_ID', None)
-        print(f'Revision={revision!r}')
         if not revision:
             raise VersionError('Unable to generate version, no SD_BUILD or SD_BUILD_ID value set in the environment variables')
         return [f'{str(now.year)[-2:]}', f'{now.month}', revision]
