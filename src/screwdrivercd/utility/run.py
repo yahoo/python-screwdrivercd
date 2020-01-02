@@ -37,5 +37,5 @@ def run_and_log_output(command: List[str], logfile: str, print_errors: bool=True
             print(f'Command {command!r} failed', flush=True)
             fh.write(error.stdout)
             if print_errors and error.stdout:  # pragma: no cover
-                print(error.stdout)
+                print(error.stdout.decode(errors='ignore'))
             raise error
