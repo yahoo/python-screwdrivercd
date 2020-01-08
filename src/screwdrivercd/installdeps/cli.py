@@ -67,7 +67,7 @@ def main():  # pragma: no cover
 
     # Make sure the report directory exists
     artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
-    report_dir = os.path.join(artifacts_dir, 'reports/type_validation')
+    report_dir = os.path.join(artifacts_dir, 'reports/installdeps')
     report_filename = os.path.join(report_dir, 'installdeps.json')
     create_artifact_directory(report_dir)
 
