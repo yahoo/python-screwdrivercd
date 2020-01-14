@@ -9,7 +9,7 @@ import signal
 from contextlib import contextmanager, ContextDecorator
 from datetime import timedelta
 from tempfile import TemporaryDirectory
-from typing import Optional
+from typing import Optional, Union
 
 from .exceptions import TimeoutError
 
@@ -68,10 +68,10 @@ class Timeout(ContextDecorator):
     """
     A contextmanager that will timeout after a specific datetime.timedelta
     """
-    use_alarm = False
+    use_alarm: Union[bool, None] = False
     _old_handler = None
 
-    def __init__(self, timeout: Optional[timedelta]=None, use_alarm: Optional[bool]=None):
+    def __init__(self, timeout: Optional[timedelta]=None, use_alarm: Union[bool, None]=None):
         self.timeout = timeout
         self.use_alarm = use_alarm
         if use_alarm is None:
