@@ -20,7 +20,7 @@ LOG = logging.getLogger(__name__)
 class Installer():
     """Generic Package Installer
     """
-    name: str = 'generic'
+    name: str = 'echo'
     """:str: The name of the installer class"""
 
     install_command: List[str] = ['echo', 'fake', 'install']
@@ -91,7 +91,7 @@ class Installer():
         return ['deps']
 
     @property
-    def has_dependencies(self) -> bool:
+    def has_dependencies(self) -> bool:  # pragma: no cover
         """
         Check if the installer has dependencies to install in the current environment.
 
@@ -109,7 +109,7 @@ class Installer():
         return False
 
     @property
-    def is_supported(self) -> bool:
+    def is_supported(self) -> bool:  # pragma: no cover
         """
         Check for the installer utility and return True if it's present, False otherwise
 
@@ -124,7 +124,7 @@ class Installer():
         return False
 
     @property
-    def plugin_configuration(self):
+    def plugin_configuration(self):  # pragma: no cover
         """
         Return the plugin configuration dictionary if it is found
 
@@ -151,13 +151,14 @@ class Installer():
         -------
         """
 
-    def add_repos(self):
+    def add_repos(self):  # pragma: no cover
         """
         Add repositories to the host configuration
         """
         if not self.supports_repositories:
             LOG.debug(f'Install plugin {self.config_section} does not support repositories')
             return
+
         repos = copy.copy(self.default_repos)
         repos.update(self.plugin_configuration.get('repos', {}))
 
@@ -192,13 +193,13 @@ class Installer():
 
     def determine_bin_directory(self):
         """
-        Determine the bin_dir for the default pip command based on the environment
+        Determine the bin_dir for the default install command based on the environment
         """
         if self.bin_dir or self.install_command[0].startswith('/'):
             LOG.debug(f'The command bin_dir {self.bin_dir} is already set')
             return
 
-        if self.plugin_configuration and self.plugin_configuration.get('bin_dir', None):
+        if self.plugin_configuration and self.plugin_configuration.get('bin_dir', None):  # pragma: no cover
             LOG.debug('Setting the configuartion directory from the configuration')
             self.bin_dir = self.plugin_configuration['bin_dir']
 
@@ -276,7 +277,7 @@ class Installer():
                 # LOG.debug(f'Processing dependencies {dependencies!r}')
                 invalid += self.invalid_dependencies(dependencies, config_key=config_key)
                 if invalid:
-                    if self.print_error_output:
+                    if self.print_error_output:  # pragma: no cover
                         print(colored('Invalid %r dependencies %r specified' % (config_key, invalid), 'red'), flush=True)
                     else:
                         LOG.error(colored('Invalid %r dependencies %r specified' % (config_key, invalid), 'red'))
@@ -284,11 +285,12 @@ class Installer():
                         break
                     dependencies = list(set(dependencies) - set(invalid))
 
-                if self.print_output:
-                    print(f'Installing dependencies {dependencies!r}')
-                else:
-                    LOG.debug(f'Installing dependencies: {dependencies!r}')
-                installed += self.install(dependencies, config_key=config_key)
+                if dependencies:
+                    if self.print_output:
+                        print(f'Installing dependencies {dependencies!r}')
+                    else:
+                        LOG.debug(f'Installing dependencies: {dependencies!r}')
+                    installed += self.install(dependencies, config_key=config_key)
         return installed
 
     def install(self, dependencies, config_key=None):
@@ -315,7 +317,7 @@ class Installer():
             LOG.debug('Running command: %r', ' '.join(command))
         try:
             output = subprocess.check_output(command, stderr=subprocess.STDOUT)  # nosec - All subprocess calls use full path
-        except subprocess.CalledProcessError as error:
+        except subprocess.CalledProcessError as error:  # pragma: no cover
             if self.print_error_output:
                 print(colored(f'Install command {" ".join(command)!r} failed', "red"), flush=True)
                 print(error.stdout.decode().strip())
@@ -326,7 +328,7 @@ class Installer():
                 LOG.error(error.stdout.decode.strip())
             return []
 
-        if self.print_output:
+        if self.print_output:  # pragma: no cover
             print(output.decode().strip())
         else:  # pragma: no cover
             LOG.debug(output.decode().strip())

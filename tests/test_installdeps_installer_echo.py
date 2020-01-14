@@ -9,6 +9,8 @@ import distro
 from screwdrivercd.installdeps.installer import Installer
 from screwdrivercd.utility.contextmanagers import InTemporaryDirectory
 
+from . import ScrewdriverTestCase
+
 
 CONFIG_FILE = 'pyproject.toml'
 TEST_CONFIG = f'''[build-system]
@@ -16,102 +18,102 @@ TEST_CONFIG = f'''[build-system]
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 
 [tool.sdv4_installdeps]
-    install = ['apk', 'apt-get', 'yum', 'pip3']
+install = ['echo']
 
-    [tool.sdv4_installdeps.apk]
-        deps = [
-            'python3',
-            'mysql-client'
-        ]
-
-    [tool.sdv4_installdeps.apt-get]
-        deps = [
-            'python3',
-            'mysql-client'
-        ]
-
-    [tool.sdv4_installdeps.echo]
-        deps = ['python3', 'foo;distro_version=="{distro.version()}"', 'bar;distro_version!="{distro.version()}"']
-
-    [tool.sdv4_installdeps.yum]
-        repos.verizon_python_rpms = "https://edge.artifactory.yahoo.com:4443/artifactory/python_rpms/python_rpms.repo"
-        deps = [
-            'yahoo_python36;distro_version<"7.5',
-            'yahoo_python37;distro_version>="7.5"',
-            'mysql;distro_version<"7"',
-            'mariadb;distro_version>="7"'
-        ]
-
-    [tool.sdv4_installdeps.yinst]
-        deps = [
-            'python36',
-            'dist_utils'
-        ]
-        deps_stable = []
-        deps_current = []
-        deps_test = []
-        deps_quarantine = []
-
-    [tool.sdv4_installdeps.pip3]
-        bin_dir = ''
-        deps = []
+[tool.sdv4_installdeps.echo]
+deps = ['python3', 'foo;distro_version=="{distro.version()}"', 'bar;distro_version!="{distro.version()}"']
 '''
 
+TEST_CONFIG_NODEPS = f'''[build-system]
+# Minimum requirements for the build system to execute.
+requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 
-class TestEcho(unittest.TestCase):
-    original_environ = None
+[tool.sdv4_installdeps]
+install = ['echo']
+
+[tool.sdv4_installdeps.echo]
+deps = []
+'''
+
+class TestEcho(ScrewdriverTestCase):
+
+    installer_class = Installer
 
     def setUp(self):
         super().setUp()
-        self.original_environ = os.environ
+        with open(CONFIG_FILE, 'w') as config_handle:
+            config_handle.write(TEST_CONFIG)
+        self.installer = Installer(bin_dir='/bin')
 
-    def tearDown(self):
-        super().tearDown()
-        if self.original_environ:
-            os.environ = self.original_environ
-            self.original_environ = None
+    def test__echo__has_dependencies(self):
+        result = self.installer.has_dependencies
+        self.assertEqual(result, True)
+
+    def test__echo__is_supported(self):
+        result = self.installer.is_supported
+        self.assertEqual(result, True)
+
+    def test__echo__install__nodeps(self):
+        with open(CONFIG_FILE, 'w') as config_handle:
+            config_handle.write(TEST_CONFIG_NODEPS)
+        self.installer = Installer(bin_dir='/bin')
+        result = self.installer.install_dependencies()
+        self.assertListEqual(result, [])
 
     def test__echo__install__default_python(self):
-        with InTemporaryDirectory():
-            with open(CONFIG_FILE, 'w') as config_handle:
-                config_handle.write(TEST_CONFIG)
-            installer = Installer()
-            result = installer.install_dependencies()
-            self.assertListEqual(result, ['python3', 'foo'])
+        result = self.installer.install_dependencies()
+        self.assertListEqual(result, ['python3', 'foo'])
 
     def test__echo__install__default_python__dry_run(self):
-        with InTemporaryDirectory():
-            with open(CONFIG_FILE, 'w') as config_handle:
-                config_handle.write(TEST_CONFIG)
-            installer = Installer(dry_run=True)
-            result = installer.install_dependencies()
-            self.assertListEqual(result, ['python3', 'foo'])
+        installer = self.installer_class(dry_run=True)
+        result = installer.install_dependencies()
+        self.assertListEqual(result, ['python3', 'foo'])
+
+    def test__echo__invalid_dependencies(self):
+        with unittest.mock.patch.object(Installer, 'validate_dependency', return_value=False) as mock_method:
+            result = self.installer.install_dependencies()
+            self.assertListEqual(result, [])
 
     def test__echo__install__invalid_deps(self):
-        with InTemporaryDirectory():
-            with open(CONFIG_FILE, 'w') as config_handle:
-                config_handle.write(TEST_CONFIG)
-            with unittest.mock.patch.object(Installer, 'validate_dependency', return_value=False) as mock_method:
-                installer = Installer()
-                result = installer.install_dependencies()
-                self.assertListEqual(result, [])
+        with unittest.mock.patch.object(Installer, 'validate_dependency', return_value=False) as mock_method:
+            result = self.installer.install_dependencies()
+            self.assertListEqual(result, [])
 
     def test__echo__install__invalid_deps__log_output(self):
-        with InTemporaryDirectory():
-            with open(CONFIG_FILE, 'w') as config_handle:
-                config_handle.write(TEST_CONFIG)
-            with unittest.mock.patch.object(Installer, 'validate_dependency', return_value=False) as mock_method:
-                installer = Installer()
-                installer.print_output = False
-                result = installer.install_dependencies()
-                self.assertListEqual(result, [])
+        with unittest.mock.patch.object(Installer, 'validate_dependency', return_value=False) as mock_method:
+            self.installer.print_output = False
+            result = self.installer.install_dependencies()
+            self.assertListEqual(result, [])
 
     def test__echo__install__invalid_deps__exit_on_missing(self):
-        with InTemporaryDirectory():
-            with open(CONFIG_FILE, 'w') as config_handle:
-                config_handle.write(TEST_CONFIG)
-            with unittest.mock.patch.object(Installer, 'validate_dependency', return_value=False) as mock_method:
-                installer = Installer()
-                installer.exit_on_missing = True
-                result = installer.install_dependencies()
-                self.assertListEqual(result, [])
+        with unittest.mock.patch.object(Installer, 'validate_dependency', return_value=False) as mock_method:
+            self.installer.exit_on_missing = True
+            result = self.installer.install_dependencies()
+            self.assertListEqual(result, [])
+
+    def test__determine_bin_directory__install_command_path(self):
+        self.installer.install_command[0] = 'echo'
+        self.installer.bin_dir = None
+        self.installer.install_command_path = ['/bin']
+        self.installer.determine_bin_directory()
+
+    def test__determine_bin_directory__system_path(self):
+        self.installer.install_command[0] = 'echo'
+        self.installer.bin_dir = None
+        self.installer.install_command_path = []
+        self.installer.use_system_path = True
+        self.installer.determine_bin_directory()
+
+    def test_find_install_command__bin_dir(self):
+        self.installer.install_command[0] = 'echo'
+        self.installer.bin_dir = '/bin'
+        self.installer.install_command_path = []
+        self.installer.find_install_command()
+        self.assertEqual(self.installer.install_command[0], '/bin/echo')
+
+    def test_find_install_command__system_dir(self):
+        self.installer.install_command[0] = 'echo'
+        self.installer.bin_dir = None
+        self.installer.install_command_path = []
+        self.installer.use_system_path = True
+        self.installer.find_install_command()

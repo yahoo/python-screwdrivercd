@@ -42,7 +42,7 @@ def validate_with_safety():
     rc = install_and_run(package='safety,.', command=f'safety check --full-report -o "{full_report_filename}"', interpreter=interpreter, upgrade_setuptools=True, upgrade_pip=True)
 
     if rc == 0:
-        update_job_status(status='SUCCESS', message='Dependency check passed')
+        # update_job_status(status='SUCCESS', message='Dependency check passed')
         print(colored('Safetydb check passed', color='green'))
         return rc
 
@@ -56,7 +56,7 @@ def validate_with_safety():
             results = json.load(fh)
             bad_packages = len(results)
 
-    update_job_status(status='FAILURE', message=f'Dependency check failed {bad_packages} bad dependencies found')
+    update_job_status(status='FAILURE', message=f'Dependency check failed {bad_packages} bad dependencies')
 
     return rc
 

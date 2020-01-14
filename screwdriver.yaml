@@ -49,7 +49,7 @@ jobs:
             DOCUMENTATION_PUBLISH: False
         requires: [~pr]
 
-    generate_version:
+    version:
         template: python/generate_version
         requires: [validate_test, validate_lint, validate_codestyle, validate_dependencies, validate_security, validate_type]
 
@@ -58,7 +58,7 @@ jobs:
         environment:
             PUBLISH: True
             TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
-        requires: [generate_version]
+        requires: [version]
 
     verify_test_package:
         template: python/validate_pypi_package

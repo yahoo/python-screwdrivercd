@@ -40,13 +40,13 @@ def validate_package_quality(package_dir: str='') -> int:
         Return code from the validation command
     """
     directories = standard_directories('package_quality_validation')
-    if not package_dir:
+    if not package_dir:  # pragma: no cover
         package_dir = directories['packages']
 
     pyroma_min_score = env_int('PYROMA_MIN_SCORE', 8)
     fail_if_no_packages = env_bool('VALIDATE_PACKAGE_QUALITY_FAIL_MISSING', False)
 
-    if not os.path.exists(package_dir):
+    if not os.path.exists(package_dir):  # pragma: no cover
         print(f'Package directory {package_dir!r} is not present, no packages to validate')
         if fail_if_no_packages:
             return 1

@@ -1,17 +1,25 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for termsimport copy
 import copy
-from json import dumps
 import os
-from . import ScrewdriverTestCase
+import sys
+
+from json import dumps
+from unittest import skip
+
 from screwdrivercd.packaging.build_python import build_sdist_package, build_wheel_packages
 from screwdrivercd.utility.environment import standard_directories
+from screwdrivercd.utility.output import header
+from screwdrivercd.utility.tox import run_tox
 from screwdrivercd.validation.validate_dependencies import validate_with_safety
 from screwdrivercd.validation.validate_package_quality import validate_package_quality
 from screwdrivercd.validation.validate_style import main as style_main
 from screwdrivercd.validation.validate_style import validate_codestyle
 from screwdrivercd.validation.validate_type import main as type_main
 from screwdrivercd.validation.validate_type import validate_type
+from screwdrivercd.validation.validate_unittest import main as unittest_main
+
+from . import ScrewdriverTestCase
 
 
 class ScrewdriverValidatorTestCase(ScrewdriverTestCase):
@@ -28,7 +36,10 @@ setup()
 """,
     'setup.cfg': b"""
 [metadata]
+author = Verizon Media Python Platform Team
+author_email = python@verizonmedia.com
 name=mypyvalidator
+url=https://foo.bar.com/
 version=0.0.0
 
 [options]
@@ -38,7 +49,28 @@ packages =
 package_dir =
     =src
 """,
-    'src/mypyvalidator/__init__.py': b"""a: int = 1\n"""
+    'src/mypyvalidator/__init__.py': b"""a: int = 1\n""",
+    'tests/test.py': b"""from unittest import TestCase
+
+class DummyTestCase(TestCase):
+    def test_dummy(self):
+        import mypyvalidator
+        self.assertEqual(mypyvalidator.a, 1)
+""",
+    'tox.ini': b"""
+[config]
+package_dir = src/mypyvalidator
+package_name = mypyvalidator
+
+[tox]
+envlist = py36,py37,py38
+skip_missing_interpreters = true
+
+[testenv]
+changedir = {toxinidir}
+commands = 
+	python -c "import sys;print(sys.version_info)"
+"""
 }
 
 # No source package tree
@@ -75,6 +107,23 @@ packages =
 
 package_dir =
     =src
+"""
+
+# tox fail
+tox_fail_config = copy.deepcopy(working_config)
+tox_fail_config['tox.ini'] = b"""
+[config]
+package_dir = src/mypyvalidator
+package_name = mypyvalidator
+
+[tox]
+envlist = py36,py37,py38
+skip_missing_interpreters = true
+
+[testenv]
+changedir = {toxinidir}
+commands = 
+	python -c "import sys;sys.exit(1)"
 """
 
 invalid_style_config = copy.deepcopy(working_config)
@@ -244,3 +293,93 @@ class PackageQualityValidatorTestCase(ScrewdriverTestCase):
         result = validate_package_quality()
         self.assertEqual(result, 0)
 
+
+class UnitTestValidatorTestCase(ScrewdriverTestCase):
+    validator_name = 'unittest'
+
+    def test__unittest__default(self):
+        self.write_config_files(working_config)
+        result = unittest_main()
+        for dirpath, dirs, files in os.walk('.tox'):
+            for fname in files:
+                if fname.endswith('.log'):
+                    filename = os.path.join(dirpath, fname)
+                    header(filename)
+                    with open(filename) as fh:
+                        print(fh.read() + os.linesep)
+        self.assertEqual(result, 0)
+
+    def test__unittest__fail(self):
+        self.write_config_files(tox_fail_config)
+        result = unittest_main()
+        for dirpath, dirs, files in os.walk('.tox'):
+            for fname in files:
+                if fname.endswith('.log'):
+                    filename = os.path.join(dirpath, fname)
+                    header(filename)
+                    with open(filename) as fh:
+                        print(fh.read() + os.linesep)
+        self.assertNotEqual(result, 0)
+
+    def test__unittest__no_artifacts_dir(self):
+        del os.environ['SD_ARTIFACTS_DIR']
+        self.write_config_files(working_config)
+        result = unittest_main()
+        for dirpath, dirs, files in os.walk('.tox'):
+            for fname in files:
+                if fname.endswith('.log'):
+                    filename = os.path.join(dirpath, fname)
+                    header(filename)
+                    with open(filename) as fh:
+                        print(fh.read() + os.linesep)
+        self.assertEqual(result, 0)
+
+    def test__unittest__tox_args(self):
+        os.environ['TOX_ARGS'] = '-v'
+        self.write_config_files(working_config)
+        result = unittest_main()
+        for dirpath, dirs, files in os.walk('.tox'):
+            for fname in files:
+                if fname.endswith('.log'):
+                    filename = os.path.join(dirpath, fname)
+                    header(filename)
+                    with open(filename) as fh:
+                        print(fh.read() + os.linesep)
+        self.assertEqual(result, 0)
+
+    def test__unittest__tox_args_arg(self):
+        self.write_config_files(working_config)
+        result = run_tox(tox_args='-v')
+        for dirpath, dirs, files in os.walk('.tox'):
+            for fname in files:
+                if fname.endswith('.log'):
+                    filename = os.path.join(dirpath, fname)
+                    header(filename)
+                    with open(filename) as fh:
+                        print(fh.read() + os.linesep)
+        self.assertEqual(result, 0)
+
+    def test__unittest__tox_envlist(self):
+        os.environ['TOX_ENVLIST'] = f'py{sys.version_info.major}{sys.version_info.minor}'
+        self.write_config_files(working_config)
+        result = unittest_main()
+        for dirpath, dirs, files in os.walk('.tox'):
+            for fname in files:
+                if fname.endswith('.log'):
+                    filename = os.path.join(dirpath, fname)
+                    header(filename)
+                    with open(filename) as fh:
+                        print(fh.read() + os.linesep)
+        self.assertEqual(result, 0)
+
+    def test__unittest__tox_envlist_arg(self):
+        self.write_config_files(working_config)
+        result = run_tox(tox_envlist=f'py{sys.version_info.major}{sys.version_info.minor}')
+        for dirpath, dirs, files in os.walk('.tox'):
+            for fname in files:
+                if fname.endswith('.log'):
+                    filename = os.path.join(dirpath, fname)
+                    header(filename)
+                    with open(filename) as fh:
+                        print(fh.read() + os.linesep)
+        self.assertEqual(result, 0)

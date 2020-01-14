@@ -99,6 +99,12 @@ class TestPlatformRepoRelease(ScrewdriverTestCase):
         result = git_tag_dates()
         self.assertIn('v999.999.999', result.keys())
 
+    def test__release__create_tag__message(self):
+        self.create_example_repo()
+        create_release_tag(version='999.999.999', message='test message')
+        result = git_tag_dates()
+        self.assertIn('v999.999.999', result.keys())
+
     def test__release__create_tag__git_error(self):
         self.create_example_repo()
         create_release_tag(version='999.999.999', git_command=self.moc_command(command='git', rc=999))
