@@ -128,7 +128,7 @@ class Version():
         """
         if self.ignore_meta_version:
             return ''
-        if self._meta_version:
+        if self._meta_version:  # pragma: no cover
             return self._meta_version
         try:  # pragma: no cover
             self._meta_version = subprocess.check_output([self.meta_command, 'get', 'package.version']).decode(errors='ignore').strip()  # nosec

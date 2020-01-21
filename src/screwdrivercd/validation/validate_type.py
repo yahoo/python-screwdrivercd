@@ -105,14 +105,14 @@ def validate_type():
 
     if rc > 0 and env_bool('TYPE_CHECK_ENFORCING'):
         print(colored('ERROR: Type check failed', 'red'), file=sys.stderr, flush=True)
-        update_job_status(status='FAILURE', message='Type annotation check failed')
+        # update_job_status(status='FAILURE', message='Type annotation check failed')
         return rc
     if rc == 0:
         print(colored('OK: Type validation sucessful', 'green'), flush=True)
-        update_job_status(status='SUCCESS', message='Type annotation check passed')
+        # update_job_status(status='SUCCESS', message='Type annotation check passed')
     else:
         print(colored('WARNING: Type check failed, enforcement is disabled, so not failing check', 'yellow'))
-        update_job_status(status='SUCCESS', message='Type annotation check, failed but is not enforcing')
+        update_job_status(status='SUCCESS', message='Type check, failed but is not enforcing')
         return 0
     return rc
 

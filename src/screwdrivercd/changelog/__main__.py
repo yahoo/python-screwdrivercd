@@ -3,7 +3,7 @@
 """
 screwdrivercd.changelog module entrypoint
 """
-from .generate import main
 
 
-main()
+def main():
+    pass

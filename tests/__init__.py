@@ -27,7 +27,7 @@ class ScrewdriverTestCase(unittest.TestCase):
         'PYPI_USER', 'PYPI_PASSWORD',
         'PYROMA_MIN_SCORE',
         'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST',
-        'TEST_UTILITY_ENV_BOOL',
+        'TEST_UTILITY_ENV_BOOL', 'TOX_ENVLIST', 'TOX_ARGS',
         'VALIDATE_PACKAGE_QUALITY_FAIL_MISSING'
     }
     meta_version = None

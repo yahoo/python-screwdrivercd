@@ -4,12 +4,16 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 
+from datetime import timedelta
 from pprint import pprint
 
 from screwdrivercd.screwdriver.environment import update_job_status
-from screwdrivercd.utility.contextmanagers import InTemporaryDirectory, revert_file, working_dir
+from screwdrivercd.utility.contextmanagers import InTemporaryDirectory, Timeout, revert_file, working_dir
 from screwdrivercd.utility.environment import env_bool, env_int, flush_terminals, interpreter_bin_command, standard_directories
+from screwdrivercd.utility.exceptions import TimeoutError
+from screwdrivercd.utility.output import header, print_error, status_message
 from screwdrivercd.utility.package import run_setup_command, setup_query, PackageMetadata
 from screwdrivercd.utility.screwdriver import create_artifact_directory
 from screwdrivercd.utility.run import run_and_log_output
@@ -17,7 +21,7 @@ from screwdrivercd.utility.run import run_and_log_output
 from . import ScrewdriverTestCase
 
 
-class TestPlatformTestTox(ScrewdriverTestCase):
+class TestPlatformTestUtility(ScrewdriverTestCase):
 
     def test_working_dir(self):
         """
@@ -90,6 +94,20 @@ class TestPlatformTestTox(ScrewdriverTestCase):
             self.assertTrue(os.path.isdir(tempdir))
         self.assertFalse(os.path.exists(tempdir))
         self.assertEqual(cwd, os.getcwd())
+
+    def test__Timeout__alarm_timeout(self):
+        with self.assertRaises(TimeoutError):
+            with Timeout(timedelta(seconds=1), use_alarm=True):
+                time.sleep(2)
+
+    def test__Timeout__noalarm_timeout(self):
+        with self.assertRaises(TimeoutError):
+            with Timeout(timedelta(milliseconds=10), use_alarm=False):
+                time.sleep(2)
+
+    def test__Timeout__default(self):
+        with Timeout():
+            time.sleep(.1)
 
     def test__flush_terminals(self):
         flush_terminals()
@@ -232,3 +250,19 @@ sys.exit(1)
         self.assertEqual(result['reports'], f'{self.tempdir.name}/reports{os.sep}foo')
         for value in result.values():
             self.assertTrue(os.path.exists(value))
+
+    def test__header(self):
+        header('This is a header message')
+
+    def test__header__stderr(self):
+        header('This is a header message', outfile=sys.stderr)
+
+    def test__header__collapse(self):
+        header('This is a header message', collapse=True)
+
+    def test__status_message__default(self):
+        result = status_message('Cool')
+        self.assertEqual(result, 'Cool')
+
+    def test__print_error(self):
+        print_error('Bad operator at keyboard')

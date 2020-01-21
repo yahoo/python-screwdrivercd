@@ -7,7 +7,7 @@ This wrapper runs the pycodestyle validation tool.
 """
 # The logging_basicConfig has to be run before other imports because some modules we use log output on import
 # pylint: disable=wrong-import-order, wrong-import-position
-from ..screwdriver.environment import logging_basicConfig, update_job_status
+from ..screwdriver.environment import logging_basicConfig
 logging_basicConfig(check_prefix='STYLE_CHECK')
 
 import logging
@@ -107,12 +107,10 @@ def validate_codestyle():
     rc = validate_with_codestyle(report_dir=report_dir)
 
     if rc == 0:
-        print(colored('OK: Code style validation sucessful', 'green'), flush=True)
-        update_job_status(status='SUCCESS', message='Code style check passed')
+        print(colored('OK: Code style validation successful', 'green'), flush=True)
 
     if rc > 0:
         print(colored('ERROR: Type code style check failed', 'red'), file=sys.stderr, flush=True)
-        update_job_status(status='FAILURE', message='Code style check failed')
         return rc
 
     return rc

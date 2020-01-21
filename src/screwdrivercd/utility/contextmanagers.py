@@ -5,8 +5,13 @@ Screwdriver Utility ContextManagers
 """
 import logging
 import os
-from contextlib import contextmanager
+import signal
+from contextlib import contextmanager, ContextDecorator
+from datetime import timedelta
 from tempfile import TemporaryDirectory
+from typing import Optional, Union
+
+from .exceptions import TimeoutError
 
 
 logger = logging.getLogger(__name__)
@@ -57,3 +62,42 @@ def InTemporaryDirectory():
     with TemporaryDirectory() as tempdir:
         with working_dir(tempdir):
             yield tempdir
+
+
+class Timeout(ContextDecorator):
+    """
+    A contextmanager that will timeout after a specific datetime.timedelta
+    """
+    use_alarm: Union[bool, None] = False
+    _old_handler = None
+
+    def __init__(self, timeout: Optional[timedelta]=None, use_alarm: Union[bool, None]=None):
+        self.timeout = timeout
+        self.use_alarm = use_alarm
+        if use_alarm is None:
+            # use_alarm wasn't specified, set the value based on support for signal.setitimer()
+            if hasattr(signal, 'setitimer'):
+                self.use_alarm = False
+            else:  # pragma: no cover
+                self.use_alarm = True
+
+    def _timeout_handler(self, signum, frame):
+        raise TimeoutError(f'Timeout after {self.timeout}')
+
+    def __enter__(self):
+        if self.timeout:
+            if self.use_alarm:
+                self._old_handler = signal.signal(signal.SIGALRM, self._timeout_handler)
+                signal.alarm(self.timeout.seconds)
+            else:
+                self._old_handler = signal.signal(signal.SIGALRM, self._timeout_handler)
+                signal.setitimer(signal.ITIMER_REAL, float(self.timeout.microseconds) / 1000000)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.timeout:
+            if self.use_alarm:
+                signal.alarm(0)
+            else:
+                signal.setitimer(signal.ITIMER_REAL, 0)
+        if self._old_handler:
+            signal.signal(signal.SIGALRM, self._old_handler)

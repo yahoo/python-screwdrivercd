@@ -52,9 +52,15 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
 
     def test__clone_dir(self):
         self._init_test_repo()
-        p = screwdrivercd.documentation.plugin.DocumentationPlugin()
+        p =  screwdrivercd.documentation.plugin.DocumentationPlugin()
         result = p.clone_dir
         self.assertEqual(result, 'python-screwdrivercd')
+
+    def test__git_add_all(self):
+        self._init_test_repo()
+        p = screwdrivercd.documentation.plugin.DocumentationPlugin()
+        Path('testfile.md').touch()
+        p.git_add_all()
 
     def test_documentation_base_plugin_is_present(self):
         p = screwdrivercd.documentation.plugin.DocumentationPlugin()
@@ -66,6 +72,21 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         p._log_message('foo', p.build_log_filename)
         self.assertTrue(os.path.exists('foo.log'))
         with open('foo.log') as log:
+            self.assertEqual('foo\n', log.read())
+
+    def test_documentation_base__log_message__pass_end(self):
+        p = self.plugin_class()
+        p._log_message('foo', log_filename='logs/foo.log', end='\r\n')
+        self.assertTrue(os.path.exists('logs/foo.log'))
+        with open('logs/foo.log', 'rb') as log:
+            self.assertEqual(b'foo\r\n', log.read())
+
+    def test_documentation_base__log_message_pass_log_filename(self):
+        p = self.plugin_class()
+        p.build_log_filename = 'foo.log'
+        p._log_message('foo', log_filename='foo2.log')
+        self.assertTrue(os.path.exists('foo2.log'))
+        with open('foo2.log') as log:
             self.assertEqual('foo\n', log.read())
 
     def test_documentation__base__run_command(self):

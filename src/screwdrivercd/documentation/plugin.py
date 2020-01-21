@@ -224,7 +224,7 @@ class DocumentationPlugin:
 
     def git_add_all(self):
         """
-        Run 'git add' on all the files in the currecnt directory.
+        Run 'git add' on all the files in the current directory.
         """
         self._log_message('\n- Adding all files in the current directory to git', self.publish_log_filename)
         for filename in os.listdir('.'):

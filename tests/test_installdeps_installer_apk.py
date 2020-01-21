@@ -14,7 +14,7 @@ TEST_CONFIG = f'''[build-system]
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 
 [tool.sdv4_installdeps]
-    install = ['apk', 'apt-get', 'yum', 'pip3']
+    install = ['apk']
 
     [tool.sdv4_installdeps.apk]
         deps = [

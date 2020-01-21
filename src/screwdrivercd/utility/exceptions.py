@@ -21,3 +21,6 @@ class PackageParseError(PackageValidationError):
     """
     Parsing of the package configuration failed
     """
+
+class TimeoutError(Exception):
+    """A timeout occurred"""
