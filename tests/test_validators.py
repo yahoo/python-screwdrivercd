@@ -87,6 +87,17 @@ packages =
     mypyvalidator
 """
 
+# src dir has different case than package name
+working_config_case_different = copy.deepcopy(working_config)
+working_config_case_different['src/MyPyvalidator/__init__.py'] = working_config['src/mypyvalidator/__init__.py']
+del working_config_case_different['src/mypyvalidator/__init__.py']
+working_config_case_different['setup.cfg'].replace(b'\n    mypyvalidator', b'\n    MyPyvalidator')
+
+# No source dir different case
+working_config_case_different_nosrc = copy.deepcopy(working_config_case_different)
+working_config_case_different_nosrc['MyPyvalidator/__init__.py'] = working_config_case_different_nosrc['src/MyPyvalidator/__init__.py']
+del working_config_case_different_nosrc['src/MyPyvalidator/__init__.py']
+
 # Invalid package tree
 invalid_type_config = copy.deepcopy(working_config)
 invalid_type_config['src/mypyvalidator/__init__.py'] = b"""a: int='1'"""
@@ -177,6 +188,26 @@ class StyleValidator(ScrewdriverTestCase):
 
     def test__style__pass__nosrc(self):
         self.write_config_files(working_config_nosrc)
+        result = validate_codestyle()
+        self.assertEqual(result, 0)
+
+    def test_style__pass__srcdir_wrong_case(self):
+        os.environ['PACKAGE_DIR'] = 'src'
+        self.write_config_files(working_config_case_different)
+        os.system('ls -lR')
+        result = validate_codestyle()
+        self.assertEqual(result, 0)
+
+    def test_style__pass__srcdir_wrong_case__missing(self):
+        os.environ['PACKAGE_DIR'] = 'srcz'
+        self.write_config_files(working_config_case_different)
+        os.system('ls -lR')
+        result = validate_codestyle()
+        self.assertNotEquals(result, 0)
+
+    def test_style__pass__nosrcdir_wrong_case(self):
+        self.write_config_files(working_config_case_different_nosrc)
+        os.system('ls -lR')
         result = validate_codestyle()
         self.assertEqual(result, 0)
 

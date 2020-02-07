@@ -138,3 +138,21 @@ def standard_directories(command: str='') -> Dict[str, str]:
             os.makedirs(directory, exist_ok=True)
 
     return directories
+
+
+def ins_filename(filename: str) -> str:
+    """
+    Return the filename of an actual file or directory that case insensitively resolves to the filename given.  If no
+    matching files or directories exists, returns an empty string.
+    """
+    dir = os.path.dirname(filename)
+    contain_dir = dir
+    base_name = os.path.basename(filename).lower()
+    if not contain_dir:
+        contain_dir = '.'
+    if not os.path.exists(contain_dir):
+        return ''
+    for f in os.listdir(contain_dir):
+        if base_name == f.lower():
+            return os.path.join(dir, f)
+    return ''

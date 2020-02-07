@@ -1,15 +1,41 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+import copy
 import os
 import tempfile
 import unittest
 from pathlib import Path
+
 import screwdrivercd.documentation.exceptions
 import screwdrivercd.documentation.plugin
 import screwdrivercd.documentation.mkdocs.plugin
 import screwdrivercd.documentation.sphinx.plugin
 
 from . import ScrewdriverTestCase
+
+
+# Simple sphinx project directory
+sphinx_project =  {
+    'doc/source/conf.py': b"""# -*- coding: utf-8 -*-
+import os
+extensions = []
+templates_path = ['_templates']
+source_suffix = '.rst'
+master_doc = 'index'
+project = 'foo'
+copyright = ''
+version = '0.0.0'
+release = version
+""",
+    'doc/source/index.rst': b"""Test file"""
+}
+
+
+mkdocs_project_config = {
+    'mkdocs.yml': b'site_name: test\nstrict: true\nnav:\n    - foo: foo.md\n',
+    'docs/index.md': b"# Test file\n",
+    'docs/foo.md': b"# Test file\n",
+}
 
 
 class PluginsTestCase(ScrewdriverTestCase):
@@ -66,10 +92,18 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         p = screwdrivercd.documentation.plugin.DocumentationPlugin()
         self.assertFalse(p.documentation_is_present)
 
-    def test_documentation_base__log_message(self):
+    def test_documentation_base__log_message__default(self):
         p = self.plugin_class()
         p.build_log_filename = 'foo.log'
         p._log_message('foo', p.build_log_filename)
+        self.assertTrue(os.path.exists('foo.log'))
+        with open('foo.log') as log:
+            self.assertEqual('foo\n', log.read())
+
+    def test_documentation_base__log_message__log_filename(self):
+        p = self.plugin_class()
+        p.build_log_filename = 'foo2.log'
+        p._log_message('foo', log_filename='foo.log')
         self.assertTrue(os.path.exists('foo.log'))
         with open('foo.log') as log:
             self.assertEqual('foo\n', log.read())
@@ -105,6 +139,7 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
 
     def test__documentation__build(self):
         self._create_test_repo_contents()
+        self.write_config_files(mkdocs_project_config)
         p = self.plugin_class()
         p.build_documentation()
         self.assertTrue(os.path.exists(f'{p.log_dir}/{p.name}.build.log'))
@@ -153,22 +188,32 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         self.assertTrue(dsttestfile.exists())
         self.assertTrue(dsttestdotfile.exists())
 
+    def test__documentation__publish(self):
+        instance = self.plugin_class()
+        instance.publish_documentation(push=False)
+
 
 class SphinxDocumentationPluginTestCase(DocumentationPluginTestCase):
     plugin_class = screwdrivercd.documentation.sphinx.plugin.SphinxDocumentationPlugin
 
     def _create_test_repo_contents(self):
-        os.makedirs('doc/source')
+        pass
 
     def test__documentation__build(self):
         pass
+
+    def test__documentation__publish(self):
+        self.write_config_files(sphinx_project)
+        super().test__documentation__publish()
 
 
 class MkdocsDocumentationPluginTestCase(DocumentationPluginTestCase):
     plugin_class = screwdrivercd.documentation.mkdocs.plugin.MkDocsDocumentationPlugin
 
     def _create_test_repo_contents(self):
-        os.makedirs('docs')
-
-    def test__documentation__build(self):
         pass
+
+    def test__documentation__publish(self):
+        self._init_test_repo()
+        self.write_config_files(mkdocs_project_config)
+        super().test__documentation__publish()
