@@ -19,6 +19,8 @@ from pypirun.cli import interpreter_parent
 from termcolor import colored
 
 from ..utility import create_artifact_directory
+from ..utility.environment import ins_filename
+from ..utility.output import print_error
 from ..utility.package import PackageMetadata
 
 
@@ -57,9 +59,16 @@ def validate_with_codestyle(report_dir):
 
     # Add targets
     if src_dir not in ['', '.'] and src_dir != package_name:
-        command.append(os.path.join(src_dir, package_name.replace('.', '/')))
+        target = os.path.join(src_dir, package_name.replace('.', '/'))
     else:
-        command.append(package_name.replace('.', '/'))
+        target = package_name.replace('.', '/')
+
+    print(f'target: {target}')
+    target = ins_filename(target)
+    if not target:
+        print_error(f'ERROR: Unable to find package directory for package {package_name!r}, target directory {target!r} does not exist')
+        return 1
+    command.append(target)
 
     print('-' * 90 + '\nRunning:', ' '.join(command) + '\n' + '-' * 90, flush=True)
     rc = 0
@@ -110,7 +119,7 @@ def validate_codestyle():
         print(colored('OK: Code style validation successful', 'green'), flush=True)
 
     if rc > 0:
-        print(colored('ERROR: Type code style check failed', 'red'), file=sys.stderr, flush=True)
+        print(colored('ERROR: Code style check failed', 'red'), file=sys.stderr, flush=True)
         return rc
 
     return rc

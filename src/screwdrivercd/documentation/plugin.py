@@ -291,7 +291,7 @@ class DocumentationPlugin:
 
         return self.build_dest
 
-    def publish_documentation(self, clear_before_build=True):  # pragma: no cover
+    def publish_documentation(self, clear_before_build=True, push=True):  # pragma: no cover
         """
         Build and publsh the documentation
 
@@ -309,12 +309,15 @@ class DocumentationPlugin:
         # Build the documentation
         self.build_documentation()
 
+        if not push:
+            return
+
         # Make sure there is a clone url before trying to publish
-        if not self.clone_url:
+        if not self.clone_url:  # pragma: no cover
             raise DocPublishError(f'Unable to determine a valid git clone url to publish to')
 
         # Checkout the documentation branch into a temporary directory, add the docs and commit them
-        with tempfile.TemporaryDirectory() as tempdir:
+        with tempfile.TemporaryDirectory() as tempdir:    # pragma: no cover
             os.chdir(tempdir)
             self.clone_documentation_branch()
             if clear_before_build:
@@ -391,7 +394,7 @@ def build_documentation(documentation_formats=None):
                     logger.debug(build_log.read())
 
 
-def publish_documentation(documentation_formats=None):
+def publish_documentation(documentation_formats=None, push: bool=True):  # pragma: no cover
     """
     Publish documentation using all plugins that can generate documentation
     """
@@ -401,7 +404,7 @@ def publish_documentation(documentation_formats=None):
         if documentation_plugin.documentation_is_present:
             print(f'Publishing {documentation_plugin.name!r} documentation: ', end='', flush=True)
             try:
-                documentation_plugin.publish_documentation(clear_before_build=clear_before_build)
+                documentation_plugin.publish_documentation(clear_before_build=clear_before_build, push=push)
             except (DocBuildError, DocPublishError) as error:
                 print(colored('Failed', color='red'), flush=True)
                 if documentation_plugin.build_log_filename and os.path.exists(documentation_plugin.build_log_filename):

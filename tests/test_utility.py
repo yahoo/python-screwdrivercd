@@ -7,11 +7,12 @@ import tempfile
 import time
 
 from datetime import timedelta
+from pathlib import Path
 from pprint import pprint
 
 from screwdrivercd.screwdriver.environment import update_job_status
 from screwdrivercd.utility.contextmanagers import InTemporaryDirectory, Timeout, revert_file, working_dir
-from screwdrivercd.utility.environment import env_bool, env_int, flush_terminals, interpreter_bin_command, standard_directories
+from screwdrivercd.utility.environment import env_bool, env_int, flush_terminals, ins_filename, interpreter_bin_command, standard_directories
 from screwdrivercd.utility.exceptions import TimeoutError
 from screwdrivercd.utility.output import header, print_error, status_message
 from screwdrivercd.utility.package import run_setup_command, setup_query, PackageMetadata
@@ -168,6 +169,26 @@ class TestPlatformTestUtility(ScrewdriverTestCase):
         self.assertFalse(os.path.exists(f'{self.tempdir.name}/test_artifacts'))
         create_artifact_directory(f'{self.tempdir.name}/test_artifacts')
         self.assertTrue(os.path.exists(f'{self.tempdir.name}/test_artifacts'))
+
+    def test__ins_filename__nodir(self):
+        Path('foo').mkdir()
+        result = ins_filename('foo')
+        self.assertEqual(result, 'foo')
+
+    def test__ins_filename__nodir__differentcase(self):
+        Path('Goo').mkdir()
+        result = ins_filename('goo')
+        self.assertEqual(result, 'Goo')
+
+    def test__ins_filename__fullpath(self):
+        Path('foo').mkdir()
+        fullpath = os.path.join(self.tempdir.name, 'foo')
+        result = ins_filename(fullpath)
+        self.assertEqual(result, fullpath)
+
+    def test__ins_filename__dirnoexist(self):
+        result = ins_filename('foo')
+        self.assertEqual(result, '')
 
     def test__run__run_log_output__success(self):
         with InTemporaryDirectory():
