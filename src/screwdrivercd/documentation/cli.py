@@ -47,3 +47,4 @@ def main():  # pragma: no cover
         except DocBuildError:
             return 1
     update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')
+    return 0
