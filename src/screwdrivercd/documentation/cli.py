@@ -39,7 +39,7 @@ def main():  # pragma: no cover
     if env_bool('DOCUMENTATION_PUBLISH', True):  # pragma: no cover
         try:
             publish_documentation(documentation_formats=documentation_formats)
-        except (DocBuildError, DocPublishError):
+        except DocPublishError:
             return 1
     else:
         try:

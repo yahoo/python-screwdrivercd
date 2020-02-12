@@ -1,9 +1,6 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
-import copy
 import os
-import tempfile
-import unittest
 from pathlib import Path
 
 import screwdrivercd.documentation.exceptions
@@ -36,6 +33,42 @@ mkdocs_project_config = {
     'docs/index.md': b"# Test file\n",
     'docs/foo.md': b"# Test file\n",
 }
+
+mkdocs_project_config_fail = {
+    'mkdocs.yml': b'site_name: test\nstrict: true\nnav:\n    - foo: foo2.md\n',
+    'docs/index.md': b"# Test file\n",
+    'docs/foo.md': b"# Test file\n",
+}
+
+
+class BuildDocsTestCase(ScrewdriverTestCase):
+    def _init_test_repo(self):
+        os.system('git init')
+        os.system('git config user.email "foo@bar.com"')
+        os.system('git config user.name "foo the bar"')
+        os.system('git remote add origin https://github.com/yahoo/python-screwdrivercd.git')
+
+    def test__doc_build(self):
+        self._init_test_repo()
+        self.write_config_files(mkdocs_project_config)
+        screwdrivercd.documentation.plugin.build_documentation()
+
+    def test__doc_build_fail(self):
+        self._init_test_repo()
+        self.write_config_files(mkdocs_project_config_fail)
+        with self.assertRaises(screwdrivercd.documentation.exceptions.DocBuildError):
+            screwdrivercd.documentation.plugin.build_documentation()
+
+    def test__doc_publish(self):
+        self._init_test_repo()
+        self.write_config_files(mkdocs_project_config)
+        screwdrivercd.documentation.plugin.publish_documentation(push=False)
+
+    def test__doc_publish_fail(self):
+        self._init_test_repo()
+        self.write_config_files(mkdocs_project_config_fail)
+        with self.assertRaises(screwdrivercd.documentation.exceptions.DocPublishError):
+            screwdrivercd.documentation.plugin.publish_documentation(push=False)
 
 
 class PluginsTestCase(ScrewdriverTestCase):
@@ -88,6 +121,11 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         Path('testfile.md').touch()
         p.git_add_all()
 
+    def test__disable_jekyll(self):
+        self._init_test_repo()
+        p = screwdrivercd.documentation.plugin.DocumentationPlugin()
+        p.disable_jekyll()
+
     def test_documentation_base_plugin_is_present(self):
         p = screwdrivercd.documentation.plugin.DocumentationPlugin()
         self.assertFalse(p.documentation_is_present)
@@ -95,7 +133,7 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
     def test_documentation_base__log_message__default(self):
         p = self.plugin_class()
         p.build_log_filename = 'foo.log'
-        p._log_message('foo', p.build_log_filename)
+        p._log_message('foo')
         self.assertTrue(os.path.exists('foo.log'))
         with open('foo.log') as log:
             self.assertEqual('foo\n', log.read())

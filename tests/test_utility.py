@@ -18,8 +18,15 @@ from screwdrivercd.utility.output import header, print_error, status_message
 from screwdrivercd.utility.package import run_setup_command, setup_query, PackageMetadata
 from screwdrivercd.utility.screwdriver import create_artifact_directory
 from screwdrivercd.utility.run import run_and_log_output
+from screwdrivercd.utility.tox import run_tox, store_tox_logs
 
 from . import ScrewdriverTestCase
+
+
+tox_stub = {
+    '.tox/log/GLOB-0.log': b'glob\n',
+    '.tox/py38/log/py38-0.log': b'foo\n',
+}
 
 
 class TestPlatformTestUtility(ScrewdriverTestCase):
@@ -287,3 +294,17 @@ sys.exit(1)
 
     def test__print_error(self):
         print_error('Bad operator at keyboard')
+
+    def test_store_tox_logs(self):
+        self.write_config_files(tox_stub)
+        store_tox_logs()
+        self.assertTrue(os.path.exists(f'{self.artifacts_dir}/logs/tox/log/GLOB-0.log'))
+        self.assertTrue(os.path.exists(f'{self.artifacts_dir}/logs/tox/py38/log/py38-0.log'))
+
+    def test_store_tox_logs_no_artifacts_dir(self):
+        del os.environ['SD_ARTIFACTS_DIR']
+        self.write_config_files(tox_stub)
+        store_tox_logs()
+        self.assertFalse(os.path.exists('artifacts/logs'))
+        self.assertFalse(os.path.exists('artifacts/logs/tox/log/GLOB-0.log'))
+        self.assertFalse(os.path.exists('artifacts/logs/tox/py38/log/py38-0.log'))
