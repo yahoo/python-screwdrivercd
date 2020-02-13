@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.0">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.2">
     
     
       
@@ -42,12 +42,12 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.1b62728e.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.adb8469c.css">
       
       
     
     
-      <script src="../assets/javascripts/modernizr.268332fc.js"></script>
+      <script src="../assets/javascripts/modernizr.86422ebf.js"></script>
     
     
       
@@ -79,7 +79,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#the-pyprojecttoml-config-file" tabindex="1" class="md-skip">
+      <a href="#the-pyprojecttoml-config-file" tabindex="0" class="md-skip">
         Skip to content
       </a>
     
@@ -88,7 +88,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href=".." title="Python Screwdriver Helpers" class="md-header-nav__button md-logo">
+        <a href=".." title="Python Screwdriver Helpers" aria-label="Python Screwdriver Helpers" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -119,7 +119,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
       <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
         &#xE5CD;
@@ -790,16 +790,16 @@ operating system environments in a coherent manner.</p>
 <h3 id="fail_on_error">fail_on_error<a class="headerlink" href="#fail_on_error" title="Permanent link">&para;</a></h3>
 <p>Boolean (True/False) value indicating if the installer should immediately fail if a package installation fails.</p>
 <p>The default value is False</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps]</span>
     <span class="n">fail_on_error</span> <span class="o">=</span> <span class="kc">true</span>
-</pre></div>
+</code></pre></div>
 
 <h3 id="install">install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h3>
 <p>The install configuration setting is an ordered list of the package utilities to run.  <strong>Optional</strong></p>
 <p>If not provided, a default that will run all the package utilities, ordered to execute the system package utilities, followed by the global python pip3 installed packages.</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps]</span>
     <span class="n">install</span> <span class="o">=</span> <span class="k">[&#39;apk&#39;, &#39;apt-get&#39;, &#39;brew&#39;, &#39;yum&#39;, &#39;pip3&#39;]</span>
-</pre></div>
+</code></pre></div>
 
 <h2 id="package-section">Package section<a class="headerlink" href="#package-section" title="Permanent link">&para;</a></h2>
 <p>Each package tool has a setting section under the <code class="codehilite"><span class="err">tool.sdv4_installdeps</span></code> section of the <code class="codehilite"><span class="err">pyproject.toml</span></code>.</p>
@@ -849,13 +849,13 @@ attributes of the Operating System distribution.</p>
 <p>For example, the snippet below will use the yum tool to install the <code class="codehilite"><span class="err">foo_python36</span></code> package from the foo python rpm repo 
 if the Operating System version is less than 8.0 and install the <code class="codehilite"><span class="err">python3</span></code> package if the operating system is version 
 8.0 or higher.</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps.yum]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps.yum]</span>
 <span class="n">repos</span><span class="p">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s">&#39;https://foo.bar.com/foo_rpms.repo;distro_version&lt;&quot;8.0&quot;&#39;</span>
 <span class="n">deps</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s">&#39;foo_python36;distro_version&lt;&quot;8.0&quot;&#39;</span><span class="p">,</span>
     <span class="s">&#39;python3;distro_version&gt;=&quot;8.0&#39;</span>
 <span class="p">]</span>
-</pre></div>
+</code></pre></div>
 
 <h4 id="repos-optional">repos (Optional)<a class="headerlink" href="#repos-optional" title="Permanent link">&para;</a></h4>
 <p>Some package utilities have the concept of package repositories.  The repos setting is a dictionary of repository name 
@@ -866,41 +866,41 @@ package repositories to add to the host configuration before installing the pack
 too.</p>
 <p>For example, this snippet would add the foo yum/rpm repository before installing the packages in Operating system 
 versions lower than 8.0.</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps.yum]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps.yum]</span>
 <span class="n">repos</span><span class="p">.</span><span class="n">foo_rpms</span> <span class="o">=</span> <span class="s">&#39;https://foo.bar.com/foo_rpms.repo;distro_version&lt;&quot;8.0&quot;&#39;</span>
-</pre></div>
+</code></pre></div>
 
 <h3 id="apk-settings">apk settings<a class="headerlink" href="#apk-settings" title="Permanent link">&para;</a></h3>
 <p>The apk utility does not support repositories.</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps.apk]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps.apk]</span>
     <span class="n">deps</span> <span class="o">=</span> <span class="k">[&#39;python3&#39;]</span>
-</pre></div>
+</code></pre></div>
 
 <h3 id="apt-get-settings">apt-get settings<a class="headerlink" href="#apt-get-settings" title="Permanent link">&para;</a></h3>
 <p>The apt-get tool supports both the deps and repos settings</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps.apt-get]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps.apt-get]</span>
     <span class="n">repos</span><span class="p">.</span><span class="n">multiverse</span> <span class="o">=</span> <span class="s">&#39;multiverse&#39;</span>
     <span class="n">repos</span><span class="p">.</span><span class="n">ppa_deadsnakes</span> <span class="o">=</span> <span class="s">&#39;ppa:deadsnakes/ppa;distro_version&gt;&quot;17.04&quot;&#39;</span>
     <span class="n">deps</span> <span class="o">=</span> <span class="k">[&#39;python3&#39;]</span>
-</pre></div>
+</code></pre></div>
 
 <h4 id="repos-apt-get-specific-values">repos apt-get specific values<a class="headerlink" href="#repos-apt-get-specific-values" title="Permanent link">&para;</a></h4>
 <p>The <code class="codehilite"><span class="err">apt-get</span></code> repos support adding/enabling built in repos, as well as ppa and repository urls.</p>
 <h3 id="brew-settings">brew settings<a class="headerlink" href="#brew-settings" title="Permanent link">&para;</a></h3>
 <p>The brew utility does not currently support repositories.</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps.brew]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps.brew]</span>
     <span class="n">deps</span> <span class="o">=</span> <span class="k">[&#39;python3&#39;]</span>
-</pre></div>
+</code></pre></div>
 
 <h3 id="yum-settings">yum settings<a class="headerlink" href="#yum-settings" title="Permanent link">&para;</a></h3>
 <p>The yum tools supports both repos and deps settings.</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps.yum]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps.yum]</span>
     <span class="n">repos</span><span class="p">.</span><span class="n">foo_rpms</span> <span class="o">=</span> <span class="s">&#39;https://foo.bar.com/foo_rpms.repo&#39;</span>
     <span class="n">deps</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s">&#39;foo_python36;distro_version&lt;&quot;8.0&quot;&#39;</span><span class="p">,</span>
         <span class="s">&#39;python3;distro_version&gt;=&quot;8.0&quot;&#39;</span>
     <span class="p">]</span>
-</pre></div>
+</code></pre></div>
 
 <h4 id="repos-yum-specific-values">repos yum specific values<a class="headerlink" href="#repos-yum-specific-values" title="Permanent link">&para;</a></h4>
 <p>The yum repos values are executed in order, so it is possible to add a repository url, then enable/disable 
@@ -908,16 +908,16 @@ specific repositories that where added.</p>
 <p>The yum utility configuration supports enabling/disabling repos in addition to being able to add/remove them.  </p>
 <p>A repo configuration value that begins with <code class="codehilite"><span class="c">enable:</span></code> will enable the repository instead of adding it.</p>
 <p>A repo configuraiton value that begins with <code class="codehilite"><span class="err">disable</span></code> will disable the repository instead of adding it.</p>
-<div class="codehilite"><pre><span></span><span class="n">repos</span><span class="p">.</span><span class="n">foo_rpms</span> <span class="o">=</span> <span class="s">&#39;https://foo.bar.com/foo_rpms.repo&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="n">repos</span><span class="p">.</span><span class="n">foo_rpms</span> <span class="o">=</span> <span class="s">&#39;https://foo.bar.com/foo_rpms.repo&#39;</span>
 <span class="n">repos</span><span class="p">.</span><span class="n">foo_rpms_disable_stable</span> <span class="o">=</span> <span class="s">&#39;disable:foo_rpms-stable&#39;</span>
 <span class="n">repos</span><span class="p">.</span><span class="n">foo_rpms_enable_beta</span> <span class="o">=</span> <span class="s">&#39;enable:foo_rpms-beta&#39;</span>
-</pre></div>
+</code></pre></div>
 
 <h3 id="pip3-settings">pip3 settings<a class="headerlink" href="#pip3-settings" title="Permanent link">&para;</a></h3>
 <p>The pip3 tool supports using the python pip3 command to install python packages for global, system wide use.  It does not currently support repos.</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps.pip3]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps.pip3]</span>
     <span class="n">deps</span> <span class="o">=</span> <span class="k">[&#39;serviceping&#39;]</span>
-</pre></div>
+</code></pre></div>
 
 <h3 id="environment-settings">Environment Settings<a class="headerlink" href="#environment-settings" title="Permanent link">&para;</a></h3>
 <p>Some settings for <code class="codehilite"><span class="err">scrwedrivercd_install_deps</span></code> command are specified via environment variables.</p>
@@ -940,7 +940,7 @@ specific repositories that where added.</p>
 </table>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <p>Here is an example that installs the mysql client package and installs the python <code class="codehilite"><span class="err">serviceping</span></code> package properly on multiple different Linux operating systems.</p>
-<div class="codehilite"><pre><span></span><span class="k">[tool.sdv4_installdeps]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.sdv4_installdeps]</span>
     <span class="n">install</span> <span class="o">=</span> <span class="k">[&#39;apk&#39;, &#39;apt-get&#39;, &#39;yum&#39;, &#39;pip3&#39;]</span>
 
     <span class="k">[tool.sdv4_installdeps.apk]</span>
@@ -960,7 +960,7 @@ specific repositories that where added.</p>
 
     <span class="k">[tool.sdv4_installdeps.pip3]</span>
         <span class="n">deps</span> <span class="o">=</span> <span class="k">[&#39;serviceping&#39;]</span>
-</pre></div>
+</code></pre></div>
                 
                   
                 
@@ -1019,9 +1019,9 @@ specific repositories that where added.</p>
       <div class="md-footer-copyright">
         
         powered by
-        <a href="https://www.mkdocs.org">MkDocs</a>
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
         and
-        <a href="https://squidfunk.github.io/mkdocs-material/">
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
           Material for MkDocs</a>
       </div>
       
@@ -1031,7 +1031,7 @@ specific repositories that where added.</p>
       
     </div>
     
-      <script src="../assets/javascripts/application.808e90bb.js"></script>
+      <script src="../assets/javascripts/application.c33a9706.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
