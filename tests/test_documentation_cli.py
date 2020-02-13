@@ -115,3 +115,18 @@ release = version
                 fh.write('''Title\n-----\n\n''')
 
             cli.main()
+
+    def test__publish__mkdocs__fail(self):
+        os.environ['DOCUMENTATION_FORMATS'] = 'mkdocs'
+        os.environ['DOCUMENTATION_PUBLISH'] = 'True'
+        sys.argv = ['sdv4_documentation']
+        with tempfile.TemporaryDirectory() as tempdir:
+            os.chdir(tempdir)
+            os.makedirs('docs')
+            with open('mkdocs.yml', 'w') as fh:
+                fh.write('site_name: test\nstrict: true\nnav:\n    - foo: bar.md\n')
+
+            with open('docs/index.md', 'w') as fh:
+                fh.write('# Title\n[bad_link](bar.md)\n')
+            result = cli.main()
+            self.assertNotEqual(result, 0)

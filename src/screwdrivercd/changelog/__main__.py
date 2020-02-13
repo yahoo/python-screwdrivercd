@@ -3,7 +3,8 @@
 """
 screwdrivercd.changelog module entrypoint
 """
+import sys
+from .generate import main
 
 
-def main():
-    pass
+sys.exit(main())

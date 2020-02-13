@@ -39,7 +39,7 @@ def main():  # pragma: no cover
     if env_bool('DOCUMENTATION_PUBLISH', True):  # pragma: no cover
         try:
             publish_documentation(documentation_formats=documentation_formats)
-        except (DocBuildError, DocPublishError):
+        except DocPublishError:
             return 1
     else:
         try:
@@ -47,3 +47,4 @@ def main():  # pragma: no cover
         except DocBuildError:
             return 1
     update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')
+    return 0

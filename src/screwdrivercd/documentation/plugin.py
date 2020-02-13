@@ -365,6 +365,7 @@ def build_documentation(documentation_formats=None):
     """
     Generate documentation using all plugins that can generate documentation
     """
+    failed = []
     generate_changelog()
     for documentation_plugin in documentation_plugins(documentation_formats=documentation_formats):
         if documentation_plugin.documentation_is_present:
@@ -372,10 +373,11 @@ def build_documentation(documentation_formats=None):
             print(f'Building {documentation_plugin.name!r} documentation: ', end='', flush=True)
             try:
                 documentation_plugin.build_documentation()
+                print(colored('Ok', color='green'), flush=True)
             except DocBuildError as error:
                 print(colored('Failed', color='red'), flush=True)
                 logger.error(f'Building {documentation_plugin.name!r} documentation {colored("Failed", color="red")}')
-                if documentation_plugin.build_log_filename and os.path.exists(documentation_plugin.build_log_filename):
+                if documentation_plugin.build_log_filename and os.path.exists(documentation_plugin.build_log_filename):  # pragma: no cover
                     with open(documentation_plugin.build_log_filename, 'r') as build_log:
                         if logger.level <= logging.DEBUG:
                             logger.error(f'{documentation_plugin.name} build Failed {str(error)}')
@@ -384,14 +386,15 @@ def build_documentation(documentation_formats=None):
                             print(build_log.read(), flush=True)
                 else:
                     logger.debug('No output from the build command was logged')
-                error.plugin = documentation_plugin
-                raise
+                failed.append(documentation_plugin.name)
 
-            print(colored('Ok', color='green'), flush=True)
-            if documentation_plugin.build_log_filename and os.path.exists(documentation_plugin.build_log_filename):
+            if documentation_plugin.build_log_filename and os.path.exists(documentation_plugin.build_log_filename):  # pragma: no cover
                 with open(documentation_plugin.build_log_filename, 'r') as build_log:
                     logger.debug(f'{documentation_plugin.name} build output')
                     logger.debug(build_log.read())
+
+            if failed:
+                raise DocBuildError(f'Documentation build failed for: {" ".join(failed)}')
 
 
 def publish_documentation(documentation_formats=None, push: bool=True):  # pragma: no cover
@@ -399,12 +402,14 @@ def publish_documentation(documentation_formats=None, push: bool=True):  # pragm
     Publish documentation using all plugins that can generate documentation
     """
     clear_before_build = True
+    failed = []
     generate_changelog()
     for documentation_plugin in documentation_plugins(documentation_formats=documentation_formats):
         if documentation_plugin.documentation_is_present:
             print(f'Publishing {documentation_plugin.name!r} documentation: ', end='', flush=True)
             try:
                 documentation_plugin.publish_documentation(clear_before_build=clear_before_build, push=push)
+                print(colored('Ok', color='green'), flush=True)
             except (DocBuildError, DocPublishError) as error:
                 print(colored('Failed', color='red'), flush=True)
                 if documentation_plugin.build_log_filename and os.path.exists(documentation_plugin.build_log_filename):
@@ -416,11 +421,9 @@ def publish_documentation(documentation_formats=None, push: bool=True):  # pragm
                         logger.error(f'{documentation_plugin.name} publish failed {str(error)}')
                         logger.error(publish_log.read())
                 error.plugin = documentation_plugin
-                print(f'Publishing {documentation_plugin.name!r} documentation {colored("failed", color="red")}', flush=True)
-                raise error
+                failed.append(documentation_plugin.name)
             clear_before_build = False
 
-            print(colored('Ok', color='green'), flush=True)
             if documentation_plugin.build_log_filename and os.path.exists(documentation_plugin.build_log_filename):
                 with open(documentation_plugin.build_log_filename, 'r') as build_log:
                     logger.debug(f'{documentation_plugin.name} build output')
@@ -430,3 +433,6 @@ def publish_documentation(documentation_formats=None, push: bool=True):  # pragm
                 with open(documentation_plugin.publish_log_filename, 'r') as publish_log:
                     logger.debug(f'{documentation_plugin.name} publish output')
                     logger.debug(publish_log.read())
+
+            if failed:
+                raise DocPublishError(f'Documentation publish failed for: {" ".join(failed)}')

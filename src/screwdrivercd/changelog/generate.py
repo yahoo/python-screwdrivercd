@@ -216,6 +216,7 @@ def main():
 
     git_fetch_tags()
     write_changelog(report_filename)
+    return 0
 
 
 if __name__ == '__main__':

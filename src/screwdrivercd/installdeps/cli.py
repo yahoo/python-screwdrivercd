@@ -73,7 +73,7 @@ def main():  # pragma: no cover
 
     with open(report_filename, 'w') as fh:
         json.dump(installed, fh)
-
+    return 0
 
 
 if __name__ == '__main__':
