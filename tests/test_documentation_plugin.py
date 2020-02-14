@@ -76,6 +76,7 @@ class PluginsTestCase(ScrewdriverTestCase):
     def test__documentation_plugins__present(self):
         names = [_.name for _ in screwdrivercd.documentation.plugin.documentation_plugins()]
         self.assertIn('mkdocs', names)
+        self.assertIn('mkdocs_venv', names)
         self.assertIn('sphinx', names)
 
 
@@ -247,6 +248,18 @@ class SphinxDocumentationPluginTestCase(DocumentationPluginTestCase):
 
 class MkdocsDocumentationPluginTestCase(DocumentationPluginTestCase):
     plugin_class = screwdrivercd.documentation.mkdocs.plugin.MkDocsDocumentationPlugin
+
+    def _create_test_repo_contents(self):
+        pass
+
+    def test__documentation__publish(self):
+        self._init_test_repo()
+        self.write_config_files(mkdocs_project_config)
+        super().test__documentation__publish()
+
+
+class MkdocsDocumentationVenvPluginTestCase(DocumentationPluginTestCase):
+    plugin_class = screwdrivercd.documentation.mkdocs.plugin.MkDocsDocumentationVenvPlugin
 
     def _create_test_repo_contents(self):
         pass

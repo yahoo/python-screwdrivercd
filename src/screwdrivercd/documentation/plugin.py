@@ -165,7 +165,7 @@ class DocumentationPlugin:
         self._log_message(f'\n- Copying files from {src} -> {dest}', self.publish_log_filename)
         copy_contents(src, dest)
 
-    def clone_documentation_branch(self):
+    def clone_documentation_branch(self):  # pragma: no cover
         """
         Clone and checkout the current documentation branch
         """
@@ -261,6 +261,16 @@ class DocumentationPlugin:
         disable_file.close()
         self._run_command(['git', 'add', '.nojekyll'], log_filename=self.publish_log_filename)
 
+    def build_setup(self):
+        """
+        Run operations to setup the build
+        """
+
+    def build_cleanup(self):
+        """
+        Run operations to cleanup after the build
+        """
+
     def build_documentation(self) -> str:
         """
         Build the documentation with the documentation build tool
@@ -277,6 +287,8 @@ class DocumentationPlugin:
         """
         self._log_message(f'\n- Building the {self.name} format documentation', self.build_log_filename)
 
+        self.build_setup()
+
         cwd = os.getcwd()
         os.chdir(self.source_dir)
         os.makedirs(self.build_dest, exist_ok=True)
@@ -289,6 +301,7 @@ class DocumentationPlugin:
         finally:
             os.chdir(cwd)
 
+        self.build_cleanup()
         return self.build_dest
 
     def publish_documentation(self, clear_before_build=True, push=True):  # pragma: no cover
@@ -384,7 +397,7 @@ def build_documentation(documentation_formats=None):
                             logger.error(build_log.read())
                         else:
                             print(build_log.read(), flush=True)
-                else:
+                else:  # pragma: no cover
                     logger.debug('No output from the build command was logged')
                 failed.append(documentation_plugin.name)
 
