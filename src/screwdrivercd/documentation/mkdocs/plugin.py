@@ -62,10 +62,10 @@ class MkDocsDocumentationVenvPlugin(MkDocsDocumentationPlugin):
 
         subprocess.check_call([interpreter_bin_command(), '-m', 'venv', self.venv_dir])  # nosec
 
-        if os.path.exists('documentation_requirements.txt'):
-            requirements_file = 'documentation_requirements.txt'
+        if os.path.exists('documentation_mkdocs_requirements.txt'):
+            requirements_file = 'documentation_mkdocs_requirements.txt'
         else:
-            requirements_file = os.path.join(self.tempdir.name, 'documentation_requirements.txt')
+            requirements_file = os.path.join(self.tempdir.name, 'documentation_mkdocs_requirements.txt')
             with open(requirements_file, 'w') as fh:
                 fh.write('\n'.join(self.default_requirements))
 

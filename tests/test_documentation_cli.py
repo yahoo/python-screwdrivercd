@@ -82,7 +82,7 @@ class CliTestCase(unittest.TestCase):
             with open('docs/index.md', 'w') as fh:
                 fh.write('# Title\n')
 
-            with open('documentation_requirements.txt', 'w') as fh:
+            with open('documentation_mkdocs_requirements.txt', 'w') as fh:
                 fh.write('mkdocs\n')
 
             result = cli.main()
@@ -101,7 +101,7 @@ class CliTestCase(unittest.TestCase):
             with open('docs/index.md', 'w') as fh:
                 fh.write('# Title\n')
 
-            with open('documentation_requirements.txt', 'w') as fh:
+            with open('documentation_mkdocs_requirements.txt', 'w') as fh:
                 fh.write('mkdocs\npymdown-extensions\n')
 
             result = cli.main()
