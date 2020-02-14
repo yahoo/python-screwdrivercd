@@ -70,7 +70,7 @@ class MkDocsDocumentationVenvPlugin(MkDocsDocumentationPlugin):
                 fh.write('\n'.join(self.default_requirements))
 
         if os.path.exists(requirements_file):
-            subprocess.check_call([self.venv_python, '-m', 'pip', 'install', '-r', requirements_file])  # nosec
+            self._run_command([self.venv_python, '-m', 'pip', 'install', '-r', requirements_file], log_filename=self.build_log_filename)  # nosec
 
         self.build_command = [self.venv_python, '-m', 'mkdocs', 'build', '--config-file', self.config_file, '--site-dir', self.build_dir]
 
