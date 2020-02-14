@@ -2,6 +2,10 @@
 MkDocs documentation generation plugin
 """
 import os
+import subprocess  # nosec
+import tempfile
+
+from typing import List
 
 from ..plugin import DocumentationPlugin
 from ...utility.environment import interpreter_bin_command
@@ -37,3 +41,41 @@ class MkDocsDocumentationPlugin(DocumentationPlugin):
         if os.path.exists(self.config_file):
             return True
         return False
+
+
+class MkDocsDocumentationVenvPlugin(MkDocsDocumentationPlugin):
+    """
+    screwdrivercd.documentation plugin for mkdocs documentation in a python venv
+    """
+    name = 'mkdocs_venv'
+    venv_dir: str = ''
+    default_requirements: List[str] = ['mkdocs', 'markdown', 'pymdown-extensions', 'markdown-include', 'mkdocs-material', 'pygments']
+
+    def build_setup(self):
+        """
+        Set up a temporary Python virtualenv before running the build
+        """
+        self.tempdir = tempfile.TemporaryDirectory()
+        self.venv_dir = os.path.join(self.tempdir.name, 'mkdocsvenv')
+        self.venv_bin = os.path.join(self.venv_dir, 'bin')
+        self.venv_python = os.path.join(self.venv_bin, 'python3')
+
+        subprocess.check_call([interpreter_bin_command(), '-m', 'venv', self.venv_dir])  # nosec
+
+        if os.path.exists('documentation_requirements.txt'):
+            requirements_file = 'documentation_requirements.txt'
+        else:
+            requirements_file = os.path.join(self.tempdir.name, 'documentation_requirements.txt')
+            with open(requirements_file, 'w') as fh:
+                fh.write('\n'.join(self.default_requirements))
+
+        if os.path.exists(requirements_file):
+            subprocess.check_call([self.venv_python, '-m', 'pip', 'install', '-r', requirements_file])  # nosec
+
+        self.build_command = [self.venv_python, '-m', 'mkdocs', 'build', '--config-file', self.config_file, '--site-dir', self.build_dir]
+
+    def build_cleanup(self):
+        """
+        Clean up the temporary virtualenv
+        """
+        self.tempdir.cleanup()

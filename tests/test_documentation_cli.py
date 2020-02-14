@@ -54,6 +54,60 @@ class CliTestCase(unittest.TestCase):
                 fh.write('# Title\n')
             cli.main()
 
+    def test__build__mkdocs_venv(self):
+        os.environ['DOCUMENTATION_FORMATS'] = 'mkdocs_venv'
+        os.environ['DOCUMENTATION_PUBLISH'] = 'False'
+        sys.argv = ['sdv4_documentation']
+        with tempfile.TemporaryDirectory() as tempdir:
+            os.chdir(tempdir)
+            os.makedirs('docs')
+            with open('mkdocs.yml', 'w') as fh:
+                fh.write('site_name: test\n')
+
+            with open('docs/index.md', 'w') as fh:
+                fh.write('# Title\n')
+            result = cli.main()
+        self.assertEqual(result, 0)
+
+    def test__build__mkdocs_venv__requirements_missing__fail(self):
+        os.environ['DOCUMENTATION_FORMATS'] = 'mkdocs_venv'
+        os.environ['DOCUMENTATION_PUBLISH'] = 'False'
+        sys.argv = ['sdv4_documentation']
+        with tempfile.TemporaryDirectory() as tempdir:
+            os.chdir(tempdir)
+            os.makedirs('docs')
+            with open('mkdocs.yml', 'w') as fh:
+                fh.write('site_name: test\nmarkdown_extensions:\n    - pymdownx.arithmatex\n')
+
+            with open('docs/index.md', 'w') as fh:
+                fh.write('# Title\n')
+
+            with open('documentation_requirements.txt', 'w') as fh:
+                fh.write('mkdocs\n')
+
+            result = cli.main()
+        self.assertNotEqual(result, 0)
+
+    def test__build__mkdocs_venv__requirements_present(self):
+        os.environ['DOCUMENTATION_FORMATS'] = 'mkdocs_venv'
+        os.environ['DOCUMENTATION_PUBLISH'] = 'False'
+        sys.argv = ['sdv4_documentation']
+        with tempfile.TemporaryDirectory() as tempdir:
+            os.chdir(tempdir)
+            os.makedirs('docs')
+            with open('mkdocs.yml', 'w') as fh:
+                fh.write('site_name: test\nmarkdown_extensions:\n    - pymdownx.arithmatex\n')
+
+            with open('docs/index.md', 'w') as fh:
+                fh.write('# Title\n')
+
+            with open('documentation_requirements.txt', 'w') as fh:
+                fh.write('mkdocs\npymdown-extensions\n')
+
+            result = cli.main()
+        self.assertEqual(result, 0)
+
+
     def test__build__mkdocs__docsdir(self):
         os.environ['DOCUMENTATION_FORMATS'] = 'mkdocs'
         os.environ['DOCUMENTATION_PUBLISH'] = 'False'
