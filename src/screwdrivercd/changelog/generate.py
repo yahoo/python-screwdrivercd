@@ -58,9 +58,12 @@ def create_first_commit_tag_if_missing() -> None:
 
     first_commit_hash = subprocess.check_output(['git', 'rev-list', '--max-parents=0', 'HEAD'], stderr=subprocess.DEVNULL).decode(errors='ignore').strip()  # nosec
     if first_commit_hash:
-        output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
+        try:
+            output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
+        except subprocess.CalledProcessError:
+            pass  # Tag already exists
 
-
+        
 def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') -> List[Path]:
     changed = []
 
