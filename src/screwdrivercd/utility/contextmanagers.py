@@ -91,7 +91,8 @@ class Timeout(ContextDecorator):
                 signal.alarm(self.timeout.seconds)
             else:
                 self._old_handler = signal.signal(signal.SIGALRM, self._timeout_handler)
-                signal.setitimer(signal.ITIMER_REAL, float(self.timeout.microseconds) / 1000000)
+                seconds = float(self.timeout.total_seconds())
+                signal.setitimer(signal.ITIMER_REAL, seconds)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.timeout:
