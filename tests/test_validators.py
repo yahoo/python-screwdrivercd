@@ -69,7 +69,7 @@ skip_missing_interpreters = true
 [testenv]
 changedir = {toxinidir}
 commands = 
-	python -c "import sys;print(sys.version_info)"
+     python -c "import sys;print(sys.version_info)"
 """
 }
 
