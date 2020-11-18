@@ -37,7 +37,7 @@ def validate_with_codestyle(report_dir):
 
     src_dir = os.environ.get('PACKAGE_DIR', package_dir)
     if not src_dir:
-        src_dir = os.environ.get('PACKAGE_DIRECTORY', '')
+        src_dir = os.environ.get('PACKAGE_DIRECTORY', '.')
 
     parent_interpreter = interpreter_parent(sys.executable)
     interpreter = os.environ.get('BASE_PYTHON', parent_interpreter)
