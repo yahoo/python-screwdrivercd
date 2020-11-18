@@ -61,11 +61,12 @@ def validate_with_codestyle(report_dir):
 
     # Add targets
     target = ''
-    for package in package_metadata.packages:
-        package_path = os.path.join(src_dir, package)
-        if os.path.exists(package_path):
-            target = package_path
-            break
+    if hasattr(package_metadata, 'packages'):
+        for package in package_metadata.packages:
+            package_path = os.path.join(src_dir, package)
+            if os.path.exists(package_path):
+                target = package_path
+                break
 
     if not target:
         if src_dir not in ['', '.'] and src_dir != package_name:
