@@ -55,11 +55,11 @@ def revert_file(filename):  # pragma: no cover
 
 
 @contextmanager
-def InTemporaryDirectory():
+def InTemporaryDirectory(suffix=None, prefix=None, dir=None):
     """
     A context manager that creates a temporary directory and switches into it
     """
-    with TemporaryDirectory() as tempdir:
+    with TemporaryDirectory(suffix=suffix, prefix=prefix, dir=dir) as tempdir:
         with working_dir(tempdir):
             yield tempdir
 

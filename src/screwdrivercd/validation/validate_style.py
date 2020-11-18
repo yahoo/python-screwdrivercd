@@ -31,7 +31,11 @@ logger = logging.getLogger(logger_name)
 def validate_with_codestyle(report_dir):
     """Run the codestyle command directly to do the validation"""
 
-    src_dir = os.environ.get('PACKAGE_DIR', '')
+    package_metadata = PackageMetadata()
+    package_name = package_metadata.metadata['name']
+    package_dir = package_metadata.options.get('package_dir', '').strip().lstrip('=')
+
+    src_dir = os.environ.get('PACKAGE_DIR', package_dir)
     if not src_dir:
         src_dir = os.environ.get('PACKAGE_DIRECTORY', '')
 
@@ -47,8 +51,6 @@ def validate_with_codestyle(report_dir):
             bin_dir = os.path.dirname(parent_interpreter)
             pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
 
-    package_name = PackageMetadata().metadata['name']
-
     # Generate the command line from the environment settings
     command = [pycodestyle_command]
 
@@ -58,10 +60,18 @@ def validate_with_codestyle(report_dir):
         command += extra_args.split()
 
     # Add targets
-    if src_dir not in ['', '.'] and src_dir != package_name:
-        target = os.path.join(src_dir, package_name.replace('.', '/'))
-    else:
-        target = package_name.replace('.', '/')
+    target = ''
+    for package in package_metadata.packages:
+        package_path = os.path.join(src_dir, package)
+        if os.path.exists(package_path):
+            target = package_path
+            break
+
+    if not target:
+        if src_dir not in ['', '.'] and src_dir != package_name:
+            target = os.path.join(src_dir, package_name.replace('.', '/'))
+        else:
+            target = package_name.replace('.', '/')
 
     print(f'target: {target}')
     target = ins_filename(target)
