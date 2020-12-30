@@ -16,10 +16,14 @@ shared:
 jobs:
     validate_codestyle:
         template: python/validate_codestyle
+        environment:
+            CODESTYLE_ARGS: -v
         requires: [~commit, ~pr]
 
     validate_codestyle_new:
         template: python/validate_codestyle
+        environment:
+            CODESTYLE_ARGS: -v
         steps:
             - postinstall_dependencies: $BASE_PYTHON -m pip install -U .
         requires: [~commit, ~pr]
