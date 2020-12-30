@@ -174,3 +174,35 @@ class PackageMetadata():
                         self.options[option_item] = True
                     else:  # pragma: no cover
                         self.options[option_item] = False
+
+
+def package_srcdir() -> str:
+    # Package directory is being specifically set using env variables
+    env_package_dir = os.environ.get('PACKAGE_DIR', '')
+    if not env_package_dir:
+        env_package_dir = os.environ.get('PACKAGE_DIRECTORY', '')
+
+    if env_package_dir:
+        return env_package_dir
+
+    package_metadata = PackageMetadata()
+    package_name = package_metadata.metadata['name']
+    package_dir = package_metadata.options.get('package_dir', '').strip().lstrip('=')
+
+    # Package directory specified in the package
+    if package_dir:
+        return package_dir
+
+    # Fallback to looking for the package in a directory matching the package name
+    if os.path.exists(package_name):
+        return package_name
+
+    for entry in os.listdir('.'):
+        if entry.lower() == package_name.lower():
+            return entry
+
+    for entry in os.listdir('.'):
+        if entry.lower().replace('-', '_') == package_name.lower().replace('-', '_'):
+            return entry
+
+    return ''

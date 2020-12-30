@@ -21,7 +21,7 @@ from termcolor import colored
 from ..utility import create_artifact_directory
 from ..utility.environment import ins_filename
 from ..utility.output import print_error
-from ..utility.package import PackageMetadata
+from ..utility.package import PackageMetadata, package_srcdir
 
 
 logger_name = 'validate_style' if __name__ == '__main__' else __name__
@@ -33,11 +33,7 @@ def validate_with_codestyle(report_dir):
 
     package_metadata = PackageMetadata()
     package_name = package_metadata.metadata['name']
-    package_dir = package_metadata.options.get('package_dir', '').strip().lstrip('=')
-
-    src_dir = os.environ.get('PACKAGE_DIR', package_dir)
-    if not src_dir:
-        src_dir = os.environ.get('PACKAGE_DIRECTORY', '.')
+    src_dir = package_srcdir()
 
     parent_interpreter = interpreter_parent(sys.executable)
     interpreter = os.environ.get('BASE_PYTHON', parent_interpreter)
@@ -59,26 +55,30 @@ def validate_with_codestyle(report_dir):
     if extra_args:
         command += extra_args.split()
 
-    # Add targets
-    target = ''
-    if hasattr(package_metadata, 'packages'):
-        for package in package_metadata.packages:
-            package_path = os.path.join(src_dir, package)
-            if os.path.exists(package_path):
-                target = package_path
-                break
+    if src_dir and src_dir not in ['.']:
+        target = src_dir
+    else:
+        # Add targets
+        target = ''
+        src_dir = '.'
+        if hasattr(package_metadata, 'packages'):
+            for package in package_metadata.packages:
+                package_path = os.path.join(src_dir, package)
+                if os.path.exists(package_path):
+                    target = package_path
+                    break
 
-    if not target:
-        if src_dir not in ['', '.'] and src_dir != package_name:
-            target = os.path.join(src_dir, package_name.replace('.', '/'))
-        else:
-            target = package_name.replace('.', '/')
+        if not target:
+            if src_dir not in ['', '.'] and src_dir != package_name:
+                target = os.path.join(src_dir, package_name.replace('.', '/'))
+            else:
+                target = package_name.replace('.', '/')
 
-    print(f'target: {target}')
-    target = ins_filename(target)
-    if not target:
-        print_error(f'ERROR: Unable to find package directory for package {package_name!r}, target directory {target!r} does not exist')
-        return 1
+        print(f'target: {target}')
+        target = ins_filename(target)
+        if not target:
+            print_error(f'ERROR: Unable to find package directory for package {package_name!r}, target directory {target!r} does not exist')
+            return 1
     command.append(target)
 
     print('-' * 90 + '\nRunning:', ' '.join(command) + '\n' + '-' * 90, flush=True)
