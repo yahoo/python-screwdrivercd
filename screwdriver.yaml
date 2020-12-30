@@ -5,12 +5,12 @@ version: 4
 shared:
     environment:
         CHANGELOG_FILENAME: docs/changelog.md
-        DOCUMENTATION_DEBUG: False
+        DOCUMENTATION_DEBUG: True
         DOCUMENTATION_FORMATS: mkdocs
-        PACKAGE_DIR: src
-        PACKAGE_DIRECTORY: src
+        # PACKAGE_DIR: src
+        # PACKAGE_DIRECTORY: src
     steps:
-        - presetup_deploy_keys: $BASE_PYTHON -m pip install -U .[documentation]
+         - presetup_deploy_keys: $BASE_PYTHON -m pip install -U .[documentation]
         - tag_release: $BASE_PYTHON -m screwdrivercd.repo.release
 
 jobs:
