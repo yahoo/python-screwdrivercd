@@ -18,6 +18,12 @@ jobs:
         template: python/validate_codestyle
         requires: [~commit, ~pr]
 
+    validate_codestyle_new:
+        template: python/validate_codestyle
+        steps:
+            - postinstall_dependencies: $BASE_PYTHON -m pip install -U .
+        requires: [~commit, ~pr]
+
     validate_dependencies:
         template: python/validate_dependencies
         requires: [~commit, ~pr]
