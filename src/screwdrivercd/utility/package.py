@@ -186,12 +186,13 @@ def package_srcdir() -> str:
         return env_package_dir
 
     package_metadata = PackageMetadata()
-    package_name = package_metadata.metadata['name']
     package_dir = package_metadata.options.get('package_dir', '').strip().lstrip('=')
 
     # Package directory specified in the package
     if package_dir:
         return package_dir
+
+    package_name = package_metadata.metadata['name']
 
     # Fallback to looking for the package in a directory matching the package name
     if os.path.exists(package_name):

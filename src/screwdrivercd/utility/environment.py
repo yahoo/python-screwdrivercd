@@ -147,14 +147,17 @@ def ins_filename(filename: str) -> str:
     Return the filename of an actual file or directory that case insensitively resolves to the filename given.  If no
     matching files or directories exists, returns an empty string.
     """
-    dir = os.path.dirname(filename)
-    contain_dir = dir
+    contain_dir = os.path.dirname(filename)
     base_name = os.path.basename(filename).lower()
     if not contain_dir:
         contain_dir = '.'
     if not os.path.exists(contain_dir):
+        print(f'Container dir: {contain_dir}')
         return ''
     for f in os.listdir(contain_dir):
         if base_name == f.lower():
-            return os.path.join(dir, f)
+            if os.path.dirname(filename):
+                return os.path.join(os.path.dirname(filename), f)
+            else:
+                return f
     return ''

@@ -46,6 +46,8 @@ def validate_with_codestyle(report_dir):
         if not os.path.exists(pycodestyle_command):
             bin_dir = os.path.dirname(parent_interpreter)
             pycodestyle_command = os.path.join(bin_dir, 'pycodestyle')
+            if not os.path.exists(pycodestyle_command):
+                pycodestyle_command = 'pycodestyle'
 
     # Generate the command line from the environment settings
     command = [pycodestyle_command]
