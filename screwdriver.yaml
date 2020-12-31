@@ -54,7 +54,7 @@ jobs:
         environment:
             DOCUMENTATION_PUBLISH: False
         steps:
-            - postinit: $BASE_PYTHON -m pip install -U pip
+            - postinit_os: $BASE_PYTHON -m pip install -U pip
         requires: [~pr]
 
     version:
