@@ -51,7 +51,7 @@ jobs:
     validate_documentation:
         template: python/documentation
         steps:
-            -   publish_documentation: |
+            - publish_documentation: |
                 LOGDIR="$SD_ARTIFACTS_DIR/logs/$SD_TEMPLATE_NAME"
                 if [ ! -e "$LOGDIR" ]; then
                     mkdir -p "$LOGDIR"
