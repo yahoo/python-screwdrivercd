@@ -161,3 +161,19 @@ def ins_filename(filename: str) -> str:
             else:
                 return f
     return ''
+
+
+def is_pull_request() -> bool:
+    """
+    Return True if the SD_PULL_REQUEST environment variable has a PULL Request value, False otherwise
+    """
+    pr_num_str = os.environ.get('SD_PULL_REQUEST', '')
+    if not pr_num_str:
+        return False
+
+    try:
+        pr_num = int(pr_num_str)
+    except ValueError:
+        return False
+
+    return True

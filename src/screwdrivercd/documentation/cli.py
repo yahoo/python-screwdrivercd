@@ -9,11 +9,10 @@ from ..screwdriver.environment import logging_basicConfig, update_job_status
 logging_basicConfig(check_prefix='DOCUMENTATION')
 import logging
 import os
-import sys
 
 from .exceptions import DocBuildError, DocPublishError
 from .plugin import build_documentation, publish_documentation
-from ..utility import env_bool
+from ..utility.environment import env_bool, is_pull_request
 
 
 logger_name = __name__
@@ -36,7 +35,9 @@ def main():  # pragma: no cover
     if documentation_formats:
         documentation_formats = [_.strip() for _ in documentation_formats.split(',')]
 
-    if env_bool('DOCUMENTATION_PUBLISH', True):  # pragma: no cover
+    documentation_publish_default = True if is_pull_request() else False
+
+    if env_bool('DOCUMENTATION_PUBLISH', documentation_publish_default):  # pragma: no cover
         try:
             publish_documentation(documentation_formats=documentation_formats)
         except DocPublishError:
