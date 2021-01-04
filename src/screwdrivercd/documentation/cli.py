@@ -47,5 +47,6 @@ def main():  # pragma: no cover
             build_documentation(documentation_formats=documentation_formats)
         except DocBuildError:
             return 1
-    update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')
+    if is_pull_request():
+        update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')
     return 0

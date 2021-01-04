@@ -10,7 +10,6 @@ shared:
         # PACKAGE_DIR: src
         # PACKAGE_DIRECTORY: src
     steps:
-        - presetup_deploy_keys: $BASE_PYTHON -m pip install -U .[documentation]
         - tag_release: $BASE_PYTHON -m screwdrivercd.repo.release
 
 jobs:
@@ -51,10 +50,6 @@ jobs:
 
     validate_documentation:
         template: python/documentation
-        environment:
-            DOCUMENTATION_PUBLISH: False
-        steps:
-            - postinit_os: $BASE_PYTHON -m pip install -U pip
         requires: [~pr]
 
     version:
