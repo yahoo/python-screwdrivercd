@@ -9,11 +9,12 @@ from ..screwdriver.environment import logging_basicConfig, update_job_status
 logging_basicConfig(check_prefix='DOCUMENTATION')
 import logging
 import os
-import sys
+
+from termcolor import colored
 
 from .exceptions import DocBuildError, DocPublishError
 from .plugin import build_documentation, publish_documentation
-from ..utility import env_bool
+from ..utility.environment import env_bool, is_pull_request
 
 
 logger_name = __name__
@@ -36,15 +37,24 @@ def main():  # pragma: no cover
     if documentation_formats:
         documentation_formats = [_.strip() for _ in documentation_formats.split(',')]
 
-    if env_bool('DOCUMENTATION_PUBLISH', True):  # pragma: no cover
+    documentation_publish_default = False if is_pull_request() else True
+
+    rc = 0
+    if env_bool('DOCUMENTATION_PUBLISH', documentation_publish_default):  # pragma: no cover
+        operation = 'Published'
         try:
             publish_documentation(documentation_formats=documentation_formats)
         except DocPublishError:
-            return 1
+            rc = 1
+        if is_pull_request():
+            print(colored('Warning: Published documentation from a pull request', 'yellow'))
     else:
+        operation = 'Generated'
         try:
             build_documentation(documentation_formats=documentation_formats)
         except DocBuildError:
-            return 1
-    update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')
-    return 0
+            rc = 1
+    if is_pull_request():
+        status = 'SUCCESS' if rc == 0 else 'FAILURE'
+        update_job_status(status=status, message=f'{operation} {", ".join(documentation_formats)} documentation')
+    return rc
