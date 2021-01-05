@@ -51,31 +51,7 @@ jobs:
     validate_documentation:
         template: python/documentation
         steps:
-            - publish_documentation: |
-                LOGDIR="$SD_ARTIFACTS_DIR/logs/$SD_TEMPLATE_NAME"
-                if [ ! -e "$LOGDIR" ]; then
-                    mkdir -p "$LOGDIR"
-                fi
-                echo "Installing screwdrivercd documentation extras"
-                $BASE_PYTHON -m pip install screwdrivercd[documentation] 2>&1 | tee -a $LOGDIR/install_screwdrivercd_extra_documentation.log
-                $BASE_PYTHON << EOF
-                import json
-                import os
-                import sys
-                from screwdrivercd.utility.package import PackageMetadata
-
-                extras = []
-                if os.path.exists('setup.py'):
-                    package = PackageMetadata()
-                    extras = list(package.metadata.get('provides_extras', set()))
-                    if 'doc_build' in extras:
-                        with open('/tmp/doc_build_has_extras', 'w') as fh:
-                            json.dump(extras, fh)
-                EOF
-                if [ -e "/tmp/doc_build_has_extras" ]; then
-                    $BASE_PYTHON -m pip install .[doc_build] 2>&1 | tee -a $LOGDIR/install_package_extra_doc_build.log
-                fi
-                $BASE_PYTHON -m screwdrivercd.documentation
+            - postinstall_dependencies: $BASE_PYTHON -m pip install -U .
         requires: [~pr]
 
     version:
