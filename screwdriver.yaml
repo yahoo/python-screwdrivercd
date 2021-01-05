@@ -77,5 +77,7 @@ jobs:
     publish_documentation:
         template: python/documentation
         steps:
-            - postinstall_dependencies: $BASE_PYTHON -m pip install -U .
+            - postinstall_dependencies: |
+                $BASE_PYTHON -m pip install -U .
+                printenv | grep SD | sort
         requires: [~pr, ~publish_pypi]
