@@ -152,7 +152,6 @@ def ins_filename(filename: str) -> str:
     if not contain_dir:
         contain_dir = '.'
     if not os.path.exists(contain_dir):
-        print(f'Container dir: {contain_dir}')
         return ''
     for f in os.listdir(contain_dir):
         if base_name == f.lower():

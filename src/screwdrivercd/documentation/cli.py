@@ -35,7 +35,7 @@ def main():  # pragma: no cover
     if documentation_formats:
         documentation_formats = [_.strip() for _ in documentation_formats.split(',')]
 
-    documentation_publish_default = True if is_pull_request() else False
+    documentation_publish_default = False if is_pull_request() else True
 
     if env_bool('DOCUMENTATION_PUBLISH', documentation_publish_default):  # pragma: no cover
         try:
