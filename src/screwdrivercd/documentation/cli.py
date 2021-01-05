@@ -10,6 +10,8 @@ logging_basicConfig(check_prefix='DOCUMENTATION')
 import logging
 import os
 
+from termcolor import colored
+
 from .exceptions import DocBuildError, DocPublishError
 from .plugin import build_documentation, publish_documentation
 from ..utility.environment import env_bool, is_pull_request
@@ -44,6 +46,8 @@ def main():  # pragma: no cover
             publish_documentation(documentation_formats=documentation_formats)
         except DocPublishError:
             rc = 1
+        if is_pull_request():
+            print(colored('Warning: Published documentation from a pull request', 'yellow'))
     else:
         operation = 'Generated'
         try:
