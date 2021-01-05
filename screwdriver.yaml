@@ -48,12 +48,6 @@ jobs:
     #    template: python/validate_type
     #     requires: [~commit, ~pr]
 
-    validate_documentation:
-        template: python/documentation
-        steps:
-            - postinstall_dependencies: $BASE_PYTHON -m pip install -U .
-        requires: [~pr]
-
     version:
         template: python/generate_version
         requires: [
@@ -82,4 +76,6 @@ jobs:
 
     publish_documentation:
         template: python/documentation
-        requires: [publish_pypi]
+        steps:
+            - postinstall_dependencies: $BASE_PYTHON -m pip install -U .
+        requires: [~pr, ~publish_pypi]
