@@ -37,16 +37,20 @@ def main():  # pragma: no cover
 
     documentation_publish_default = False if is_pull_request() else True
 
+    rc = 0
     if env_bool('DOCUMENTATION_PUBLISH', documentation_publish_default):  # pragma: no cover
+        operation = 'Published'
         try:
             publish_documentation(documentation_formats=documentation_formats)
         except DocPublishError:
-            return 1
+            rc = 1
     else:
+        operation = 'Generated'
         try:
             build_documentation(documentation_formats=documentation_formats)
         except DocBuildError:
-            return 1
+            rc = 1
     if is_pull_request():
-        update_job_status(status='SUCCESS', message=f'Generated {", ".join(documentation_formats)} documentation')
-    return 0
+        status = 'SUCCESS' if rc == 0 else 'FAILURE'
+        update_job_status(status=status, message=f'{operation} {", ".join(documentation_formats)} documentation')
+    return rc
