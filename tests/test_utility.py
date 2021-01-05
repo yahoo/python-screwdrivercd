@@ -123,7 +123,7 @@ class TestPlatformTestUtility(ScrewdriverTestCase):
     def test__interpreter_bin_command__default(self):
         result = interpreter_bin_command()
         self.assertIsInstance(result, (str))
-        self.assertTrue(result.endswith('/python'))
+        self.assertIn('/python', result)
         self.assertTrue(os.path.exists(result))
 
     def test__interpreter_bin_command__command_exists(self):
