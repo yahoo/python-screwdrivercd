@@ -56,6 +56,7 @@ jobs:
                 if [ ! -e "$LOGDIR" ]; then
                     mkdir -p "$LOGDIR"
                 fi
+                echo "Installing screwdrivercd documentation extras"
                 $BASE_PYTHON -m pip install screwdrivercd[documentation] 2>&1 | tee -a $LOGDIR/install_screwdrivercd_extra_documentation.log
                 $BASE_PYTHON << EOF
                 import json
