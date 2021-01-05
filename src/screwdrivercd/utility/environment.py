@@ -77,7 +77,7 @@ def flush_terminals():
     sys.stderr.flush()
 
 
-def interpreter_bin_command(command: str = 'python', fallback_path: bool=True) -> str:
+def interpreter_bin_command(command: str='', fallback_path: bool=True) -> str:
     """
     Return the full path to a command in the current interpreter's bin directory.
 
@@ -94,6 +94,8 @@ def interpreter_bin_command(command: str = 'python', fallback_path: bool=True) -
         Full path to the command.  If the command is not present returns command if fallback_path is True or an empty
         string otherwise.
     """
+    if not command:
+        command = os.path.basename(sys.executable)
     bin_dir = os.path.dirname(sys.executable)
     new_command = os.path.join(bin_dir, command)
     if os.path.exists(new_command):
@@ -145,8 +147,7 @@ def ins_filename(filename: str) -> str:
     Return the filename of an actual file or directory that case insensitively resolves to the filename given.  If no
     matching files or directories exists, returns an empty string.
     """
-    dir = os.path.dirname(filename)
-    contain_dir = dir
+    contain_dir = os.path.dirname(filename)
     base_name = os.path.basename(filename).lower()
     if not contain_dir:
         contain_dir = '.'
@@ -154,5 +155,24 @@ def ins_filename(filename: str) -> str:
         return ''
     for f in os.listdir(contain_dir):
         if base_name == f.lower():
-            return os.path.join(dir, f)
+            if os.path.dirname(filename):
+                return os.path.join(os.path.dirname(filename), f)
+            else:
+                return f
     return ''
+
+
+def is_pull_request() -> bool:
+    """
+    Return True if the SD_PULL_REQUEST environment variable has a PULL Request value, False otherwise
+    """
+    pr_num_str = os.environ.get('SD_PULL_REQUEST', '')
+    if not pr_num_str:
+        return False
+
+    try:
+        pr_num = int(pr_num_str)
+    except ValueError:
+        return False
+
+    return True

@@ -7,7 +7,7 @@ import json
 import logging
 import os
 import shutil
-from ..utility import env_bool
+from ..utility.environment import env_bool, is_pull_request
 from .metadata import Metadata
 
 
