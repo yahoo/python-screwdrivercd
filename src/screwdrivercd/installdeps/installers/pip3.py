@@ -2,6 +2,7 @@
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
 """Install pip dependencies"""
 import logging
+import os
 from typing import Optional, List
 
 from ..installer import Installer
@@ -29,3 +30,13 @@ class PipInstaller(Installer):
         # Ubuntu/Fedora
         '/usr/bin'
     ]
+
+    def find_install_command(self):
+        """
+        Find the install command binary to use and update the install command
+        """
+        base_python = os.environ.get('BASE_PYTHON', '')
+        if base_python and os.path.exists(base_python):
+            self.install_command = [base_python, '-m', 'pip', 'install']
+            return
+        super().find_install_command()
