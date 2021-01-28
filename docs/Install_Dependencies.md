@@ -59,13 +59,24 @@ The specification used by the `screwdrivercd.installdeps` package adds the follo
 values from the [distro](https://distro.readthedocs.io/en/latest/) package to allow specifying requirements based on 
 attributes of the Operating System distribution.
 
-| Marker                                                                      | Python equivalent | Sample values                                   |
-| --------------------------------------------------------------------------- | ----------------- | ----------------------------------------------- |
-| [distro_codename](https://distro.readthedocs.io/en/latest/#distro.codename) | distro.codename() | Maipo, bionic                                   |
-| [distro_id](https://distro.readthedocs.io/en/latest/#distro.id)             | distro.id()       | rhel, ubuntu, darwin                            |
-| [distro_like](https://distro.readthedocs.io/en/latest/#distro.like)         | distro.like()     | fedora, debian                                  |
-| [distro_name](https://distro.readthedocs.io/en/latest/#distro.name)         | distro.name()     | Darwin, Red Hat Enterprise Linux Server, Ubuntu |
-| [distro_version](https://distro.readthedocs.io/en/latest/#distro.version)   | distro.version()  | 7.4, 18.04, 18.6.0 |
+| Marker                                                                      | Python equivalent                             | Sample values                                   |
+| --------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------- |
+| [distro_codename](https://distro.readthedocs.io/en/latest/#distro.codename) | distro.codename()                             | Maipo, bionic                                   |
+| [distro_id](https://distro.readthedocs.io/en/latest/#distro.id)             | distro.id()                                   | rhel, ubuntu, darwin                            |
+| [distro_like](https://distro.readthedocs.io/en/latest/#distro.like)         | distro.like()                                 | fedora, debian                                  |
+| [distro_name](https://distro.readthedocs.io/en/latest/#distro.name)         | distro.name()                                 | Darwin, Red Hat Enterprise Linux Server, Ubuntu |
+| [distro_version](https://distro.readthedocs.io/en/latest/#distro.version)   | distro.version()                              | 7.4, 18.04, 18.6.0                              |
+| implementation_name                                                         | sys.implementation.name                       | cpython                                         |
+| implementation_version                                                      |                                               | 3.4.0, 3.5.0b1                                  |
+| os_name                                                                     | os.name                                       | posix, java                                     |
+| platform_machine                                                            | platform.machine()                            | x86_64                                          |
+| platform_python_implementation                                              | platform.python_implementation()              | CPython, Jython                                 |
+| platform_release                                                            | platform.release()                            | 3.14.1-x86_64-linode39, 14.5.0, 1.8.0_51        |
+| platform_system                                                             | platform.system()                             | Linux, Windows, Java                            |
+| platform_version                                                            | platform.version()                            | #1 SMP Fri Apr 25 13:07:35 EDT 2014 Java HotSpot(TM) 64-Bit Server VM, 25.51-b03, Oracle Corporation Darwin Kernel Version 14.5.0: Wed Jul 29 02:18:53 PDT 2015; root:xnu-2782.40.9~2/RELEASE_X86_64 |
+| python_version                                                              | '.'.join(platform.python_version_tuple()[:2]) | 3.4, 2.7                                        |
+| python_full_version                                                         | platform.python_version()                     | 3.4.0, 3.5.0b1                                  |
+| sys_platform                                                                | sys.platform                                  | linux, linux2, darwin, java1.8.0_51 (note that "linux" is from Python3 and "linux2" from Python2) |
 
 For example, the snippet below will use the yum tool to install the `foo_python36` package from the foo python rpm repo 
 if the Operating System version is less than 8.0 and install the `python3` package if the operating system is version 
