@@ -55,9 +55,11 @@ All the package tools have some settings that are common among them, so the same
 
 The deps setting is a list of package dependencies in a format based on the Python [PEP 508](https://www.python.org/dev/peps/pep-0508) Package dependency specification.  
 
-The specification used by the `screwdrivercd.installdeps` package adds the following environment markers which contain 
+The specification used by the `screwdrivercd.installdeps` package adds environment markers which contain 
 values from the [distro](https://distro.readthedocs.io/en/latest/) package to allow specifying requirements based on 
 attributes of the Operating System distribution.
+
+The environment markers that are supported, are:
 
 | Marker                                                                      | Python equivalent                             | Sample values                                   |
 | --------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------- |
