@@ -242,6 +242,12 @@ class TypeValidatorTestcase(ScrewdriverTestCase):
         result = validate_type()
         self.assertEqual(result, 0)
 
+    def test__mypy__valid__nopackage_dir__env(self):
+        os.environ['TYPE_CHECK_ENFORCING'] = 'True'
+        self.write_config_files(working_config)
+        result = validate_type()
+        self.assertEqual(result, 0)
+
     def test__mypy__valid__mypy_args(self):
         os.environ['PACKAGE_DIR'] = 'src'
         os.environ['TYPE_CHECK_ENFORCING'] = 'True'
