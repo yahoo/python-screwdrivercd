@@ -24,7 +24,7 @@ def main():
     if args.force_update or setupcfg_has_metadata():
         versioner = versioners[args.version_type]
         print(f'Updating version using the {versioner.name} version plugin', flush=True)
-        version = versioner(ignore_meta_version=args.ignore_meta, update_sdv4_meta=args.update_meta, link_to_commit=args.link_to_commit)
+        version = versioner(ignore_meta_version=args.ignore_meta, update_sdv4_meta=args.update_meta, link_to_project=args.link_to_project)
 
         version.update_setup_cfg_metadata()
         if args.update_meta:
