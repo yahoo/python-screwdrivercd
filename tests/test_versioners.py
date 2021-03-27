@@ -22,19 +22,19 @@ class TestVersioners(ScrewdriverTestCase):
         self.assertEqual(version, Version.default_version)
 
     def test__version__get_link_to_commit_using_hash__unset_env_variables(self):
-        version = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
-        self.assertEqual(version.get_link_to_commit_using_hash(), '')
+        link = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
+        self.assertEqual(link, '')
 
     def test__version__get_link_to_commit_using_hash__set_and_unset_env_variables(self):
         os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
-        version = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
-        self.assertEqual(version.get_link_to_commit_using_hash(), '')
+        link = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
+        self.assertEqual(link, '')
 
     def test__version__get_link_to_commit_using_hash__set_env_variables(self):
-        os.environ['SCM_URL'] = 'https://github.com'
+        os.environ['SCM_URL'] = 'https://github.com/org/project'
         os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
-        version = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
-        self.assertEqual(version.get_link_to_commit_using_hash(), 'https://github.com/commit/a5c3785ed8d6a35868bc169f07e40e889087fd2e')
+        link = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
+        self.assertEqual(link, 'https://github.com/org/project/commit/a5c3785ed8d6a35868bc169f07e40e889087fd2e')
 
     def test__manual_version_update(self):
         with NamedTemporaryFile('w') as file:
