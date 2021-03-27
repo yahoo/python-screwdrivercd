@@ -21,20 +21,20 @@ class TestVersioners(ScrewdriverTestCase):
         version = Version(ignore_meta_version=True).read_setup_version()
         self.assertEqual(version, Version.default_version)
 
-    def test__version__get_link_to_commit_using_hash__unset_env_variables(self):
-        link = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
+    def test__version__get_link_to_project_using_hash__unset_env_variables(self):
+        link = Version(ignore_meta_version=True, link_to_project=True).get_link_to_project_using_hash()
         self.assertEqual(link, '')
 
-    def test__version__get_link_to_commit_using_hash__set_and_unset_env_variables(self):
+    def test__version__get_link_to_project_using_hash__set_and_unset_env_variables(self):
         os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
-        link = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
+        link = Version(ignore_meta_version=True, link_to_project=True).get_link_to_project_using_hash()
         self.assertEqual(link, '')
 
-    def test__version__get_link_to_commit_using_hash__set_env_variables(self):
+    def test__version__get_link_to_project_using_hash__set_env_variables(self):
         os.environ['SCM_URL'] = 'https://github.com/org/project'
         os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
-        link = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
-        self.assertEqual(link, 'https://github.com/org/project/commit/a5c3785ed8d6a35868bc169f07e40e889087fd2e')
+        link = Version(ignore_meta_version=True, link_to_project=True).get_link_to_project_using_hash()
+        self.assertEqual(link, 'https://github.com/org/project/tree/a5c3785ed8d6a35868bc169f07e40e889087fd2e')
 
     def test__manual_version_update(self):
         with NamedTemporaryFile('w') as file:

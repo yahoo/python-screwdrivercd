@@ -22,13 +22,13 @@ class Version:
     setup_cfg_filename: str = 'setup.cfg'
     _meta_version: str = ''
 
-    def __init__(self, setup_cfg_filename=None, ignore_meta_version: bool = False, update_sdv4_meta: bool = True, link_to_commit: bool = False, meta_command: str = 'meta'):
+    def __init__(self, setup_cfg_filename=None, ignore_meta_version: bool = False, update_sdv4_meta: bool = True, link_to_project: bool = False, meta_command: str = 'meta'):
         if setup_cfg_filename:  # pragma: no cover
             self.setup_cfg_filename = setup_cfg_filename
         self.meta_command = meta_command
         self.ignore_meta_version = ignore_meta_version
         self.update_sdv4_meta = update_sdv4_meta
-        self.link_to_commit = link_to_commit
+        self.link_to_project = link_to_project
 
     def __repr__(self):
         return repr(self.version)
@@ -68,12 +68,12 @@ class Version:
         """
         return self.read_setup_version()
 
-    def get_link_to_commit_using_hash(self):
+    def get_link_to_project_using_hash(self):
         """
         Generate and return link to build-triggering commit using its SHA hash
         """
-        if self.link_to_commit and os.environ.get('SCM_URL') and os.environ.get('SD_BUILD_SHA'):
-            return os.environ.get('SCM_URL') + '/commit/' + os.environ.get('SD_BUILD_SHA')
+        if self.link_to_project and os.environ.get('SCM_URL') and os.environ.get('SD_BUILD_SHA'):
+            return os.environ.get('SCM_URL') + '/tree/' + os.environ.get('SD_BUILD_SHA')
         return ''
 
     def update_setup_cfg_metadata(self):
@@ -82,15 +82,15 @@ class Version:
         """
         if not self.version:  # pragma: no cover
             return
-        link_to_commit = self.get_link_to_commit_using_hash()
+        link_to_project = self.get_link_to_project_using_hash()
         config = configparser.ConfigParser()
         config.read(self.setup_cfg_filename)
         if 'metadata' not in config.sections():
             config['metadata'] = {}
 
         config['metadata']['version'] = self.version
-        if link_to_commit:
-            config['metadata']['link_to_commit'] = link_to_commit
+        if link_to_project:
+            config['metadata']['link_to_project'] = link_to_project
 
         with open(self.setup_cfg_filename, 'w') as config_file_handle:
             config.write(config_file_handle)

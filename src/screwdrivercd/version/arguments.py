@@ -56,8 +56,8 @@ def parse_arguments():
     version_type = get_config_default('version_type', default='default')
     update_meta = get_config_default('update_screwdriver_meta', default='false')
     update_meta = get_bool_equivalent(update_meta)
-    link_to_commit = get_config_default('link_to_commit', default='false')
-    link_to_commit = get_bool_equivalent(link_to_commit)
+    link_to_project = get_config_default('link_to_project', default='false')
+    link_to_project = get_bool_equivalent(link_to_project)
 
     version_choices = list(versioners.keys())
     if version_type not in version_choices:
@@ -68,6 +68,6 @@ def parse_arguments():
     parser.add_argument('--version_type', default=version_type, choices=version_choices, help='Type of version number to generate')
     parser.add_argument('--ignore_meta', default=False, action='store_true', help='Ignore the screwdriver v4 metadata')
     parser.add_argument('--update_meta', default=update_meta, action='store_true', help='Update the screwdriver v4 metadata with the new version')
-    parser.add_argument('--link_to_commit', default=link_to_commit, action='store_true', help='Add/update link to build-triggering commit using its SHA hash')
+    parser.add_argument('--link_to_project', default=link_to_project, action='store_true', help='Add/update link to source project tree for current package version')
     result = parser.parse_args()
     return result
