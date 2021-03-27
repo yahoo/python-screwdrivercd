@@ -13,7 +13,7 @@ from .exceptions import VersionError
 LOG = logging.getLogger(__name__)
 
 
-class Version():
+class Version:
     """
     Base Screwdriver Versioning class
     """
@@ -22,12 +22,13 @@ class Version():
     setup_cfg_filename: str = 'setup.cfg'
     _meta_version: str = ''
 
-    def __init__(self, setup_cfg_filename=None, ignore_meta_version: bool=False, update_sdv4_meta: bool=True, meta_command: str='meta'):
+    def __init__(self, setup_cfg_filename=None, ignore_meta_version: bool = False, update_sdv4_meta: bool = True, link_to_commit: bool = False, meta_command: str = 'meta'):
         if setup_cfg_filename:  # pragma: no cover
             self.setup_cfg_filename = setup_cfg_filename
         self.meta_command = meta_command
         self.ignore_meta_version = ignore_meta_version
         self.update_sdv4_meta = update_sdv4_meta
+        self.link_to_commit = link_to_commit
 
     def __repr__(self):
         return repr(self.version)
@@ -67,18 +68,29 @@ class Version():
         """
         return self.read_setup_version()
 
+    def get_link_to_commit_using_hash(self):
+        """
+        Generate and return link to build-triggering commit using its SHA hash
+        """
+        if self.link_to_commit and os.environ.get('SCM_URL') and os.environ.get('SD_BUILD_SHA'):
+            return os.environ.get('SCM_URL') + '/commit/' + os.environ.get('SD_BUILD_SHA')
+        return ''
+
     def update_setup_cfg_metadata(self):
         """
         Update the version value in the setup.cfg file
         """
         if not self.version:  # pragma: no cover
             return
+        link_to_commit = self.get_link_to_commit_using_hash()
         config = configparser.ConfigParser()
         config.read(self.setup_cfg_filename)
         if 'metadata' not in config.sections():
             config['metadata'] = {}
 
         config['metadata']['version'] = self.version
+        if link_to_commit:
+            config['metadata']['link_to_commit'] = link_to_commit
 
         with open(self.setup_cfg_filename, 'w') as config_file_handle:
             config.write(config_file_handle)
@@ -175,7 +187,7 @@ class VersionUpdateRevision(Version):
         super().__init__(*args, **kwargs)
 
     def revision_value(self):  # pragma: no cover
-        "Method to return a newly generatated revision value"
+        """Method to return a newly generated revision value"""
         return self.default_revision_value
 
     def generate(self):  # pragma: no cover
@@ -233,6 +245,7 @@ class VersionSDV4Build(VersionUpdateRevision):
     Each new screwdriver job run will increment the revision number.
     """
     name = 'sdv4_SD_BUILD'
+
     def revision_value(self):
         revision = os.environ.get('SD_BUILD', None)
         if not revision:
@@ -292,6 +305,6 @@ versioners = {
 }
 
 # Make sure the versioners are listed all lowercase to make identifying them easier
-for key, value in  list(versioners.items()):
+for key, value in list(versioners.items()):
     if key.lower() not in versioners.keys():
         versioners[key.lower()] = value
