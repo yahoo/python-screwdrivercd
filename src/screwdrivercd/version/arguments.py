@@ -36,6 +36,14 @@ def get_config_default(key, default=None, setup_cfg_filename='setup.cfg'):
     return default
 
 
+def get_bool_equivalent(key) -> bool:
+    """ Get the equivalent bool value for a string key in the config file. """
+
+    if isinstance(key, str) and key.lower() in ['false', '0', 'off']:
+        return False
+    return True
+
+
 def parse_arguments():
     """
     Parse the command line arguments
@@ -47,10 +55,10 @@ def parse_arguments():
     """
     version_type = get_config_default('version_type', default='default')
     update_meta = get_config_default('update_screwdriver_meta', default='false')
-    if isinstance(update_meta, str) and update_meta.lower() in ['false', '0', 'off']:
-        update_meta = False
-    else:
-        update_meta = True
+    update_meta = get_bool_equivalent(update_meta)
+    link_to_project = get_config_default('link_to_project', default='false')
+    link_to_project = get_bool_equivalent(link_to_project)
+
     version_choices = list(versioners.keys())
     if version_type not in version_choices:
         raise VersionError(f'The version_type in the [screwdrivercd.version] section of setup.cfg has an invalid version type of {version_type!r}')
@@ -60,5 +68,6 @@ def parse_arguments():
     parser.add_argument('--version_type', default=version_type, choices=version_choices, help='Type of version number to generate')
     parser.add_argument('--ignore_meta', default=False, action='store_true', help='Ignore the screwdriver v4 metadata')
     parser.add_argument('--update_meta', default=update_meta, action='store_true', help='Update the screwdriver v4 metadata with the new version')
+    parser.add_argument('--link_to_project', default=link_to_project, action='store_true', help='Add/update link to source project tree for current package version')
     result = parser.parse_args()
     return result
