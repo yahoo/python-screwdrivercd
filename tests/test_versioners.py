@@ -13,12 +13,27 @@ from screwdrivercd.version.version_types import versioners, Version, VersionGitR
 class TestVersioners(ScrewdriverTestCase):
     environ_keys = {
         'BASE_PYTHON', 'PACKAGE_DIR', 'PACKAGE_DIRECTORY', 'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID',
-        'SD_PULL_REQUEST',
+        'SD_PULL_REQUEST', 'SCM_URL', 'SD_BUILD_SHA',
     }
 
     def test__version__read_setup_version__no_version(self):
         version = Version(ignore_meta_version=True).read_setup_version()
         self.assertEqual(version, Version.default_version)
+
+    def test__version__get_link_to_commit_using_hash__unset_env_variables(self):
+        version = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
+        self.assertEqual(version.get_link_to_commit_using_hash(), '')
+
+    def test__version__get_link_to_commit_using_hash__set_and_unset_env_variables(self):
+        os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
+        version = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
+        self.assertEqual(version.get_link_to_commit_using_hash(), '')
+
+    def test__version__get_link_to_commit_using_hash__set_env_variables(self):
+        os.environ['SCM_URL'] = 'https://github.com'
+        os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
+        version = Version(ignore_meta_version=True, link_to_commit=True).get_link_to_commit_using_hash()
+        self.assertEqual(version.get_link_to_commit_using_hash(), 'https://github.com/commit/a5c3785ed8d6a35868bc169f07e40e889087fd2e')
 
     def test__git_revision_count__no_git(self):
         with self.assertRaises(VersionError):
