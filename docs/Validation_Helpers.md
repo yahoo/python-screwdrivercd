@@ -44,7 +44,7 @@ not use package dependencies with security issues.
 
 This example runs the dependency check
 
-!!! example "screwdriver.yaml - With dependency check
+!!! example "screwdriver.yaml - With dependency check"
 
     ```yaml
     version: 4

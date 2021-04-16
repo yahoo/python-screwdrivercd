@@ -163,6 +163,18 @@ class Version():
         return f'{ver}a{self.pull_request_number}'
 
 
+class VersionManualUpdate(Version):
+    """
+    Version updater that just reads the setup.cfg and takes the `version`
+    number from `metadata` section. Be aware when using this updater, as this
+    updater does not add any unique identifier to the version number.
+
+    It is thus the caller's responsibility to ensure uniqueness is maintained
+    during version update.
+    """
+    name: str = 'manual_update'
+
+
 class VersionUpdateRevision(Version):
     """
     Version updater that updates the revision (last component) of a semetic version.
@@ -288,7 +300,8 @@ versioners = {
     VersionGitRevisionCount.name: VersionGitRevisionCount,
     VersionUTCDate.name: VersionUTCDate,
     VersionSDV4Build.name: VersionSDV4Build,
-    VersionDateSDV4Build.name: VersionDateSDV4Build
+    VersionDateSDV4Build.name: VersionDateSDV4Build,
+    VersionManualUpdate.name: VersionManualUpdate
 }
 
 # Make sure the versioners are listed all lowercase to make identifying them easier
