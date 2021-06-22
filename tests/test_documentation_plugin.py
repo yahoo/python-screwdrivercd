@@ -29,13 +29,13 @@ release = version
 
 
 mkdocs_project_config = {
-    'mkdocs.yml': b'site_name: test\nstrict: true\nnav:\n    - foo: foo.md\n',
+    'mkdocs.yml': b'site_name: test\nsite_url: https://foo.bar.com/\nstrict: true\nnav:\n    - foo: foo.md\n',
     'docs/index.md': b"# Test file\n",
     'docs/foo.md': b"# Test file\n",
 }
 
 mkdocs_project_config_fail = {
-    'mkdocs.yml': b'site_name: test\nstrict: true\nnav:\n    - foo: foo2.md\n',
+    'mkdocs.yml': b'site_name: test\nsite_url: https://foo.bar.com/\nstrict: true\nnav:\n    - foo: foo2.md\n',
     'docs/index.md': b"# Test file\n",
     'docs/foo.md': b"# Test file\n",
 }
