@@ -5,9 +5,10 @@ import os
 import subprocess  # nosec
 import unittest
 from . import ScrewdriverTestCase
+from tempfile import NamedTemporaryFile
 
 from screwdrivercd.version.exceptions import VersionError
-from screwdrivercd.version.version_types import versioners, Version, VersionGitRevisionCount, VersionSDV4Build, VersionDateSDV4Build, VersionUTCDate
+from screwdrivercd.version.version_types import versioners, Version, VersionGitRevisionCount, VersionSDV4Build, VersionDateSDV4Build, VersionUTCDate, VersionManualUpdate
 
 
 class TestVersioners(ScrewdriverTestCase):
@@ -19,6 +20,15 @@ class TestVersioners(ScrewdriverTestCase):
     def test__version__read_setup_version__no_version(self):
         version = Version(ignore_meta_version=True).read_setup_version()
         self.assertEqual(version, Version.default_version)
+
+    def test__manual_version_update(self):
+        with NamedTemporaryFile('w') as file:
+            setup_cfg_content = '[metadata]\nversion = 1.0.5'
+            file.write(setup_cfg_content)
+
+            file.seek(0)
+            version = VersionManualUpdate(setup_cfg_filename=file.name, ignore_meta_version=True)
+            self.assertEqual(version.generate(), ['1', '0', '5'])
 
     def test__git_revision_count__no_git(self):
         with self.assertRaises(VersionError):
