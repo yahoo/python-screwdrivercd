@@ -56,5 +56,5 @@ def main():  # pragma: no cover
             rc = 1
     if is_pull_request():
         status = 'SUCCESS' if rc == 0 else 'FAILURE'
-        update_job_status(status=status, message=f'{operation} {", ".join(documentation_formats)} documentation')
+        # update_job_status(status=status, message=f'{operation} {", ".join(documentation_formats)} documentation')
     return rc

@@ -22,7 +22,7 @@ class Version:
     setup_cfg_filename: str = 'setup.cfg'
     _meta_version: str = ''
 
-    def __init__(self, setup_cfg_filename=None, ignore_meta_version: bool = False, update_sdv4_meta: bool = True, link_to_project: bool = False, meta_command: str = 'meta'):
+    def __init__(self, setup_cfg_filename=None, ignore_meta_version: bool = False, update_sdv4_meta: bool = True, meta_command: str = 'meta', link_to_project: bool = False):
         if setup_cfg_filename:  # pragma: no cover
             self.setup_cfg_filename = setup_cfg_filename
         self.meta_command = meta_command
@@ -72,8 +72,15 @@ class Version:
         """
         Generate and return link to build-triggering commit using its SHA hash
         """
-        if self.link_to_project and os.environ.get('SCM_URL') and os.environ.get('SD_BUILD_SHA'):
-            return os.environ.get('SCM_URL') + '/tree/' + os.environ.get('SD_BUILD_SHA')
+        scm_url = os.environ.get('SCM_URL', '')
+        sha = os.environ.get('SD_BUILD_SHA', '')
+        if self.link_to_project and scm_url and sha:
+            if scm_url.startswith('git@'):
+                hostname = scm_url.split(':')[0].split('@')[1]
+                path = ':'.join(scm_url.split(':')[1:])
+                return f'https://{hostname}/{path}/tree/{sha}'
+            else:
+                return f'{scm_url}/tree/{sha}'
         return ''
 
     def update_setup_cfg_metadata(self):
@@ -90,7 +97,24 @@ class Version:
 
         config['metadata']['version'] = self.version
         if link_to_project:
-            config['metadata']['link_to_project'] = link_to_project
+            project_urls_str = config['metadata'].get('project_urls', '')
+            project_urls_dict = {}
+            if project_urls_str:
+                for entry in project_urls_str.split(os.linesep):
+                    entry = entry.strip()
+                    if '=' in entry:
+                        key, value = entry.split('=')
+                        key = key.strip()
+                        value = value.strip()
+                        project_urls_dict[key] = value
+
+            project_urls_dict['Source'] = link_to_project
+
+            project_urls_str = '\n'
+            for key, value in project_urls_dict.items():
+                project_urls_str += f'{key} = {value}\n'
+
+            config['metadata']['project_urls'] = project_urls_str.rstrip('\n')
 
         with open(self.setup_cfg_filename, 'w') as config_file_handle:
             config.write(config_file_handle)

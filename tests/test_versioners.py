@@ -11,6 +11,29 @@ from screwdrivercd.version.exceptions import VersionError
 from screwdrivercd.version.version_types import versioners, Version, VersionGitRevisionCount, VersionSDV4Build, VersionDateSDV4Build, VersionUTCDate, VersionManualUpdate
 
 
+existing_project_url_config = {
+    'setup.cfg': b"""
+[metadata]
+author = Yahoo Python Platform Team
+author_email = python@verizonmedia.com
+name=mypyvalidator
+project_urls = 
+	Documentation = https://yahoo.github.io/mypyvalidator/
+	Change Log = https://yahoo.github.io/python-screwdrivercd/changelog/
+	CI Pipeline = https://cd.screwdriver.cd/pipelines/1
+	Source = https://github.com/yahoo/mypyvalidator/tree/a5c3785ed8d6a35868bc169f07e40e889087fd2e
+version=0.0.0
+
+[options]
+packages =
+    mypyvalidator
+
+package_dir =
+    =src
+"""
+}
+
+
 class TestVersioners(ScrewdriverTestCase):
     environ_keys = {
         'BASE_PYTHON', 'PACKAGE_DIR', 'PACKAGE_DIRECTORY', 'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID',
@@ -30,11 +53,47 @@ class TestVersioners(ScrewdriverTestCase):
         link = Version(ignore_meta_version=True, link_to_project=True).get_link_to_project_using_hash()
         self.assertEqual(link, '')
 
-    def test__version__get_link_to_project_using_hash__set_env_variables(self):
+    def test__version__get_link_to_project_using_hash__set_env_variables__https_git(self):
         os.environ['SCM_URL'] = 'https://github.com/org/project'
         os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
-        link = Version(ignore_meta_version=True, link_to_project=True).get_link_to_project_using_hash()
+        ver = Version(ignore_meta_version=True, link_to_project=True)
+        link = ver.get_link_to_project_using_hash()
         self.assertEqual(link, 'https://github.com/org/project/tree/a5c3785ed8d6a35868bc169f07e40e889087fd2e')
+
+        ver.update_setup_cfg_metadata()
+        self.assertTrue(os.path.exists('setup.cfg'))
+        with open('setup.cfg') as fh:
+            setup_cfg = fh.read()
+        self.assertIn(link, setup_cfg)
+
+    def test__version__get_link_to_project_using_hash__set_env_variables__https_git__existing_project_urls(self):
+        os.environ['SCM_URL'] = 'https://github.com/org/project'
+        os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
+        self.write_config_files(existing_project_url_config)
+
+        ver = Version(ignore_meta_version=True, link_to_project=True)
+        link = ver.get_link_to_project_using_hash()
+        self.assertEqual(link, 'https://github.com/org/project/tree/a5c3785ed8d6a35868bc169f07e40e889087fd2e')
+
+        ver.update_setup_cfg_metadata()
+        self.assertTrue(os.path.exists('setup.cfg'))
+        with open('setup.cfg') as fh:
+            setup_cfg = fh.read()
+        self.assertIn(link, setup_cfg)
+        self.assertIn('Documentation = https://yahoo.github.io/mypyvalidator/', setup_cfg)
+
+    def test__version__get_link_to_project_using_hash__set_env_variables__ssh_git(self):
+        os.environ['SCM_URL'] = 'git@github.com:org/project'
+        os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
+        ver = Version(ignore_meta_version=True, link_to_project=True)
+        link = ver.get_link_to_project_using_hash()
+        self.assertEqual(link, 'https://github.com/org/project/tree/a5c3785ed8d6a35868bc169f07e40e889087fd2e')
+
+        ver.update_setup_cfg_metadata()
+        self.assertTrue(os.path.exists('setup.cfg'))
+        with open('setup.cfg') as fh:
+            setup_cfg = fh.read()
+        self.assertIn(link, setup_cfg)
 
     def test__manual_version_update(self):
         with NamedTemporaryFile('w') as file:
@@ -92,6 +151,7 @@ class TestVersioners(ScrewdriverTestCase):
 
     def test__sdv4_SD_BUILD__PR__unset(self):
         self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
+        os.environ['SD_PULL_REQUEST'] = '1'
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
