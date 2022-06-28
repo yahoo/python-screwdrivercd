@@ -18,10 +18,10 @@ author = Yahoo Python Platform Team
 author_email = python@verizonmedia.com
 name=mypyvalidator
 project_urls = 
-	Documentation = https://yahoo.github.io/mypyvalidator/
-	Change Log = https://yahoo.github.io/python-screwdrivercd/changelog/
-	CI Pipeline = https://cd.screwdriver.cd/pipelines/1
-	Source = https://github.com/yahoo/mypyvalidator/tree/a5c3785ed8d6a35868bc169f07e40e889087fd2e
+    Documentation = https://yahoo.github.io/mypyvalidator/
+    Change Log = https://yahoo.github.io/python-screwdrivercd/changelog/
+    CI Pipeline = https://cd.screwdriver.cd/pipelines/1
+    Source = https://github.com/yahoo/mypyvalidator/tree/a5c3785ed8d6a35868bc169f07e40e889087fd2e
 version=0.0.0
 
 [options]
