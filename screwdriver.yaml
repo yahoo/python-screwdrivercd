@@ -14,7 +14,7 @@ shared:
 
 jobs:
     validate_codestyle:
-        template: python-2014/validate_style
+        template: python-2104/validate_style
         environment:
             CODESTYLE_ARGS: -v
         steps:
