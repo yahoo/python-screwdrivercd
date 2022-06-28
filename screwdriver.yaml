@@ -14,7 +14,7 @@ shared:
 
 jobs:
     validate_codestyle:
-        template: python-2104/validate_style
+        template: python/validate_style
         environment:
             CODESTYLE_ARGS: -v
         steps:
@@ -22,7 +22,7 @@ jobs:
         requires: [~commit, ~pr]
 
     validate_lint:
-        template: python-2104/validate_lint
+        template: python/validate_lint
         requires: [~commit, ~pr]
 
     validate_security:
@@ -30,7 +30,7 @@ jobs:
         requires: [~commit, ~pr]
 
     validate_test:
-        template: python-2104/validate_unittest
+        template: python/validate_unittest
         steps:
             - postupdate_version: |
                 PACKAGE_VERSION="`meta get package.version`"
@@ -45,7 +45,7 @@ jobs:
     #     requires: [~commit, ~pr]
 
     version:
-        template: python-2104/version
+        template: python/version
         requires: [
             validate_test, validate_lint, validate_codestyle, validate_security,
             # validate_type
