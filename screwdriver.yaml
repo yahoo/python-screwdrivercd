@@ -14,27 +14,23 @@ shared:
 
 jobs:
     validate_codestyle:
-        template: python/validate_codestyle
+        template: python-2014/validate_style
         environment:
             CODESTYLE_ARGS: -v
         steps:
             - postinstall_dependencies: $BASE_PYTHON -m pip install -U .
         requires: [~commit, ~pr]
 
-    validate_dependencies:
-        template: python/validate_dependencies
-        requires: [~commit, ~pr]
-
     validate_lint:
-        template: python/validate_lint
+        template: python-2104/validate_lint
         requires: [~commit, ~pr]
 
     validate_security:
-        template: python/validate_security
+        template: python-2014/validate_security
         requires: [~commit, ~pr]
 
     validate_test:
-        template: python/validate_unittest
+        template: python-2104/validate_unittest
         steps:
             - postupdate_version: |
                 PACKAGE_VERSION="`meta get package.version`"
@@ -49,9 +45,9 @@ jobs:
     #     requires: [~commit, ~pr]
 
     version:
-        template: python/generate_version
+        template: python-2104/version
         requires: [
-            validate_test, validate_lint, validate_codestyle, validate_dependencies, validate_security, 
+            validate_test, validate_lint, validate_codestyle, validate_security,
             # validate_type
         ]
 
