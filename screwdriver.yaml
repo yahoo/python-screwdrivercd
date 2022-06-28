@@ -26,7 +26,7 @@ jobs:
         requires: [~commit, ~pr]
 
     validate_security:
-        template: python-2014/validate_security
+        template: python/validate_security
         requires: [~commit, ~pr]
 
     validate_test:
