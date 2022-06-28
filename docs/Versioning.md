@@ -46,13 +46,14 @@ The following settings are supported:
 
 The setup.cfg go under the `screwdrivercd.verison` setting.
 
-| Setting       | Default Value      | Description                                                             |
-| ------------- | ------------------ | ----------------------------------------------------------------------- |
-| version_type  | git_revision_count | The versioning format to generate, choices:                             |
-|               |                    | git_revision_count - Update the last digit the number of git revisions                    |
-|               |                    | sdv4_sd_build - Update the last digit with the value of the SD_BUILD environment variable                       |
-|               |                    | utc_date - Generate a version based on the date,  format: year.monthday.hourminutesecond                        |
-|               |                    | sdv4_date - Generate a version based on the date and SD_BUILD environment variable, format: year.month.SD_BUILD |
+| Setting         | Default Value      | Description                                                                                                     |
+|-----------------|--------------------|-----------------------------------------------------------------------------------------------------------------|
+| version_type    | git_revision_count | The versioning format to generate, choices:                                                                     |
+|                 |                    | git_revision_count - Update the last digit the number of git revisions                                          |
+|                 |                    | sdv4_sd_build - Update the last digit with the value of the SD_BUILD environment variable                       |
+|                 |                    | utc_date - Generate a version based on the date,  format: year.monthday.hourminutesecond                        |
+|                 |                    | sdv4_date - Generate a version based on the date and SD_BUILD environment variable, format: year.month.SD_BUILD |
+ | link_to_project | False              | If set to True, a link to the source repo will be added to [metadata]project_urls in setup.cfg                  |  
 
 ### Example
 
