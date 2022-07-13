@@ -140,8 +140,13 @@ invalid_style_config = copy.deepcopy(working_config)
 invalid_style_config['src/mypyvalidator/__init__.py'] = b"""a: int =1\n"""
 
 class DepValidatorTestcase(ScrewdriverTestCase):
-    validator_name = 'type_validation'
+    validator_name = 'dependency_validation'
 
+    def setUp(self):
+		super().setUp()
+		import pkg_resources
+		print('safety version =', pkg_resources.get_distribution("safety").version)
+		
     def test__secure_deps(self):
         self.write_config_files(working_config)
         result = validate_with_safety()
