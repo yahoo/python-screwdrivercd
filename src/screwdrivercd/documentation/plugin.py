@@ -357,7 +357,11 @@ def documentation_plugins(documentation_formats=None):
     entry_points = pkg_resources.iter_entry_points(group='screwdrivercd.documentation.plugin')
 
     for entry_point in entry_points:
-        instance = entry_point.load()()
+        try:
+            instance = entry_point.load()()
+        except pkg_resources.ContextualVersionConflict:
+            logger.warning(f'Documentation plugin {entry_point} failed to load due to a package dependency conflict')
+            raise
         if documentation_formats and instance.name not in documentation_formats:
             continue
         yield instance
