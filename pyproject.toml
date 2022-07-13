@@ -1,6 +1,8 @@
 # Copyright 2019, Verizon Inc.
 # Licensed under the terms of the bsd license.  See the LICENSE file in the project root for terms
 [build-system]
-# Minimum requirements for the build system to execute.
-requires = ["setuptools>40.0.0", "wheel"]  # PEP 508 specifications.
-
+requires = [
+  "setuptools >= 40.9.0",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
