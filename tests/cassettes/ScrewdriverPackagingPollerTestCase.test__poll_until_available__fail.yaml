@@ -521,4 +521,253 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://pypi.org/simple/serviceping/
+  response:
+    body:
+      string: "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"pypi:repository-version\"
+        content=\"1.1\">\n    <title>Links for serviceping</title>\n  </head>\n  <body>\n
+        \   <h1>Links for serviceping</h1>\n    <a href=\"https://files.pythonhosted.org/packages/39/f9/4bf3aa9d2ce69ba59c94e3addc5fb031f88fe800f07387d0355dac63568b/serviceping-0.0.4.tar.gz#sha256=6218c929f5c04eeec99b2ecff6500f349c090fc4042ce7a55833ba5815c895fd\"
+        >serviceping-0.0.4.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/3d/0b/1b3dce08ef6457e7fbaca305a502ed4a6cb050ac2e1addb6fe8c42dc7068/serviceping-0.0.6.tar.gz#sha256=5b1a7c6bdfdcfb33c4c25dc2efc3e542ff3b5555839a4b419d1c88bb82530300\"
+        >serviceping-0.0.6.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/46/ee/2540a240e9d0da8b2f1645f611c8eb5ab886b2d30d1e9b9e1dbe332f9275/serviceping-0.0.7.tar.gz#sha256=0316829e979d541dc5c3acc40b8fc877864e78c45959d60dbd066851fb39c50f\"
+        >serviceping-0.0.7.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/74/a5/be19bda2d998306dee50cd0e4d7db9c5a2d09f5497c625f84b0ccd260cbd/serviceping-0.0.9.tar.gz#sha256=0661a985f3f3c67e6a840ca9c08b09cbce6f98e6711072247bb29a0146eeaa26\"
+        >serviceping-0.0.9.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/4b/59/03ba99829f1e93ef19c2b5693c7b651f66076aec50abf2079c73b5b4c120/serviceping-0.0.11.tar.gz#sha256=8e4eb8f603c121253c95ce095960d6cae22a2e545fc9cdcde05ff97e51088457\"
+        >serviceping-0.0.11.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/f4/4a/ef757d71a2301d33a2945e6afc9f192ca6eb59a0982cffa43d37d55af692/serviceping-0.0.14.tar.gz#sha256=0f008231138b6b0a32bf445c9f7c3ac0cfadca7b804c1d266f038d782433f623\"
+        >serviceping-0.0.14.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/9b/e4/9acbb1ad16ddf8afc62d59632791b03b3968573f02ff676dd260db8aaea7/serviceping-0.0.50.tar.gz#sha256=8a9e99f39c9ac97fec6ac35163211c17d101467572cd8d1b0e1ce074ae8ca0c5\"
+        >serviceping-0.0.50.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/9a/8c/15bccff05be50dcc681a7d127d04924bc3709d6ae79046cba3806cddedcd/serviceping-18.8.0-py3-none-any.whl#sha256=ae14e647ca93f0da1e83a295621d6c727e262c87d24638579ffc1ccd0d76a26f\"
+        >serviceping-18.8.0-py3-none-any.whl</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/74/1f/8097ce7e04fc3df9fc22c2eff5132ade834f2ae874f7ead75b1f8a7de1bb/serviceping-18.8.0.tar.gz#sha256=f8ad3e64a7e32b52f09275b5257003f1c3f1531930f6ba79b8bb34abea0ee915\"
+        >serviceping-18.8.0.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/36/9e/a5522b6e5ba7faa289423aa93ef0cc91e04810b8851b35d5dd7cadc22010/serviceping-18.8.1-py3-none-any.whl#sha256=ce79fe58b188501747c661c2a35bcfe3214da4e9e43cf82ba1d4fc4df62c375f\"
+        >serviceping-18.8.1-py3-none-any.whl</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/bd/91/3352bac1c11fc022dab83b0b2b671fd1dbf005ecac82d482870efb63b83c/serviceping-18.8.1.tar.gz#sha256=789dd9cea45fc746370ed5da6491e96b9046cf54347943083d7ce856b4b20356\"
+        >serviceping-18.8.1.tar.gz</a><br />\n    <a href=\"https://files.pythonhosted.org/packages/9b/cb/c44204949e69a25b896165840a036ea883c71accbd6eaec9e2812ad4a41f/serviceping-19.5.78-py3-none-any.whl#sha256=5619b2cd2a0696fa59447931afed3e31ff1110e54ea7adebff0a596bc2be25a8\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.78-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/a1/03/bd5ac785a4d5fd72ba0e1a5869813c30251d260f6a1233b1049d5aea27c9/serviceping-19.5.78.tar.gz#sha256=8da0dd450434140315e3f36c434e4a5a142ba692c254725d1aaba737f7b85287\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.78.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/51/e2/cae5f37e2b18ee7255e75c02cf67a87acff685d6b83f8977cd2653c62a71/serviceping-19.5.121522-py3-none-any.whl#sha256=1e87554de81e84d17d5a51058b275cd404d5bd1b37843cc82fd91bf39fa27ef4\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.121522-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/75/c5/e54077dc95fb7ad9f555e0c5acf8eafecd3ed15d940f62e89eb3382acf49/serviceping-19.5.121522.tar.gz#sha256=8cce74f28544b1877e6b6a42c05846a6c2ea675cda769ad2bd4c9021c96dec81\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.121522.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/49/a6/e940ac9489260266c98b74a4c0a8e3bda06aa32f245c063a026b018ddfc3/serviceping-19.5.121862-py3-none-any.whl#sha256=3f8f5886002f27739db6d3d26c41dfc6db80b1cb28247c629ce8e487da31c935\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.121862-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/fd/64/711a4e6100ea4d5712860edab0fc1a2a8aab1ac67f7071268ed62568abe3/serviceping-19.5.121862.tar.gz#sha256=48a806dbe65aa2bf502931ff4cfb99ae01a974ecf622024d66ad9d968a28fa27\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.121862.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/97/97/cbfc79ab1ae78f7b8d1c05ae17eecc30050d27fc501704fd776db2fe1936/serviceping-19.5.121965-py3-none-any.whl#sha256=fa06e1f31d68aa88dc493b3121ff37d9d77c45d1e5dc10cb642213f5aa524056\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.121965-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/18/29/6183854cd32d30ad1ada199c15cf5f2ede4cbfe6761dfe9ee825789fbc6f/serviceping-19.5.121965.tar.gz#sha256=c8b6291a970fe2197f84c42e2941039ca2f1706c55bed2737106092648332619\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.121965.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/38/9e/87b7166568ebba540e7c0e2871e32fb0211bb9c8d52e2be4cfa7f01d8a4c/serviceping-19.5.122271-py3-none-any.whl#sha256=58c266b0fb324a9266794e54fea0a9a330b3a34ef6edc6041f6dd2e76a0d397e\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.122271-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/fe/49/4a0963c5c7c004d02d638ec4af5474de6f11d689b25a02dfcc0f8ed9fa42/serviceping-19.5.122271.tar.gz#sha256=19fec43db9f6a9a4bab299fd9d9786146f08aa9a3c6e5117c4072140ba31a218\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.122271.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/12/6b/f914f43e3b8aceca6a761dc2039f47c4f24a7bd61d9be6682d17930a704f/serviceping-19.5.124233-py3-none-any.whl#sha256=e0828a18e739f8d171ba30882e0ff5bf4487056dcd3358302ee6079ddc67102e\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.124233-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/10/68/5b81c06b495503f125ee4466b60855d0d535dac8b1e02aa3fa8c18dc7f65/serviceping-19.5.124233.tar.gz#sha256=a8916045ce7466b1a6821d2c26329dc293d96242a8b33d558cc03f84ef422d00\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.124233.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/46/b7/0baf9fe3ce08c564a558154bb51360a05f3616622448e2c3226947a78c2f/serviceping-19.5.125454-py3-none-any.whl#sha256=e5c3ef97af297707960166bdb271aeefc8af378e9895ea8f0fa789188d7f525e\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.125454-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/da/dc/69f601a0493dea87985afb00852d2c989357e6b2403ad84c0be55c7e8766/serviceping-19.5.125454.tar.gz#sha256=13148eca0d89ea1200f7fcd1c0257569fc5d2b61c7fc4847334f1ea1c69932f9\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.125454.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/9c/31/1eb682fd68766a9fde2cef3489e7a0030b5f6ee95b6e7d66d46ac7777da1/serviceping-19.5.125468-py3-none-any.whl#sha256=e06ed4457f7f28037ae3f87692e6767b89c6812976d1e936eeb842087cc32e17\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.125468-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/e2/e0/32a42ae498db258a095dd9ef7a6c7c4d6934be87101ec1d91e7ffa5f8989/serviceping-19.5.125468.tar.gz#sha256=d43cb1a80d1f2d6d75b13a39d4ba872a2ca76df4ed697735dbf6c94ec8e88591\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.125468.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/88/29/0e2990c2dc6ecaf380921962997eb0ea44b4bd33d1f758650ef34312d57a/serviceping-19.5.125517-py3-none-any.whl#sha256=dfc368327edf1dc4d4ed80647ce73c18925e3b9dea201d61db742b8776545642\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.125517-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/e7/9f/bb3e467ef4e7f3c3ec13146780762097be2204833c092d2d4df34be0994f/serviceping-19.5.125517.tar.gz#sha256=3a7ca6415336c185cf5934b41304c8e2102d9b95da7c8e0eca94ae722da185fb\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.5.125517.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/91/0d/d25205f0dc1a784352d9bb94aeee053f5315e4e8ff549e5525078eb1c2d7/serviceping-19.9.155704-py3-none-any.whl#sha256=f18d4d2a379a293bd988a07ad0b1c21520d9e6a6606852dde6aa68407e01fe19\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155704-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/5c/09/6f909234f9398776647bb7c33d38c0dbf0cca11fb9bf9f779da9f3cbfe82/serviceping-19.9.155704.tar.gz#sha256=9c6526f5fb52bd9df9877c7ea17aff13138819917c3d9fb987d35917acdfbb4f\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155704.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/72/20/a49f9c5ee73ba8407d70b25b0e1591e1caae32183e67b7d43fc37d5d884a/serviceping-19.9.155723-py3-none-any.whl#sha256=bdd18bcea9127d61321a94ab111ea7370ec1181606fc39e34673cf10a5806b68\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155723-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/65/21/6f5a0abbf0dbbb353a205ca40188b62cbe55281cb7d2758469124d923f37/serviceping-19.9.155723.tar.gz#sha256=f7e11e46cd7267e7f572adeb5414520e1db137108411f6e923c62d094a11e340\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155723.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/7c/1d/295202fa58ed5e8d48fc4c690273f607eb1b37847da000e3d33e43a08c4c/serviceping-19.9.155735-py3-none-any.whl#sha256=76da2c7e2c36ed158ea7536d95c82ca4a484fe9fa3b8da850e01d021573a2525\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155735-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/bd/bd/4dd72af1a83b77708654fe499c9f8104b204c8612f166725bf930726e414/serviceping-19.9.155735.tar.gz#sha256=513258d9a9aedb5b2b9d1f41afcbf81dd1512369115308f5acd3e4999c009eb7\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155735.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/a4/bf/f47c7d57b143e38717d30c580881212ad628d05e45fcaf355634d7fa98b8/serviceping-19.9.155746-py3-none-any.whl#sha256=944009a6c3ada549f123743155b1e54ae64e42612fe0b06a781e593a5d484c9a\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155746-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/41/61/8bffc57d3a35b3632962e30c2c237c45eb8326b56288184f21157192ad12/serviceping-19.9.155746.tar.gz#sha256=ab25ed0b043d16ab5a15bc90eb61d4be037cee9b066fbda78e5481741f93d037\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155746.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/69/17/0fcdbdb3c33e4db8cd07ef7473045a3504d90c064b85c712cde0ccceac9b/serviceping-19.9.155770-py3-none-any.whl#sha256=7d100d26992c54a900a2573322c1fc7dbf907e992563913f4e72ca81c6755d3d\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155770-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/a5/74/e6a20f02c258c8e071c64c9263fe464e172d85925ce674821927d846557c/serviceping-19.9.155770.tar.gz#sha256=ece88f44b33d7fa7eb1d847e9ffc5bfa3404f67c3e3026ef486fafe2222b93cf\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155770.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/66/f0/88dcaca6a6939b9ab0644936387570e90d432b43e5aa48ed13a26de12dc4/serviceping-19.9.155807-py3-none-any.whl#sha256=dded2453b80d53038ae2594ccb2e78a7197b275660659972ebe651bda4f6c73b\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155807-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/3b/23/1b2939114d70ea590f8563405e6855a9b84472d99d735285140babf1856d/serviceping-19.9.155807.tar.gz#sha256=dde0671079bbda105169282ee756a1c6c0e534b76740d5359e528a2ff4bd9a0a\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155807.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/7e/0c/1531003b477246d229a78d95ee1c1bce34316b37826ba79257e2fc701fba/serviceping-19.9.155822-py3-none-any.whl#sha256=9a034d42c9b0d790ad6bd8890f259d9449aa384365ca9148d0bd47ea2571c0c3\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155822-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/9f/4f/4a42ced58418a615e2559e42efcc5ecdeaaed57a65e19df2246a39678cf2/serviceping-19.9.155822.tar.gz#sha256=60cab82eb60e3ad56c36036cbf956b0a01877be8d4e94f6ccfd030c3bac4eaff\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.155822.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/e1/b2/7202640e527e2af0ec97be698cfece4cfe3b3e7ebcec2c16bc24332ce4b6/serviceping-19.9.156310-py3-none-any.whl#sha256=5e9d1e542f5b15ae1657c99c5a1b1da1fd94408aba55f3c53ec8995fb008774c\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.156310-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/d5/ee/1b2a7d2c4ef64ba024510c931c57957cf9c43a28865ff25f3483d03c96c3/serviceping-19.9.156310.tar.gz#sha256=55f014a76b7be82388988a66e9aa2ceaafbbc8bc0c632452bb9849a034ff949c\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.156310.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/aa/94/63a04c602a23f8c090a3a36dab30e0d7cca4c86af00d191c9f1091209b21/serviceping-19.9.158599-py3-none-any.whl#sha256=b99991b2a9be08dd38c03f433397439d266c97e60faac3a0f09f60dc46fe3549\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.158599-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/23/34/1b02926d11e586d4cc5687d88df384d5c941b957a03e6753e2ce62faa089/serviceping-19.9.158599.tar.gz#sha256=0b3f0f6195cdca648a301fa729e5780876e33f4fdc92905e05189a3287451e8a\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.9.158599.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/9b/9f/b01e28ce0f7ba3f1dfab76e0b9049247f1e05ecab16df1134ba85853acf1/serviceping-19.11.159696-py3-none-any.whl#sha256=24305eb5dbd1d9d0130d17542c6f85ae90e325e5c38d4bc6063e46a8dcf5e8be\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.159696-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/95/2a/2446e41d3621867e9c9378db571186d7ff82f2180d92db2b3d22982293c7/serviceping-19.11.159696.tar.gz#sha256=dd5915bde44ba4d176c71afdde17498db399933b99e3dc70d83f54bfd256ec2a\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.159696.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/ab/2a/51b5fad1f24b45a1a13c8b7516e03c8719aca918c1c0f87c6409dca44959/serviceping-19.11.159715-py3-none-any.whl#sha256=9c1570d2a6386c3c209d146f8140a94a81846f156f60aec2eda6aa256901cd54\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.159715-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/08/60/b42f2abd26825d83f6162586b3235b497948e9ad4d2d9016fced9d63b889/serviceping-19.11.159715.tar.gz#sha256=7e89c399ae199b7b03d9fb80f33eb5d8a156d23633437878e5cf69c72f1e052a\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.159715.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/ac/b5/2c49d011fd927b38246140a98729d2d0df41df7e267b5fc953df05b81089/serviceping-19.11.159760-py3-none-any.whl#sha256=683ed98fbaf6b626be9f47ad986f9360d6aeaa608bde4fe104be9ede010bf3bb\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.159760-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/32/df/76b0b30bca93e8c22fe1fa5369bbc531d68fdf6e33c45e20bfc93c30b80a/serviceping-19.11.159760.tar.gz#sha256=b7be66324b887335ecdd268549079a1c4cb226ece5163339831bf48c2950d6d5\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.159760.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/4a/01/90cdeb1621219b6c59d26fcaf5fe5bc455fe5e459e553a46ac29dcce9d7d/serviceping-19.11.161848-py3-none-any.whl#sha256=7b995f019614cf50c5d358b15ab032a2229b1b9dca7cc9d046a52ba4bdaf8ea6\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.161848-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/4e/05/917b3fea44eabec0ae52f389f23c0207edd1aceaa6d378cac830abbb197d/serviceping-19.11.161848.tar.gz#sha256=6f72281b8dbea6c159ab9546beac5268c234c24eaa70ad0729e3e7eeaffd7a9f\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.161848.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/1c/a0/b0b775291323242d7f9d0b2b3f52cb398560b83b114eab49ac5bfed9d0e7/serviceping-19.11.161871-py3-none-any.whl#sha256=8649b855e192d9320325e4db92c15d9967946689fab1df9e7800ca37b502147d\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.161871-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/2e/55/77430c8368c9478eddfd05d40268eeba9328e487ea6537e10e2452e950c3/serviceping-19.11.161871.tar.gz#sha256=9e5eae7aecc97e0831a7943d0af2cc42aa9c391539454185c35d3f978f53a0d7\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.161871.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/50/c3/e53887c8dc2c03d358424d1db842b7996cc2fec5764cd2e635a5492a40b2/serviceping-19.11.161893-py3-none-any.whl#sha256=8ee2a1ba8923179f713d610e93de87923ba1ad3da889f7de944bc2105f48ccf6\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.161893-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/0b/1b/0e0994aa943b7c71d64c30ea9ed10d1018baf647b653c8281cd38645ecc2/serviceping-19.11.161893.tar.gz#sha256=ec924985923e048b4f941d81721107bc8973dbd31dd403e33dafe4df4b21684a\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.161893.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/69/32/b5c5232747b1231a7808cfd2a2105129f6d07689526f766912e100b55bdb/serviceping-19.11.161913-py3-none-any.whl#sha256=d0c8bdc6b0e3017b6da80fe5d1c447220847cca285f5209fb6fc6362e60573f0\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.161913-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/43/5f/2f4c394f1c4fdc2a16f8307bdb161ff8953ea9101154028a62619f5fd0ed/serviceping-19.11.161913.tar.gz#sha256=1b59b3743d83a8093f0eef09c6c52705e5b6c9b672142e8fd545f1511764d05c\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.11.161913.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/c8/08/49e9cfba74c250eeb6144a2c156ff83d8d35ff15b0c8423b80a4b67ad7ae/serviceping-19.12.163178-py3-none-any.whl#sha256=e1ae8d7525d856640875188073bda8ca29b6fd74e0e8c267e0044be2df6c310f\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.163178-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/bd/31/dcabdd2ca18994f9d9121acec1a2dde4ff5d6d301ca1b919f90ee1ad814d/serviceping-19.12.163178.tar.gz#sha256=ac5353d241614408548408d2463a954896985ed69aa5c95fcf942ed444fbef98\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.163178.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/22/c3/f9e7dcd046be6ef4eab7cdb072710d1c8e86f4e105381b1e264a9b792081/serviceping-19.12.163209-py3-none-any.whl#sha256=e04e86d0945984b7d2a4a9d1253a62802a8b56e27f3cfec87cb2acad3eafa4dc\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.163209-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/e7/7e/64dc22ce342ee9c1f6e770b3d91380942634e1b3f5e6b2acd4be64512e79/serviceping-19.12.163209.tar.gz#sha256=7c7be7780d8bf658da72a4b6b1076579c6843cd26bc5ab2716428de2d5f083b9\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.163209.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/da/10/a2e1adcc6f26437b63e8856957b8899de31f0f8e3b68c657722fa68df005/serviceping-19.12.164375-py3-none-any.whl#sha256=3b21c61cfc5d2cc4aefb719c99bf1f30603c9d850fa841df5a814961d8c2be06\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164375-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/f5/87/b7fb71044cd9b75e99a4ed2b9fdee7cf9cc248b0248851034e5785dabf80/serviceping-19.12.164375.tar.gz#sha256=ee3b6e57d228f531f1bcb94a5a94e9c16c5fe2a920e58ae576831a3142d5f637\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164375.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/c7/98/1093955e8a72d3487f04535ee872e2aff1d88a91322fd6612966f9f692d9/serviceping-19.12.164442-py3-none-any.whl#sha256=7e876add10289a6340d361f5bf797d213492cd0c4d6d4db20e9fceaf144fa445\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164442-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/d3/85/5bff8f6a9d2b93e53fefde71eac16d51798a96567c2ac71cdaf685f46d2d/serviceping-19.12.164442.tar.gz#sha256=4d8012162cd9259d785b71ab5cf70cbffe4eddc172a12743450a38a9133d98c8\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164442.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/66/ab/7e568532986f14970012383a1dfa296227dc002f224acba1674ff3df3205/serviceping-19.12.164787-py3-none-any.whl#sha256=10573bd8ad46a4698635440f786e457f8c868d912b9ff6ff57acee45c6558e30\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164787-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/41/9a/e5fd0e2ef4aebb72ffd988df69407348991595b234ff9189c5843e95c652/serviceping-19.12.164787.tar.gz#sha256=7f93a7ea1b660a44f811c13924905b3f877b0d304877fd88f13ebee3f9e0440c\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164787.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/51/dd/d0463ccc2bc08b6bbd4534048449dc78e74b180e0256ab212c686e984d76/serviceping-19.12.164801-py3-none-any.whl#sha256=5d7299ef55b1082c6c0ea359010749ca36ee3813ed463c6add31ff62a025fcab\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164801-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/15/cc/dd6ab46cc88d581aca802934bc73448548064b0f9428597e4e819081608b/serviceping-19.12.164801.tar.gz#sha256=c19bfd259a897454c3aa090c8c9645083e2c5aee0f0549a662d27a942fd72dc7\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164801.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/f3/5b/53403fd42e583a9da6991e53418b70ebac01d43fc4f32b2b20eb4cfa0d45/serviceping-19.12.164822-py3-none-any.whl#sha256=7b0f126b608d3a4881b9755766495172bfdc6291547c89bb49c4c653f5cf471d\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164822-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/27/8e/b79552085dc374af326e1b350cb7ffca5a679e115e439cb4c3b20966231d/serviceping-19.12.164822.tar.gz#sha256=7a54113ae05879dd4072625ee477762b2df861a558d6754eeff11bfb2d308d0c\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.164822.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/fe/94/0c237e9ba389cb0bff26636b40c96bdbaf0c17834cd67420c68cb32b65b8/serviceping-19.12.165116-py3-none-any.whl#sha256=5537ae09109aaf9151c981d29c80294cf437c22674515e08b8948a137967cec1\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.165116-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/15/94/c65b20fb9587277cd4fa3bc97b9e4f1f666fbae31422eb56eee9dc134bca/serviceping-19.12.165116.tar.gz#sha256=6761c95bc643f925acbf995982db53cb59523555bd9a493ec18880f9b3647103\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.165116.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/c0/a6/2c323b62abd364258c7f239699b7f04a61adf9c501ce04a6aa026bf3938c/serviceping-19.12.166419-py3-none-any.whl#sha256=9530919ce22da5c0fa6f918d25760361ea7a0b425a4ab069b3e74669602cc7eb\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.166419-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/15/28/68527876162dfd8a02e532c8f6b6baff17d61d80cf8b809035d20bfcc965/serviceping-19.12.166419.tar.gz#sha256=94aef3aad6402941c4190c2a383bc1a8f9dcb9ff42bb9a3d99dce03dddbc72c6\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-19.12.166419.tar.gz</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/a8/5b/256dff596d47d0be1558d0c01ba8e858526496dbfb76c4b2845e602d4a36/serviceping-20.1.166903-py3-none-any.whl#sha256=1f7b6b45d79bb4c00393bc5be68c4c2f666b8245d6e4a07cef3dd1cee116782d\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-20.1.166903-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/d7/74/acc848fcd60d70247730bad82726fd50a4335841f8f2cbb14b3a2622f85e/serviceping-20.1.166903.tar.gz#sha256=4db7b9196593db3bca3df1fcb8428965dec08198a71a283fdcff4fefc5c9de56\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-20.1.166903.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/1c/ac/d9ed8984b7dad3579a78f4125fdd25e6ea15d8baf13c10eefe227faa7c16/serviceping-20.1.169005-py3-none-any.whl#sha256=ef3535ee9dc78a2efaf401425038698a7f3d7f7e009e2d8140065ccf9c5ec502\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-20.1.169005-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/77/9c/d710982411e9a35e8966561aa36c3e2e485fff6070a4812d8da52bca41c6/serviceping-20.1.169005.tar.gz#sha256=498342414e54aff00195ddd3b3acaaa672dcb37d7fea018b871c3eab58d39205\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-20.1.169005.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/32/1e/b91142dcbd921877b5aaf039c7e139da6dcdb580be6dc3cf763f3c52f0d3/serviceping-20.1.169031-py3-none-any.whl#sha256=6ed532a2fabe8074210dbced6422f02175afacfb826bc98e29cb0b6e4c43018b\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-20.1.169031-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/da/65/346f3ab3146a6dfe37415b6335d02d286ec980240f97888695acdfe90476/serviceping-20.1.169031.tar.gz#sha256=c49620e5c3185f2df1fc150f3aa800ac1c02c0b7a935148148ee0ce9d81e8895\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-20.1.169031.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/ca/02/2a1863663ae8a769ef4927fb30f226eadd927ad0290467882fe931669945/serviceping-20.3.174593-py3-none-any.whl#sha256=02710f5b6bbf37b32de6196a4edb1bb0c1d37f79ef750ae41693ece0b27901f0\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-20.3.174593-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/26/d2/63f3d2fcdc3739965366f3dd78915720134ded86c03a3c0020acdeb7fc25/serviceping-20.3.174593.tar.gz#sha256=35c63b307eba67747293840523d99c16143c53ef8cf313462e18aa84d9d262bf\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-20.3.174593.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/90/ae/9dde033135390ffb5818e28376339bf2f6dbd0e1c5f10c4ad4ee1857cef2/serviceping-21.5.705226-py3-none-any.whl#sha256=4a3c0152a069c966e68c921bba56302903994c1bea57398934d282a8d2b2d7a7\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-21.5.705226-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/8b/ba/3d0f618aa0f84a973018e6eb8121ec0c055f73ec7003315572342687ba73/serviceping-21.5.705226.tar.gz#sha256=2206a44c0ff5cc68346dfe0910140efaa3010b5038c65da1923f78ff33d36f5c\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-21.5.705226.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/e4/1d/2159f8ab66fb01ee44754598441c478c41d28ff5cff9b8b9705772676bef/serviceping-21.6.718824-py3-none-any.whl#sha256=c28dfc3ad8a5c5882eb074cd8f72b2dc88fc97ec532d288f2c677c83ea22574b\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-21.6.718824-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/3d/4d/e284d636c47a3dba51782d1571f6f6b4c8a07e67144b89366c7c92bc4c38/serviceping-21.6.718824.tar.gz#sha256=5467158498f77d0fba7fd72d3d740c7f1ca5adcdcb3812e76a9625850076839d\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-21.6.718824.tar.gz</a><br />\n
+        \   <a href=\"https://files.pythonhosted.org/packages/53/ea/0fe90485026d6f39acffa19cb37c97065efb1a367520b202c257c1021b9a/serviceping-21.6.718832-py3-none-any.whl#sha256=5a561998167a0fe8852a4df0a0d3a83179acb899911d18774683cfb2c3a7699f\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-21.6.718832-py3-none-any.whl</a><br
+        />\n    <a href=\"https://files.pythonhosted.org/packages/17/0f/69ec136e077f63c30536fb47671a1060c6f41cfa017158cc420c7bee1423/serviceping-21.6.718832.tar.gz#sha256=34015c37b8347075cb57251afd29d411daad7037f7650d06bd6e940e16cb8206\"
+        data-requires-python=\"&gt;=3.6\" >serviceping-21.6.718832.tar.gz</a><br />\n
+        \   </body>\n</html>\n<!--SERIAL 10779287-->"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Headers:
+      - Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - X-PyPI-Last-Serial
+      Access-Control-Max-Age:
+      - '86400'
+      Cache-Control:
+      - max-age=600, public
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '8823'
+      Content-Security-Policy:
+      - default-src 'none'; sandbox allow-top-navigation
+      Content-Type:
+      - text/html
+      Date:
+      - Thu, 27 Jul 2023 23:32:05 GMT
+      ETag:
+      - '"fIYUiyVBoS5vF2P8z3wzBQ"'
+      Referrer-Policy:
+      - origin-when-cross-origin
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept, Accept-Encoding
+      X-Cache:
+      - HIT, MISS
+      X-Cache-Hits:
+      - 687, 0
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-PyPI-Last-Serial:
+      - '10779287'
+      X-Served-By:
+      - cache-iad-kjyo7100140-IAD, cache-den8283-DEN
+      X-Timer:
+      - S1690500725.140348,VS0,VE49
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
 version: 1

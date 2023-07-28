@@ -184,11 +184,11 @@ class ScrewdriverPackagingPollerTestCase(VCRTestCase):
         )
 
     def test__package_exists__true(self):
-        result = package_exists('setuptools', 'setuptools-42.0.2.zip')
+        result = package_exists('setuptools', 'setuptools-68.0.0.tar.gz')
         self.assertTrue(result)
 
     def test__package_exists__false(self):
-        result = package_exists('foozle', 'foozle=9999.9999.32.zip')
+        result = package_exists('foozle', 'foozle-9999.9999.32.zip')
         self.assertFalse(result)
 
     def test__poll_until_available__ok(self):

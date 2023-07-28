@@ -219,7 +219,7 @@ class DocumentationPlugin:
             git clone directory
         """
         self._log_message('Determining the clone directory', self.publish_log_filename)
-        result = self.get_clone_url().split('/')[-1].replace('.git', '')
+        result = self.get_clone_url().split('/')[-1].removesuffix('.git')
         return result
 
     def git_add_all(self):
