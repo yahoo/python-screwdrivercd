@@ -63,7 +63,7 @@ package_dir = src/mypyvalidator
 package_name = mypyvalidator
 
 [tox]
-envlist = py36,py37,py38
+envlist = py39,py310,py311
 skip_missing_interpreters = true
 
 [testenv]
@@ -128,7 +128,7 @@ package_dir = src/mypyvalidator
 package_name = mypyvalidator
 
 [tox]
-envlist = py36,py37,py38
+envlist = py39,py310,py311
 skip_missing_interpreters = true
 
 [testenv]
