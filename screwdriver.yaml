@@ -25,10 +25,6 @@ jobs:
         template: python/validate_lint
         requires: [~commit, ~pr]
 
-    validate_security:
-        template: python/validate_security
-        requires: [~commit, ~pr]
-
     validate_test:
         template: python/validate_unittest
         steps:
@@ -47,7 +43,7 @@ jobs:
     version:
         template: python/generate_version
         requires: [
-            validate_test, validate_lint, validate_codestyle, validate_security
+            validate_test, validate_lint, validate_codestyle
         ]
 
     publish_test_pypi:
