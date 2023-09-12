@@ -41,6 +41,7 @@ class TestYum(unittest.TestCase):
         os.chdir(self.tempdir.name)
         with open(CONFIG_FILE, 'w') as config_handle:
             config_handle.write(TEST_CONFIG)
+        print(f'Using configuration: \n{TEST_CONFIG}')
 
     def tearDown(self):
         super().tearDown()
