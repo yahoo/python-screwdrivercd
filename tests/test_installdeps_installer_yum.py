@@ -54,4 +54,4 @@ class TestYum(unittest.TestCase):
     def test__install__default(self):
         installer = YumInstaller(dry_run=True)
         result = installer.install_dependencies()
-        self.assertIn('yahoo_python36', result)
+        self.assertIn('python36', result)
