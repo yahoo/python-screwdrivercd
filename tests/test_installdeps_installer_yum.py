@@ -19,10 +19,9 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
     install = ['apk', 'apt-get', 'yinst', 'yum', 'pip3']
 
     [tool.sdv4_installdeps.yum]
-        repos.verizon_python_rpms = "https://edge.artifactory.yahoo.com:4443/artifactory/python_rpms/python_rpms.repo"
         deps = [
-            'yahoo_python36;distro_version=="{distro.version()}"',
-            'yahoo_python37;distro_version>="7.5"',
+            'python36;distro_version=="{distro.version()}"',
+            'python37;distro_version>="7.5"',
             'mysql;distro_version<"7"',
             'mariadb;distro_version>="7"'
         ]
