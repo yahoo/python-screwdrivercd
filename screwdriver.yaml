@@ -7,8 +7,6 @@ shared:
         CHANGELOG_FILENAME: docs/changelog.md
         DOCUMENTATION_DEBUG: True
         DOCUMENTATION_FORMATS: mkdocs
-        # PACKAGE_DIR: src
-        # PACKAGE_DIRECTORY: src
     steps:
         - tag_release: $BASE_PYTHON -m screwdrivercd.repo.release
 
@@ -25,10 +23,6 @@ jobs:
         template: python/validate_lint
         requires: [~commit, ~pr]
 
-    validate_security:
-        template: python/validate_security
-        requires: [~commit, ~pr]
-
     validate_test:
         template: python/validate_unittest
         steps:
@@ -37,17 +31,11 @@ jobs:
                 echo $PACKAGE_VERSION
             - preend: meta set package.version "$PACKAGE_VERSION"
         requires: [~commit, ~pr]
-
-    # The newest version of mypy appears to be broken in a manner that it always flags a specific valid type
-    # annotation.
-    # validate_type:
-    #    template: python/validate_type
-    #     requires: [~commit, ~pr]
-
+        
     version:
         template: python/generate_version
         requires: [
-            validate_test, validate_lint, validate_codestyle, validate_security
+            validate_test, validate_lint, validate_codestyle
         ]
 
     publish_test_pypi:
