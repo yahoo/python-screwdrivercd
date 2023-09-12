@@ -51,6 +51,7 @@ class TestYum(unittest.TestCase):
         self.tempdir.cleanup()
 
     @unittest.skipUnless(os.path.exists('/bin/yum'), 'No yum binary present on system')
+    @unittest.skipIf('.' not in distro.version(), 'Distro version does not have a minor number')
     def test__install__default(self):
         installer = YumInstaller(dry_run=True)
         result = installer.install_dependencies()
