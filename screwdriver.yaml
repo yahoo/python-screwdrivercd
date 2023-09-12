@@ -7,8 +7,6 @@ shared:
         CHANGELOG_FILENAME: docs/changelog.md
         DOCUMENTATION_DEBUG: True
         DOCUMENTATION_FORMATS: mkdocs
-        # PACKAGE_DIR: src
-        # PACKAGE_DIRECTORY: src
     steps:
         - tag_release: $BASE_PYTHON -m screwdrivercd.repo.release
 
