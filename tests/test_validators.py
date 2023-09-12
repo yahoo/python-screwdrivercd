@@ -388,7 +388,7 @@ class UnitTestValidatorTestCase(ScrewdriverTestCase):
 
     def test__unittest__tox_args_arg(self):
         self.write_config_files(working_config)
-        result = run_tox(tox_args='-v')
+        result = run_tox()
         for dirpath, dirs, files in os.walk('.tox'):
             for fname in files:
                 if fname.endswith('.log'):
