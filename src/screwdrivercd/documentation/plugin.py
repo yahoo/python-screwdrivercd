@@ -5,6 +5,7 @@ Documentation generator plugin classes
 """
 import logging
 import os
+import re
 import subprocess  # nosec - All subprocess calls use full path
 import sys
 import tempfile
@@ -219,7 +220,7 @@ class DocumentationPlugin:
             git clone directory
         """
         self._log_message('Determining the clone directory', self.publish_log_filename)
-        result = self.get_clone_url().split('/')[-1].removesuffix('.git')
+        result = re.sub(r'\.git$', '', self.get_clone_url().split('/')[-1])
         return result
 
     def git_add_all(self):
