@@ -17,7 +17,8 @@ class MkDocsDocumentationPlugin(DocumentationPlugin):
     """
     name = 'mkdocs'
     build_output_dir = ''
-    possible_config_files = ['mkdocs.yml', 'docs/mkdocs.yml']
+    # Should cover configuration files supported by https://github.com/mkdocs/mkdocs/blob/3db7b8c9c2473e763fc77525ee17c42e965d3b91/mkdocs/config/base.py#L306
+    possible_config_files = ['mkdocs.yml', 'docs/mkdocs.yml', 'mkdocs.yaml', 'docs/mkdocs.yaml']
 
     def __init__(self, *args, **kwargs):  # pragma: no cover
         super().__init__(*args, **kwargs)

@@ -19,10 +19,9 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
     install = ['apk', 'apt-get', 'yinst', 'yum', 'pip3']
 
     [tool.sdv4_installdeps.yum]
-        repos.verizon_python_rpms = "https://edge.artifactory.yahoo.com:4443/artifactory/python_rpms/python_rpms.repo"
         deps = [
-            'yahoo_python36;distro_version=="{distro.version()}"',
-            'yahoo_python37;distro_version>="7.5"',
+            'python36;distro_version=="{distro.version()}"',
+            'python37;distro_version>="7.5"',
             'mysql;distro_version<"7"',
             'mariadb;distro_version>="7"'
         ]
@@ -41,6 +40,7 @@ class TestYum(unittest.TestCase):
         os.chdir(self.tempdir.name)
         with open(CONFIG_FILE, 'w') as config_handle:
             config_handle.write(TEST_CONFIG)
+        print(f'Using configuration: \n{TEST_CONFIG}')
 
     def tearDown(self):
         super().tearDown()
@@ -51,7 +51,8 @@ class TestYum(unittest.TestCase):
         self.tempdir.cleanup()
 
     @unittest.skipUnless(os.path.exists('/bin/yum'), 'No yum binary present on system')
+    @unittest.skipIf('.' not in distro.version(), 'Distro version does not have a minor number')
     def test__install__default(self):
         installer = YumInstaller(dry_run=True)
         result = installer.install_dependencies()
-        self.assertIn('yahoo_python36', result)
+        self.assertIn('python36', result)
