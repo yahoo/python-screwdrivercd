@@ -181,6 +181,7 @@ class ScrewdriverPackagingPollerTestCase(VCRTestCase):
         """
         return dict(
             record_mode='new_episodes',
+            decode_compressed_response=True,
         )
 
     def test__package_exists__true(self):
