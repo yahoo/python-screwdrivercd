@@ -9,7 +9,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.22.0
+      - python-requests/2.31.0
     method: GET
     uri: https://pypi.org/simple/foozle/
   response:
@@ -27,11 +27,11 @@ interactions:
       Content-Type:
       - text/plain; charset=UTF-8
       Date:
-      - Tue, 10 Dec 2019 01:36:09 GMT
+      - Tue, 12 Sep 2023 21:54:04 GMT
+      Permissions-Policy:
+      - publickey-credentials-create=(self),publickey-credentials-get=(self),accelerometer=(),ambient-light-sensor=(),autoplay=(),battery=(),camera=(),display-capture=(),document-domain=(),encrypted-media=(),execution-while-not-rendered=(),execution-while-out-of-viewport=(),fullscreen=(),gamepad=(),geolocation=(),gyroscope=(),hid=(),identity-credentials-get=(),idle-detection=(),local-fonts=(),magnetometer=(),microphone=(),midi=(),otp-credentials=(),payment=(),picture-in-picture=(),screen-wake-lock=(),serial=(),speaker-selection=(),storage-access=(),usb=(),web-share=(),xr-spatial-tracking=()
       Referrer-Policy:
       - origin-when-cross-origin
-      Server:
-      - nginx/1.13.9
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains; preload
       Vary:
@@ -47,9 +47,9 @@ interactions:
       X-Permitted-Cross-Domain-Policies:
       - none
       X-Served-By:
-      - cache-iad2145-IAD, cache-pao17446-PAO
+      - cache-iad-kjyo7100164-IAD, cache-den8259-DEN
       X-Timer:
-      - S1575941769.393492,VS0,VE92
+      - S1694555644.035018,VS0,VE81
       X-XSS-Protection:
       - 1; mode=block
     status:

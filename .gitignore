@@ -6,6 +6,9 @@
 *.so
 
 # Packages
+/*.build
+/*.dist
+/*.onefile-build
 .Python
 *.egg
 *.egg-info

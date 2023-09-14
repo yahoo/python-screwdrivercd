@@ -27,7 +27,7 @@ logger = logging.getLogger(logger_name)
 
 
 def main():
-    tox_envlist = os.environ.get('TOX_ENVLIST', 'py35,py36,py37,py38')
+    tox_envlist = os.environ.get('TOX_ENVLIST', 'py38,py39,py310,py311')
     return run_tox(tox_envlist=tox_envlist)
 
 
