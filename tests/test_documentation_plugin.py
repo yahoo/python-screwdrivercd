@@ -2,6 +2,7 @@
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
 import os
 from pathlib import Path
+from unittest import skip
 
 import screwdrivercd.documentation.exceptions
 import screwdrivercd.documentation.plugin
@@ -268,3 +269,17 @@ class MkdocsDocumentationVenvPluginTestCase(DocumentationPluginTestCase):
         self._init_test_repo()
         self.write_config_files(mkdocs_project_config)
         super().test__documentation__publish()
+
+    def test__documentation__publish__unchanged(self):
+        self._init_test_repo()
+        self.write_config_files(mkdocs_project_config)
+        p = screwdrivercd.documentation.mkdocs.plugin.MkDocsDocumentationVenvPlugin()
+        p.build_setup()
+        p.build_documentation()
+        p.build_cleanup()
+        p.publish_documentation(push=False)
+        os.system(f'git checkout {p.publish_branch}')
+        p.build_setup()
+        p.build_documentation()
+        p.build_cleanup()
+        p.publish_documentation(push=False)

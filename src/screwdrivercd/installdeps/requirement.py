@@ -11,8 +11,8 @@ from typing import Dict
 
 import distro
 import parsley
-import pkg_resources
 
+from packaging.version import Version, parse
 
 logger = logging.getLogger(__name__)
 
@@ -227,11 +227,9 @@ class Requirement():
             val2 = self.evaluate(*val2)
 
         if isinstance(val1, str):
-            val1 = pkg_resources.parse_version(val1)
+            val1 = parse(val1)
         if isinstance(val2, str):
-            val2 = pkg_resources.parse_version(val2)
-
-        # statement = f'{val1} {operation} {val2}'
+            val2 = parse(val2)
 
         result = None
         if operation == '>':
@@ -252,5 +250,4 @@ class Requirement():
             result = val1 or val2
         else:
             logger.error(f'Invalid operation {operation}')
-        # logger.debug(f'Evaluated {statement} == {result}')
         return result

@@ -3,6 +3,7 @@
 """
 Documentation generator plugin classes
 """
+import importlib.metadata
 import logging
 import os
 import subprocess  # nosec - All subprocess calls use full path
@@ -11,7 +12,6 @@ import tempfile
 
 from typing import List
 
-import pkg_resources
 from termcolor import colored
 
 from .exceptions import DocBuildError, DocPublishError
@@ -327,7 +327,7 @@ class DocumentationPlugin:
 
         # Make sure there is a clone url before trying to publish
         if not self.clone_url:  # pragma: no cover
-            raise DocPublishError(f'Unable to determine a valid git clone url to publish to')
+            raise DocPublishError('Unable to determine a valid git clone url to publish to')
 
         # Checkout the documentation branch into a temporary directory, add the docs and commit them
         with tempfile.TemporaryDirectory() as tempdir:    # pragma: no cover
@@ -337,7 +337,7 @@ class DocumentationPlugin:
                 self.clean_directory(self.clone_dir)
             self.copy_contents(self.build_documentation(), self.clone_dir)
 
-            self._log_message(f'New repository contents', self.publish_log_filename)
+            self._log_message('New repository contents', self.publish_log_filename)
             self._run_command(['ls', '-lR'], log_filename=self.publish_log_filename)
 
             os.chdir(self.clone_dir)
@@ -354,13 +354,11 @@ def documentation_plugins(documentation_formats=None):
     """
     Get documentation plugin instances
     """
-    entry_points = pkg_resources.iter_entry_points(group='screwdrivercd.documentation.plugin')
-
-    for entry_point in entry_points:
+    for entry_point in importlib.metadata.entry_points(group='screwdrivercd.documentation.plugin'):
         try:
             instance = entry_point.load()()
-        except pkg_resources.ContextualVersionConflict:
-            logger.warning(f'Documentation plugin {entry_point} failed to load due to a package dependency conflict')
+        except Exception as e:
+            logger.warning(f'Documentation plugin {entry_point} failed to load due to a package dependency conflict: {e}')
             raise
         if documentation_formats and instance.name not in documentation_formats:
             continue

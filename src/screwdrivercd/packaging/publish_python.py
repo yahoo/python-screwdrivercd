@@ -14,8 +14,8 @@ import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Set
 
+from packaging.utils import canonicalize_name
 import requests
-from pkg_resources import safe_name
 
 from ..utility.environment import env_bool, interpreter_bin_command, standard_directories
 from ..utility.package import setup_query
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def package_exists(package: str, package_filename: str, endpoint: str='https://pypi.org/simple') -> bool:
-    url = f'{endpoint}/{safe_name(package)}/'
+    url = f'{endpoint}/{canonicalize_name(package)}/'
 
     # Stream the index
     req = requests.get(url, stream=True)

@@ -204,7 +204,7 @@ class StyleValidator(ScrewdriverTestCase):
         self.write_config_files(working_config_case_different)
         os.system('ls -lR')
         result = validate_codestyle()
-        self.assertNotEquals(result, 0)
+        self.assertNotEqual(result, 0)
 
     def test_style__pass__nosrcdir_wrong_case(self):
         self.write_config_files(working_config_case_different_nosrc)

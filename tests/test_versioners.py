@@ -25,11 +25,12 @@ project_urls =
 version=0.0.0
 
 [options]
-packages =
-    mypyvalidator
-
+packages = find_namespace:
 package_dir =
     =src
+
+[options.packages.find]
+where=src
 """
 }
 
