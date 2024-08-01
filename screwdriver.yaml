@@ -26,7 +26,7 @@ jobs:
     validate_test:
         template: python/validate_unittest
         environment:
-            TOX_ENVLIST: py39,py310,py311
+            TOX_ENVLIST: py310,py311,py312
         steps:
             - postupdate_version: |
                 PACKAGE_VERSION="`meta get package.version`"
