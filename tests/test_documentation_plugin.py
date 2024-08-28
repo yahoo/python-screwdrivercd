@@ -232,6 +232,22 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         instance = self.plugin_class()
         instance.publish_documentation(push=False)
 
+    def test_git_command_timeout_valid(self):
+        os.environ['DOCUMENTATION_GIT_TIMEOUT'] = '600'
+        p = self.plugin_class()
+        self.assertEqual(p.git_command_timeout, 600)
+
+    def test_git_command_timeout_invalid_type(self):
+        os.environ['DOCUMENTATION_GIT_TIMEOUT'] = 'invalid'
+        p = self.plugin_class()
+        self.assertEqual(p.git_command_timeout, 300)  # Default value
+
+    def test_git_command_timeout_not_set(self):
+        if 'DOCUMENTATION_GIT_TIMEOUT' in os.environ:
+            del os.environ['DOCUMENTATION_GIT_TIMEOUT']
+        p = self.plugin_class()
+        self.assertEqual(p.git_command_timeout, 300)  # Default value
+
 
 class SphinxDocumentationPluginTestCase(DocumentationPluginTestCase):
     plugin_class = screwdrivercd.documentation.sphinx.plugin.SphinxDocumentationPlugin
