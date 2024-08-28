@@ -29,11 +29,12 @@ If using `sphinx`:
 ### Settings
 The follow environment variables can be used to tune the behavior of the utility.
 
-| Setting               | Default Value             | Description                                             |
-| --------------------- | ------------------------- | ------------------------------------------------------- |
-| DOCUMENTATION_DEBUG   | False                     | Turn on debug logging when generating the documentation |
-| DOCUMENTATION_FORMATS | mkdocs,sphinx             | Type of documentation to generate                       |
-| DOCUMENTATION_PUBLISH | True                      | Publish the generated documentation to github pages     |
+| Setting                   | Default Value | Description                                                             |
+|---------------------------|---------------|-------------------------------------------------------------------------|
+| DOCUMENTATION_DEBUG       | False         | Turn on debug logging when generating the documentation                 |
+| DOCUMENTATION_GIT_TIMEOUT | 300           | Git operation timeout for documentation push to github pages            |
+| DOCUMENTATION_FORMATS     | mkdocs,sphinx | Type of documentation to generate                                       |
+| DOCUMENTATION_PUBLISH     | True          | Publish the generated documentation to github pages                     |
 
 ### Artifacts
 

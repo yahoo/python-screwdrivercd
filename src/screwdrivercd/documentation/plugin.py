@@ -34,7 +34,7 @@ class DocumentationPlugin:
     build_dest: str = ''
     publish_branch: str = 'gh-pages'
     publish_log_filename: str = ''
-    git_command_timeout: int = 30
+    git_command_timeout: int = 300
     _clone_dir = ''
     _clone_url = ''
 
@@ -48,7 +48,10 @@ class DocumentationPlugin:
         self.publish_log_filename = os.path.join(self.log_dir, f'{self.name}.publish.log')
         self.build_dest = os.path.join(self.build_dir, self.build_output_dir)
         self.source_dir = os.getcwd()
-
+        try:
+            self.git_command_timeout = int(os.environ.get("DOCUMENTATION_GIT_TIMEOUT", str(self.git_command_timeout)))
+        except ValueError:
+            logger.warning('Value {os.environ.get("DOCUMENTATION_GIT_TIMEOUT", str(self.git_command_timeout))} for the DOCUMENTATION_GIT_TIMEOUT setting is invalid')
     @property
     def clone_dir(self) -> str:
         """
