@@ -48,6 +48,7 @@ class DocumentationPlugin:
         self.publish_log_filename = os.path.join(self.log_dir, f'{self.name}.publish.log')
         self.build_dest = os.path.join(self.build_dir, self.build_output_dir)
         self.source_dir = os.getcwd()
+        self.git_command_timeout = os.environ.get('DOCUMENTATION_GIT_TIMEOUT', 300)
 
     @property
     def clone_dir(self) -> str:
