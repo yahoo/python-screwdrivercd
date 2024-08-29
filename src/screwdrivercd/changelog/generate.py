@@ -151,8 +151,6 @@ def changelog_contents(changelog_releases: str='') -> str:
             changelog_name = setup_query('--name')
         except subprocess.CalledProcessError:  # pragma: no cover
             changelog_name = ''
-    if not changelog_name:  # pragma: no cover
-        changelog_name = 'Unknown'
     release_dates = git_tag_dates()
 
     output = ''
@@ -189,8 +187,10 @@ def changelog_contents(changelog_releases: str='') -> str:
         date = datetime.fromtimestamp(int(release_dates[release]))
         if len(releases) > 1:
             output += f'{os.linesep}---{os.linesep}'
-        output += f'## {changelog_name} {release} ({date:%Y-%m-%d}){os.linesep}'
-
+        if changelog_name:
+            output += f'## {changelog_name} {release} ({date:%Y-%m-%d}){os.linesep}'
+        else:
+            output += f'## {release} ({date:%Y-%m-%d}){os.linesep}'
         for change_type, change_desc in CHANGE_TYPES.items():
             if change_type not in changes.keys():
                 continue
