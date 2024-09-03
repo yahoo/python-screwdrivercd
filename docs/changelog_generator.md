@@ -27,13 +27,14 @@ as items.
 
 The follow environment variables can be used to tune the behavior of the utility.
 
-| Setting                     | Default Value                                      | Description                                                          |
-| --------------------------- | -------------------------------------------------- | -------------------------------------------------------------------- |
-| CHANGELOG_DIR               | changelog.d                                        | Directory containing the changelog news fragements                   |
-| CHANGELOG_FILENAME          | $SD_ARTIFACTS_DIR/reports/changelog/changelog.md   | Name of the changelog file                                           |
-| CHANGELOG_NAME              | Python package name or Unknown if no package       | The Package/Project name for the changelog                           |
-| CHANGELOG_ONLY_VERSION_TAGS | True                                               | Only consider tags that begin with the letter 'v' to be release tags |
-| CHANGELOG_RELEASES          | all                                                | Release to generate in the changelog or "all" to have the log have all releases |
+| Setting                        | Default Value                                    | Description                                                                     |
+|--------------------------------|--------------------------------------------------|---------------------------------------------------------------------------------|
+| CHANGELOG_DIR                  | changelog.d                                      | Directory containing the changelog news fragements                              |
+| CHANGELOG_FILENAME             | $SD_ARTIFACTS_DIR/reports/changelog/changelog.md | Name of the changelog file                                                      |
+| CHANGELOG_NAME                 | Python package name or Unknown if no package     | The Package/Project name for the changelog                                      |
+| CHANGELOG_ONLY_STABLE_RELEASES | False                                            | Only consider tags that have a stable release number                            |
+| CHANGELOG_ONLY_VERSION_TAGS    | True                                             | Only consider tags that begin with the letter 'v' to be release tags            |
+| CHANGELOG_RELEASES             | all                                              | Release to generate in the changelog or "all" to have the log have all releases |
 
 #### Changelog header
 

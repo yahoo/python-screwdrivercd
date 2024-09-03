@@ -96,6 +96,25 @@ class ScrewdriverChangelogTestCase(ScrewdriverTestCase):
         self.assertIn('# mypyvalidator v0.1.1 (', changelog_contents)
         self.assertIn('# Changelog header', changelog_contents)
 
+    def test__changelog_generate_footer(self):
+        self.create_example_repo()
+        self.write_config_files({'changelog.d/FOOTER.md': b'# Changelog footer\n'})
+
+        changelog_generate_main()
+
+        self.assertTrue(os.path.exists('artifacts/reports/changelog/changelog.md'))
+        with open('artifacts/reports/changelog/changelog.md') as fh:
+            changelog_contents = fh.read()
+
+        print(changelog_contents)
+
+        self.assertNotIn('# mypyvalidator first_commit (', changelog_contents)
+        self.assertNotIn('# mypyvalidator new (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.0.1 (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.1.0 (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.1.1 (', changelog_contents)
+        self.assertIn('# Changelog footer', changelog_contents)
+
     def test__changelog_generate_main__releases_all(self):
         os.environ['CHANGELOG_RELEASES'] = 'all'
         self.create_example_repo()
@@ -170,6 +189,67 @@ class ScrewdriverChangelogTestCase(ScrewdriverTestCase):
         self.assertIn('# mypyvalidator v0.0.1 (', changelog_contents)
         self.assertIn('# mypyvalidator v0.1.0 (', changelog_contents)
         self.assertNotIn('# mypyvalidator v0.1.1 (', changelog_contents)
+
+    def test_generate_main__only_stable_true(self):
+        os.environ['CHANGELOG_ONLY_STABLE_RELEASES'] = 'True'
+        self.create_example_repo()
+        self.write_config_files({'changelog.d/10.feature.md': b'Pre-release commit\n'})
+        os.system('git add changelog.d/10.feature.md')
+        os.system('git commit -a -m "inital commit"')
+        os.system('git tag -a -m "pre release" v0.1.10a1')
+
+        changelog_generate_main()
+
+        self.assertTrue(os.path.exists('artifacts/reports/changelog/changelog.md'))
+        with open('artifacts/reports/changelog/changelog.md') as fh:
+            changelog_contents = fh.read()
+
+        print(changelog_contents)
+
+        self.assertIn('# mypyvalidator v0.0.1 (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.1.0 (', changelog_contents)
+        self.assertNotIn('# mypyvalidator v0.1.10a1 (', changelog_contents)
+
+    def test_changelog_contents_with_header_and_footer(self):
+        header_content = b"# This is the header"
+        footer_content = b"# This is the footer"
+        self.create_example_repo()
+        self.write_config_files({'changelog.d/HEADER.md': header_content, 'changelog.d/FOOTER.md': footer_content})
+        os.system('git add changelog.d/HEADER.md')
+        os.system('git add changelog.d/FOOTER.md')
+        os.system('git commit -a -m "inital commit"')
+        os.system('git tag -a -m "pre release" v0.2.10')
+
+        changelog_generate_main()
+
+        self.assertTrue(os.path.exists('artifacts/reports/changelog/changelog.md'))
+        with open('artifacts/reports/changelog/changelog.md') as fh:
+            changelog_contents = fh.read()
+
+        print(changelog_contents)
+
+        self.assertIn("This is the header", changelog_contents)
+        self.assertIn("This is the footer", changelog_contents)
+
+    def test_generate_main__only_stable_false(self):
+        os.environ['CHANGELOG_ONLY_STABLE_RELEASES'] = 'False'
+        self.create_example_repo()
+        self.write_config_files({'changelog.d/10.feature.md': b'Pre-release commit\n'})
+        os.system('git add changelog.d/10.feature.md')
+        os.system('git commit -a -m "inital commit"')
+        os.system('git tag -a -m "pre release" v0.1.10a1')
+
+        changelog_generate_main()
+
+        self.assertTrue(os.path.exists('artifacts/reports/changelog/changelog.md'))
+        with open('artifacts/reports/changelog/changelog.md') as fh:
+            changelog_contents = fh.read()
+
+        print(changelog_contents)
+
+        self.assertIn('# mypyvalidator v0.0.1 (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.1.0 (', changelog_contents)
+        self.assertIn('# mypyvalidator v0.1.10a1 (', changelog_contents)
 
     def test_create_first_commit_tag_if_missing__missing(self):
         self.create_example_repo()

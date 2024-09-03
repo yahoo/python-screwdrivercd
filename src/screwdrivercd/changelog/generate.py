@@ -10,7 +10,7 @@ import subprocess  # nosec
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, List
 
 from ..utility.environment import env_bool
 from ..utility.package import setup_query
@@ -60,7 +60,7 @@ def create_first_commit_tag_if_missing() -> None:
     if first_commit_hash:
         try:
             output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError:  # pragma no cover
             pass  # Tag already exists
 
         
@@ -80,7 +80,7 @@ def changed_files(commit1: str, commit2: str, changelog_dir: str='changelog.d') 
     return changed
 
 
-def release_changes(changelog_dir: str, only_versions: bool=True) -> Dict[str, Dict[str, Dict[str, str]]]:
+def release_changes(changelog_dir: str, only_versions: bool=True, only_stable: bool=False) -> Dict[str, Dict[str, Dict[str, str]]]:
     create_first_commit_tag_if_missing()
     tags = git_tag_dates()
 
@@ -94,6 +94,13 @@ def release_changes(changelog_dir: str, only_versions: bool=True) -> Dict[str, D
             if not commit.startswith('v'):
                 if commit != 'first_commit':
                     continue
+        if only_stable and commit.startswith('v'):
+            try:
+                int(commit.split('.')[-1])
+            except ValueError:
+                # Last part of the version has a non-numeric character
+                # so it is a pre-release
+                continue
 
         changed = changed_files(previous_commit, commit, changelog_dir=changelog_dir)
         if not changed:
@@ -133,13 +140,13 @@ def changelog_contents(changelog_releases: str='') -> str:
     Returns
     -------
     str:
-        The generated changelog in markdown format.
+        The generated changelog in Markdown format.
     """
     if not changelog_releases:
         changelog_releases = os.environ.get('CHANGELOG_RELEASES', 'all')
 
-
     only_versions = bool(env_bool('CHANGELOG_ONLY_VERSION_TAGS', True))
+    only_stable = bool(env_bool('CHANGELOG_ONLY_STABLE_RELEASES', False))
     changelog_dir = os.environ.get('CHANGELOG_DIR', 'changelog.d')
 
     header_filename = os.path.join(changelog_dir, 'HEADER.md')
@@ -156,7 +163,7 @@ def changelog_contents(changelog_releases: str='') -> str:
     output = ''
     footer = ''
     header = ''
-    release_changelog = release_changes(changelog_dir, only_versions=only_versions)
+    release_changelog = release_changes(changelog_dir, only_versions=only_versions, only_stable=only_stable)
     if changelog_releases == 'all':
         if os.path.exists(header_filename):
             with open(header_filename) as fh:
@@ -189,7 +196,7 @@ def changelog_contents(changelog_releases: str='') -> str:
             output += f'{os.linesep}---{os.linesep}'
         if changelog_name:
             output += f'## {changelog_name} {release} ({date:%Y-%m-%d}){os.linesep}'
-        else:
+        else:  # pragma no cover
             output += f'## {release} ({date:%Y-%m-%d}){os.linesep}'
         for change_type, change_desc in CHANGE_TYPES.items():
             if change_type not in changes.keys():
