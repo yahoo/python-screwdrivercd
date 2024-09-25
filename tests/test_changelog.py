@@ -291,3 +291,8 @@ class ScrewdriverChangelogTestCase(ScrewdriverTestCase):
         print(changelog_contents)
 
         self.assertNotIn('# mypyvalidator v0.2.0 (', changelog_contents)
+
+    def test__create_first_commit_tag_if_missing__exists(self):
+        self.create_example_repo()
+        create_first_commit_tag_if_missing()
+        create_first_commit_tag_if_missing()
