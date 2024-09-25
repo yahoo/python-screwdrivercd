@@ -59,7 +59,7 @@ def create_first_commit_tag_if_missing() -> None:
     first_commit_hash = subprocess.check_output(['git', 'rev-list', '--max-parents=0', 'HEAD'], stderr=subprocess.DEVNULL).decode(errors='ignore').strip()  # nosec
     if first_commit_hash:
         try:
-            output = subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
+            subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
         except subprocess.CalledProcessError:  # pragma no cover
             pass  # Tag already exists
 

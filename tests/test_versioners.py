@@ -150,8 +150,17 @@ class TestVersioners(ScrewdriverTestCase):
         config_version = Version().read_setup_version()
         self.assertEqual(config_version, ['0', '0', '9999'])
 
+    def test__sdv4_GITHUB_RUN_ID__set(self):
+        self.delkeys(['GITHUB_RUN_ID', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
+        os.environ['GITHUB_RUN_ID'] = '9999'
+        versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
+        self.assertEqual(str(versioner), '0.0.9999')
+        versioner.update_setup_cfg_metadata()
+        config_version = Version().read_setup_version()
+        self.assertEqual(config_version, ['0', '0', '9999'])
+
     def test__sdv4_SD_BUILD__PR__unset(self):
-        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
+        self.delkeys(['GITHUB_RUN_ID', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         os.environ['SD_PULL_REQUEST'] = '1'
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
@@ -198,6 +207,24 @@ class TestVersioners(ScrewdriverTestCase):
         self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         with self.assertRaises(VersionError):
             version = str(VersionDateSDV4Build(ignore_meta_version=True))
+
+    def test_get_env_single_var(self):
+        os.environ['TEST_ENV_VAR'] = 'test_value'
+        version = Version()
+        result = version.get_env('TEST_ENV_VAR')
+        self.assertEqual(result, 'test_value')
+
+    def test_get_env_multiple_vars(self):
+        os.environ['TEST_ENV_VAR1'] = 'value1'
+        os.environ['TEST_ENV_VAR2'] = 'value2'
+        version = Version()
+        result = version.get_env(['TEST_ENV_VAR1', 'TEST_ENV_VAR2'])
+        self.assertEqual(result, 'value1')
+
+    def test_get_env_default_value(self):
+        version = Version()
+        result = version.get_env('NON_EXISTENT_VAR', 'default_value')
+        self.assertEqual(result, 'default_value')
 
 
 if __name__ == '__main__':

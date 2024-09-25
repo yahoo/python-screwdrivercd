@@ -11,7 +11,7 @@ __all__: List[str] = ['arguments', 'cli', 'exceptions', 'setup', 'version_types'
 __copyright__: str = "Copyright 2019, Oath Inc."
 
 __version__: str = "0.0.0"
-try:
+try:  # pragma: no cover
     __version__ = version("screwdrivercd")
 except PackageNotFoundError:
     pass

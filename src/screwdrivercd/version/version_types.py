@@ -36,6 +36,34 @@ class Version:
     def __str__(self):
         return self.version
 
+    @staticmethod
+    def get_env(env_vars, default_value=None):
+        """
+        Return the value from a list of environment variables searched in order
+        returning the default value if a value is not found.
+
+        Parameters
+        ----------
+        env_vars: str or list of str
+            List of environment variables to search
+        default_value: str
+            Value to return if no environment variables are found
+
+        Returns
+        -------
+        str:
+            Returns the value of the first matching environemnt variable
+            or the value of default_value if not found.
+        """
+        if isinstance(env_vars, str):
+            env_vars = [env_vars]
+        for env_var in env_vars:
+            value = os.environ.get(env_var)
+            if value is not None:
+                LOG.debug(f"Found env variable {env_var}={value!r}")
+                return value
+        return default_value
+
     def commit_changed_setup_cfg(self):  # pragma: no cover
         """
         Git commit the setup.cfg
@@ -73,7 +101,7 @@ class Version:
         Generate and return link to build-triggering commit using its SHA hash
         """
         scm_url = os.environ.get('SCM_URL', '')
-        sha = os.environ.get('SD_BUILD_SHA', '')
+        sha = self.get_env(['SD_BUILD_SHA', 'GITHUB_SHA'], '')
         if self.link_to_project and scm_url and sha:
             if scm_url.startswith('git@'):
                 hostname = scm_url.split(':')[0].split('@')[1]
@@ -145,7 +173,7 @@ class Version:
             Pull request number or 0 if not running from a pull request
         """
         try:
-            prnum = int(os.environ.get('SD_PULL_REQUEST', None))
+            prnum = int(self.get_env(['SD_PULL_REQUEST', 'GITHUB_REF'], None))
         except (TypeError, ValueError):
             prnum = 0
         return prnum
@@ -283,10 +311,7 @@ class VersionSDV4Build(VersionUpdateRevision):
     name = 'sdv4_SD_BUILD'
 
     def revision_value(self):
-        revision = os.environ.get('SD_BUILD', None)
-        if not revision:
-            LOG.debug('No value for SD_BUILD found')
-            revision = os.environ.get('SD_BUILD_ID', None)
+        revision = self.get_env(['SD_BUILD', 'SD_BUILD_ID', 'GITHUB_RUN_ID'])
         if not revision:
             raise VersionError('Unable to generate version, no SD_BUILD or SD_BUILD_ID value set in the environment variables')
         return revision
@@ -324,9 +349,7 @@ class VersionDateSDV4Build(Version):
 
     def generate(self):
         now = self.now if self.now else datetime.utcnow()
-        revision = os.environ.get('SD_BUILD', None)
-        if not revision:
-            revision = os.environ.get('SD_BUILD_ID', None)
+        revision = self.get_env(['SD_BUILD', 'SD_BUILD_ID', 'GITHUB_RUN_ID'], '')
         if not revision:
             raise VersionError('Unable to generate version, no SD_BUILD or SD_BUILD_ID value set in the environment variables')
         return [f'{str(now.year)[-2:]}', f'{now.month}', revision]
