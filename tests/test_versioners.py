@@ -4,14 +4,15 @@ import datetime
 import os
 import subprocess  # nosec
 import unittest
+
 from . import ScrewdriverTestCase
 from tempfile import NamedTemporaryFile
 
 from screwdrivercd.version.exceptions import VersionError
-from screwdrivercd.version.version_types import versioners, Version, VersionGitRevisionCount, VersionSDV4Build, VersionDateSDV4Build, VersionUTCDate, VersionManualUpdate
+from screwdrivercd.version.version_types import Version, VersionGitRevisionCount, VersionSDV4Build, VersionDateSDV4Build, VersionUTCDate, VersionManualUpdate
 
 
-existing_project_url_config = {
+existing_project_url_config_setupcfg = {
     'setup.cfg': b"""
 [metadata]
 author = Yahoo Python Platform Team
@@ -34,14 +35,39 @@ where=src
 """
 }
 
+existing_project_url_config_pyprojecttoml = {
+    'pyproject.toml': b"""
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mypyvalidator"
+authors = [
+    {name = "Yahoo Python Platform Team", email = "python@verizonmedia.com"}
+]
+description = "GH Cloud Test 1"
+version = "0.0.0"
+
+[tool.sdv4_version]
+version_type = "sdv4_SD_BUILD"
+"""
+}
+
 
 class TestVersioners(ScrewdriverTestCase):
     environ_keys = {
-        'BASE_PYTHON', 'PACKAGE_DIR', 'PACKAGE_DIRECTORY', 'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID',
+        'BASE_PYTHON', 'GITHUB_RUN_ID', 'PACKAGE_DIR', 'PACKAGE_DIRECTORY', 'SD_ARTIFACTS_DIR', 'SD_BUILD', 'SD_BUILD_ID',
         'SD_PULL_REQUEST', 'SCM_URL', 'SD_BUILD_SHA',
     }
 
-    def test__version__read_setup_version__no_version(self):
+    def test__version__read_setup_version__no_version_noconfig_files(self):
+        version = Version(ignore_meta_version=True).read_setup_version()
+        self.assertEqual(version, Version.default_version)
+
+    def test__version__read_setup_version__no_version_pyproject_file(self):
+        with open('pyproject.toml', 'wb') as fh:
+            fh.write(b'[build-system]\nbuild-backend = "setuptools.build_meta')
         version = Version(ignore_meta_version=True).read_setup_version()
         self.assertEqual(version, Version.default_version)
 
@@ -70,7 +96,7 @@ class TestVersioners(ScrewdriverTestCase):
     def test__version__get_link_to_project_using_hash__set_env_variables__https_git__existing_project_urls(self):
         os.environ['SCM_URL'] = 'https://github.com/org/project'
         os.environ['SD_BUILD_SHA'] = 'a5c3785ed8d6a35868bc169f07e40e889087fd2e'
-        self.write_config_files(existing_project_url_config)
+        self.write_config_files(existing_project_url_config_setupcfg)
 
         ver = Version(ignore_meta_version=True, link_to_project=True)
         link = ver.get_link_to_project_using_hash()
@@ -97,12 +123,12 @@ class TestVersioners(ScrewdriverTestCase):
         self.assertIn(link, setup_cfg)
 
     def test__manual_version_update(self):
-        with NamedTemporaryFile('w') as file:
+        with NamedTemporaryFile('w') as setupcfg_file:
             setup_cfg_content = '[metadata]\nversion = 1.0.5'
-            file.write(setup_cfg_content)
+            setupcfg_file.write(setup_cfg_content)
 
-            file.seek(0)
-            version = VersionManualUpdate(setup_cfg_filename=file.name, ignore_meta_version=True)
+            setupcfg_file.seek(0)
+            version = VersionManualUpdate(setup_cfg_filename=setupcfg_file.name, ignore_meta_version=True)
             self.assertEqual(version.generate(), ['1', '0', '5'])
 
     def test__git_revision_count__no_git(self):
@@ -131,6 +157,7 @@ class TestVersioners(ScrewdriverTestCase):
             # Git cli not working
             return
         versioner = VersionGitRevisionCount(ignore_meta_version=True, log_errors=False)
+        print(versioner.setup_cfg_filename, versioner.setup_cfg_format)
         versioner.update_setup_cfg_metadata()
         with open('setup.cfg') as setup_handle:
             result = setup_handle.read().strip()
@@ -142,7 +169,6 @@ class TestVersioners(ScrewdriverTestCase):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
     def test__sdv4_SD_BUILD__set(self):
-        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         os.environ['SD_BUILD'] = '9999'
         versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
         self.assertEqual(str(versioner), '0.0.9999')
@@ -150,23 +176,44 @@ class TestVersioners(ScrewdriverTestCase):
         config_version = Version().read_setup_version()
         self.assertEqual(config_version, ['0', '0', '9999'])
 
-    def test__sdv4_GITHUB_RUN_ID__set(self):
-        self.delkeys(['GITHUB_RUN_ID', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
+    def test__sdv4_SD_BUILD__pyproject__set(self):
+        os.environ['SD_BUILD'] = '10000'
+        self.write_config_files(existing_project_url_config_pyprojecttoml)
+        os.system('ls -l')
+        versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
+        self.assertEqual(str(versioner), '0.0.10000')
+        versioner.update_setup_cfg_metadata()
+        version_obj = Version()
+        config_version = version_obj.read_setup_version()
+        self.assertEqual(version_obj.setup_cfg_format, 'toml')
+        self.assertEqual(version_obj.setup_cfg_filename, 'pyproject.toml')
+        with open('pyproject.toml') as fh:
+            content = fh.read()
+        self.assertIn('0.0.10000', content)
+        self.assertEqual(config_version, ['0', '0', '10000'])
+
+    def test__sdv4_GITHUB_RUN_ID_toml_set(self):
         os.environ['GITHUB_RUN_ID'] = '9999'
+        if os.path.exists('setup.cfg'):
+            os.remove('setup.cfg')
+        self.write_config_files(existing_project_url_config_pyprojecttoml)
         versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
         self.assertEqual(str(versioner), '0.0.9999')
+        self.assertEqual('toml', versioner.setup_cfg_format)
         versioner.update_setup_cfg_metadata()
+        versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
         config_version = Version().read_setup_version()
         self.assertEqual(config_version, ['0', '0', '9999'])
+        with open('pyproject.toml') as fh:
+            content = fh.read()
+        self.assertIn('0.0.9999', content)
 
     def test__sdv4_SD_BUILD__PR__unset(self):
-        self.delkeys(['GITHUB_RUN_ID', 'SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         os.environ['SD_PULL_REQUEST'] = '1'
         with self.assertRaises(VersionError):
             version = str(VersionSDV4Build(ignore_meta_version=True, log_errors=False))
 
     def test__sdv4_SD_BUILD__PR__set(self):
-        self.delkeys(['SD_BUILD', 'SD_BUILD_ID', 'SD_PULL_REQUEST'])
         os.environ['SD_BUILD'] = '9999'
         os.environ['SD_PULL_REQUEST'] = '9'
         versioner = VersionSDV4Build(ignore_meta_version=True, log_errors=False)
@@ -225,6 +272,50 @@ class TestVersioners(ScrewdriverTestCase):
         version = Version()
         result = version.get_env('NON_EXISTENT_VAR', 'default_value')
         self.assertEqual(result, 'default_value')
+
+    def test_setup_cfg_format_with_setup_cfg(self):
+        with open('setup.cfg', 'w') as f:
+            f.write('[metadata]\nversion = 0.0.1')
+        version = Version()
+        self.assertEqual(version.setup_cfg_format, 'setupcfg')
+        os.remove('setup.cfg')
+
+    def test_setup_cfg_format_with_pyproject_toml(self):
+        if os.path.exists('setup.cfg'):
+            os.remove('setup.cfg')
+        with open('pyproject.toml', 'w') as f:
+            f.write('[tool.sdv4_version]\nversion_type = "sdv4_SD_BUILD"\n[project]\nversion="0.0.0"\n')
+        version = Version()
+        self.assertEqual(version.setup_cfg_filename, 'pyproject.toml')
+        self.assertEqual(version.setup_cfg_format, 'toml')
+        os.remove('pyproject.toml')
+
+    def test_setup_cfg_format_with_pyproject_toml_no_version(self):
+        if os.path.exists('setup.cfg'):
+            os.remove('setup.cfg')
+        with open('pyproject.toml', 'w') as f:
+            f.write('[tool.sdv4_version]\nversion_type = "sdv4_SD_BUILD"\n')
+        version = Version()
+        self.assertEqual(version.setup_cfg_format, 'setupcfg')
+        self.assertEqual(version.setup_cfg_filename, 'setup.cfg')
+        os.remove('pyproject.toml')
+
+    def test_setup_cfg_format_with_invalid_toml(self):
+        if os.path.exists('setup.cfg'):
+            os.remove('setup.cfg')
+        with open('pyproject.toml', 'w') as f:
+            f.write('invalid_toml')
+        version = Version()
+        self.assertEqual(version.setup_cfg_format, 'setupcfg')
+        os.remove('pyproject.toml')
+
+    def test_setup_cfg_format_with_no_files(self):
+        if os.path.exists('setup.cfg'):
+            os.remove('setup.cfg')
+        if os.path.exists('pyproject.toml'):
+            os.remove('pyproject.toml')
+        version = Version()
+        self.assertEqual(version.setup_cfg_format, 'setupcfg')
 
 
 if __name__ == '__main__':
