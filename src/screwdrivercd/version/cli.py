@@ -7,6 +7,7 @@ from ..screwdriver.environment import logging_basicConfig,  update_job_status
 logging_basicConfig(check_prefix='VERSION')
 
 import logging
+import os
 import sys
 from .arguments import parse_arguments
 from .setup import setupcfg_has_metadata
