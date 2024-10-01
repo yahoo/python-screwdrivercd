@@ -9,7 +9,7 @@ import os
 from collections.abc import Mapping  # pylint: disable no-name-in-module
 from typing import Any, Dict, Optional
 
-import toml
+import tomllib as toml
 
 
 CONFIGURATION_SCHEMA = {
@@ -77,7 +77,7 @@ class Configuration():
         if not os.path.exists(self.filename):
             return
         
-        with open(self.filename) as fh:
+        with open(self.filename, 'rb') as fh:
             conf = toml.load(fh)
 
         tool_configs = conf.get('tool', None)
