@@ -305,9 +305,10 @@ class Version:
             return ''
         if self._meta_version:  # pragma: no cover
             return self._meta_version
+        LOG.debug(f'Running: {self.meta_command} get package.version')
         try:  # pragma: no cover
             self._meta_version = subprocess.check_output([self.meta_command, 'get', 'package.version']).decode(errors='ignore').strip()  # nosec
-        except (FileNotFoundError, subprocess.CalledProcessError):  # pragma: no cover
+        except (FileNotFoundError, PermissionError, subprocess.CalledProcessError):  # pragma: no cover
             pass
         if self._meta_version == 'null':
             self._meta_version = ''
