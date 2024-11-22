@@ -32,6 +32,7 @@ def logging_basicConfig(**kwargs):
     check_prefix = kwargs.pop('check_prefix', '')
     if check_prefix and not level:
         kwargs['level'] = logging.DEBUG if env_bool(f'{check_prefix}_DEBUG', default=False) else logging.INFO
+
     return logging.basicConfig(**kwargs)
 
 
