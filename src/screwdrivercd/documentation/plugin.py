@@ -501,7 +501,7 @@ def publish_documentation(documentation_formats=None, push: bool=True):  # pragm
                     logger.debug(f'{documentation_plugin.name} build output')
                     logger.debug(build_log.read())
 
-            if False and documentation_plugin.publish_log_filename and os.path.exists(documentation_plugin.publish_log_filename):
+            if documentation_plugin.publish_log_filename and os.path.exists(documentation_plugin.publish_log_filename):
                 with open(documentation_plugin.publish_log_filename, 'r') as publish_log:
                     logger.debug(f'{documentation_plugin.name} publish output')
                     logger.debug(publish_log.read())
