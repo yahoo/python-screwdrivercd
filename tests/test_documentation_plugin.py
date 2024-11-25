@@ -1,5 +1,6 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+import hashlib
 import os
 from pathlib import Path
 from unittest import skip
@@ -282,6 +283,51 @@ class MkdocsDocumentationPluginTestCase(DocumentationPluginTestCase):
         self.write_config_files(mkdocs_project_config)
         super().test__documentation__publish()
 
+    def test_get_sha1_hashes(self):
+        # Create test files
+        file_contents = {
+            'file1.txt': b'Hello, World!',
+            'file2.txt': b'Test file content',
+            'subdir/file3.txt': b'Subdirectory file content'
+        }
+        self.write_config_files(file_contents)
+
+        # Compute expected SHA1 hashes
+        expected_hashes = {}
+        for filename, content in file_contents.items():
+            file_hash = hashlib.sha1(content).hexdigest()
+            expected_hashes[filename] = file_hash
+
+        plugin = self.plugin_class()
+
+        # Get actual SHA1 hashes using the method
+        actual_hashes = plugin.get_sha1_hashes(self.tempdir.name)
+
+        # Verify the results
+        self.assertEqual(expected_hashes, actual_hashes)
+
+    def test__diff_dictionaries(self):
+        # Create test files
+        file_contents = {
+            'file1.txt': b'Hello, World!',
+            'file2.txt': b'Test file content',
+            'subdir/file3.txt': b'Subdirectory file content'
+        }
+        self.write_config_files(file_contents)
+
+        plugin = self.plugin_class()
+
+        # Get actual SHA1 hashes using the method
+        before_hashes = plugin.get_sha1_hashes(self.tempdir.name)
+
+        with open('file3.txt', 'wb') as fh:
+            fh.write(b'test\n')
+
+        after_hashes = plugin.get_sha1_hashes(self.tempdir.name)
+        diff_hashes = plugin.diff_dictionaries(before_hashes, after_hashes)
+
+        self.assertIn('file3.txt', diff_hashes['added'])
+
 
 class MkdocsDocumentationVenvPluginTestCase(DocumentationPluginTestCase):
     plugin_class = screwdrivercd.documentation.mkdocs.plugin.MkDocsDocumentationVenvPlugin
@@ -297,7 +343,7 @@ class MkdocsDocumentationVenvPluginTestCase(DocumentationPluginTestCase):
     def test__documentation__publish__unchanged(self):
         self._init_test_repo()
         self.write_config_files(mkdocs_project_config)
-        p = screwdrivercd.documentation.mkdocs.plugin.MkDocsDocumentationVenvPlugin()
+        p = self.plugin_class()
         p.build_setup()
         p.build_documentation()
         p.build_cleanup()
