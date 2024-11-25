@@ -156,6 +156,7 @@ class DepValidatorTestcase(ScrewdriverTestCase):
         json_report_filename = os.path.join(report_dir, 'safetydb.json')
         result = validate_with_safety()
         self.assertGreater(result, 0)
+        os.system(f'ls -lh {report_dir}')
         self.assertTrue(os.path.exists(json_report_filename))
 
 
