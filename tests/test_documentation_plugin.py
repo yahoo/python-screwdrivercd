@@ -8,6 +8,7 @@ import screwdrivercd.documentation.exceptions
 import screwdrivercd.documentation.plugin
 import screwdrivercd.documentation.mkdocs.plugin
 import screwdrivercd.documentation.sphinx.plugin
+import screwdrivercd.utility.environment
 
 from . import ScrewdriverTestCase
 
@@ -70,6 +71,13 @@ class BuildDocsTestCase(ScrewdriverTestCase):
         self.write_config_files(mkdocs_project_config_fail)
         with self.assertRaises(screwdrivercd.documentation.exceptions.DocPublishError):
             screwdrivercd.documentation.plugin.publish_documentation(push=False)
+            os.system('ls -lhR')
+            log_dir = Path(screwdrivercd.utility.environment.standard_directories()['logs']) / Path('documentation')
+            if os.path.exists(log_dir):
+                print('Logs')
+                os.system(f'ls -lh {log_dir}')
+                print('Log content')
+                os.system(f'cat {log_dir}/*')
 
 
 class PluginsTestCase(ScrewdriverTestCase):
@@ -103,7 +111,7 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         self._init_test_repo()
         p = screwdrivercd.documentation.plugin.DocumentationPlugin()
         result = p.get_clone_dir()
-        self.assertEqual(result, 'python-screwdrivercd')
+        self.assertEqual(result, os.path.abspath('python-screwdrivercd'))
 
     def test__clone_url(self):
         self._init_test_repo()
@@ -115,7 +123,7 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         self._init_test_repo()
         p =  screwdrivercd.documentation.plugin.DocumentationPlugin()
         result = p.clone_dir
-        self.assertEqual(result, 'python-screwdrivercd')
+        self.assertEqual(result, os.path.abspath('python-screwdrivercd'))
 
     def test__git_add_all(self):
         self._init_test_repo()

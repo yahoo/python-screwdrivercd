@@ -371,10 +371,10 @@ class DocumentationPlugin:
             Publish to the destination failed
         """
         self._log_message(f'\n- Publishing the documentation to github pages', self.publish_log_filename)
-        # self.remove_publish_log()
+        self.remove_publish_log()
 
         # Build the documentation
-        # build_dest = self.build_documentation()
+        build_dest = self.build_documentation()
 
         if not push:
             return
@@ -390,12 +390,11 @@ class DocumentationPlugin:
             self.original_hashes = self.get_sha1_hashes(self.clone_dir)
             if clear_before_build:
                 self.clean_directory(self.clone_dir)
-            self.copy_contents(self.build_documentation(), self.clone_dir)
+            self.copy_contents(build_dest, self.clone_dir)
 
             os.chdir(self.clone_dir)
             self.disable_jekyll()
             self.updated_hashes = self.get_sha1_hashes(self.clone_dir)
-
 
             if self.original_hashes == self.updated_hashes:
                 self._log_message('No changes to the documentation to publish', self.publish_log_filename)
