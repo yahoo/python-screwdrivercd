@@ -286,25 +286,35 @@ class MkdocsDocumentationPluginTestCase(DocumentationPluginTestCase):
     def test_get_sha1_hashes(self):
         # Create test files
         file_contents = {
+            '.git/foo': b'Git file',
             'file1.txt': b'Hello, World!',
             'file2.txt': b'Test file content',
             'subdir/file3.txt': b'Subdirectory file content'
         }
         self.write_config_files(file_contents)
+        os.link('file1.txt', 'file1_link.txt')
 
         # Compute expected SHA1 hashes
         expected_hashes = {}
         for filename, content in file_contents.items():
-            file_hash = hashlib.sha1(content).hexdigest()
-            expected_hashes[filename] = file_hash
+            if filename.startswith('.git'):
+                continue
+            if Path(filename).is_file():
+                file_hash = hashlib.sha1(content).hexdigest()
+                expected_hashes[filename] = file_hash
+
+        expected_hashes['file1_link.txt'] = '0a0a9f2a6772942557ab5355d76af442f8f65e01'
 
         plugin = self.plugin_class()
 
         # Get actual SHA1 hashes using the method
         actual_hashes = plugin.get_sha1_hashes(self.tempdir.name)
 
+        print('Expected', expected_hashes)
+        print('Actual', actual_hashes)
+
         # Verify the results
-        self.assertEqual(expected_hashes, actual_hashes)
+        self.assertDictEqual(expected_hashes, actual_hashes)
 
     def test__diff_dictionaries(self):
         # Create test files
@@ -320,13 +330,23 @@ class MkdocsDocumentationPluginTestCase(DocumentationPluginTestCase):
         # Get actual SHA1 hashes using the method
         before_hashes = plugin.get_sha1_hashes(self.tempdir.name)
 
-        with open('file3.txt', 'wb') as fh:
-            fh.write(b'test\n')
+        # Add a file
+        with open('file4.txt', 'wb') as fh:
+            fh.write(b'Added Test file content\n')
+
+        # Update a file
+        with open('file2.txt', 'wb') as fh:
+            fh.write(b'Updated Test file content')
+
+        # Delete a file
+        os.remove('file1.txt')
 
         after_hashes = plugin.get_sha1_hashes(self.tempdir.name)
         diff_hashes = plugin.diff_dictionaries(before_hashes, after_hashes)
 
-        self.assertIn('file3.txt', diff_hashes['added'])
+        self.assertIn('file4.txt', diff_hashes['added'])
+        self.assertIn('file2.txt', diff_hashes['changed'])
+        self.assertIn('file1.txt', diff_hashes['removed'])
 
 
 class MkdocsDocumentationVenvPluginTestCase(DocumentationPluginTestCase):

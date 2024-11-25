@@ -29,7 +29,7 @@ requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 '''
 
 
-class TestPep3(unittest.TestCase):
+class TestPip3(unittest.TestCase):
     original_environ = None
 
     def setUp(self):

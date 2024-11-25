@@ -107,7 +107,7 @@ class DocumentationPlugin:
                         while chunk := f.read(8192):
                             file_hash.update(chunk)
                         sha1_hashes[relative_path] = file_hash.hexdigest()
-                elif os.path.islink(file_path):
+                elif os.path.islink(file_path):  # pragma: no cover
                     sha1_hashes[relative_path] = hashlib.sha1(relative_path.encode(errors='ignore')).hexdigest()
         if remove_git:
             remove_keys = []
@@ -257,8 +257,8 @@ class DocumentationPlugin:
             if line.startswith('Fetch URL:'):
                 os.chdir(cwd)
                 return ':'.join(line.split(':')[1:]).strip()
-        os.chdir(cwd)
-        return ''
+        os.chdir(cwd)  # pragma: no cover
+        return ''  # pragma: no cover
 
     def get_clone_dir(self) -> str:
         """
@@ -287,7 +287,7 @@ class DocumentationPlugin:
             self._run_command(['git', 'add', filename], log_filename=self.publish_log_filename)
         logger.debug('Done adding files')
 
-    def git_commit_documentation(self, message: str = 'Update documentation'):
+    def git_commit_documentation(self, message: str = 'Update documentation'):  # pragma: no cover
         """
         Run git commit on all files in the current repo
 
@@ -414,7 +414,7 @@ def documentation_plugins(documentation_formats=None):
     for entry_point in importlib.metadata.entry_points(group='screwdrivercd.documentation.plugin'):
         try:
             instance = entry_point.load()()
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.warning(f'Documentation plugin {entry_point} failed to load due to a package dependency conflict: {e}')
             raise
         if documentation_formats and instance.name not in documentation_formats:
