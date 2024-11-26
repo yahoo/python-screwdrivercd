@@ -1,5 +1,6 @@
 # Copyright 2019, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+import hashlib
 import os
 from pathlib import Path
 from unittest import skip
@@ -8,6 +9,7 @@ import screwdrivercd.documentation.exceptions
 import screwdrivercd.documentation.plugin
 import screwdrivercd.documentation.mkdocs.plugin
 import screwdrivercd.documentation.sphinx.plugin
+import screwdrivercd.utility.environment
 
 from . import ScrewdriverTestCase
 
@@ -70,6 +72,13 @@ class BuildDocsTestCase(ScrewdriverTestCase):
         self.write_config_files(mkdocs_project_config_fail)
         with self.assertRaises(screwdrivercd.documentation.exceptions.DocPublishError):
             screwdrivercd.documentation.plugin.publish_documentation(push=False)
+            os.system('ls -lhR')
+            log_dir = Path(screwdrivercd.utility.environment.standard_directories()['logs']) / Path('documentation')
+            if os.path.exists(log_dir):
+                print('Logs')
+                os.system(f'ls -lh {log_dir}')
+                print('Log content')
+                os.system(f'cat {log_dir}/*')
 
 
 class PluginsTestCase(ScrewdriverTestCase):
@@ -103,7 +112,7 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         self._init_test_repo()
         p = screwdrivercd.documentation.plugin.DocumentationPlugin()
         result = p.get_clone_dir()
-        self.assertEqual(result, 'python-screwdrivercd')
+        self.assertEqual(result, os.path.abspath('python-screwdrivercd'))
 
     def test__clone_url(self):
         self._init_test_repo()
@@ -115,7 +124,7 @@ class DocumentationPluginTestCase(ScrewdriverTestCase):
         self._init_test_repo()
         p =  screwdrivercd.documentation.plugin.DocumentationPlugin()
         result = p.clone_dir
-        self.assertEqual(result, 'python-screwdrivercd')
+        self.assertEqual(result, os.path.abspath('python-screwdrivercd'))
 
     def test__git_add_all(self):
         self._init_test_repo()
@@ -274,6 +283,71 @@ class MkdocsDocumentationPluginTestCase(DocumentationPluginTestCase):
         self.write_config_files(mkdocs_project_config)
         super().test__documentation__publish()
 
+    def test_get_sha1_hashes(self):
+        # Create test files
+        file_contents = {
+            '.git/foo': b'Git file',
+            'file1.txt': b'Hello, World!',
+            'file2.txt': b'Test file content',
+            'subdir/file3.txt': b'Subdirectory file content'
+        }
+        self.write_config_files(file_contents)
+        os.link('file1.txt', 'file1_link.txt')
+
+        # Compute expected SHA1 hashes
+        expected_hashes = {}
+        for filename, content in file_contents.items():
+            if filename.startswith('.git'):
+                continue
+            if Path(filename).is_file():
+                file_hash = hashlib.sha1(content).hexdigest()
+                expected_hashes[filename] = file_hash
+
+        expected_hashes['file1_link.txt'] = '0a0a9f2a6772942557ab5355d76af442f8f65e01'
+
+        plugin = self.plugin_class()
+
+        # Get actual SHA1 hashes using the method
+        actual_hashes = plugin.get_sha1_hashes(self.tempdir.name)
+
+        print('Expected', expected_hashes)
+        print('Actual', actual_hashes)
+
+        # Verify the results
+        self.assertDictEqual(expected_hashes, actual_hashes)
+
+    def test__diff_dictionaries(self):
+        # Create test files
+        file_contents = {
+            'file1.txt': b'Hello, World!',
+            'file2.txt': b'Test file content',
+            'subdir/file3.txt': b'Subdirectory file content'
+        }
+        self.write_config_files(file_contents)
+
+        plugin = self.plugin_class()
+
+        # Get actual SHA1 hashes using the method
+        before_hashes = plugin.get_sha1_hashes(self.tempdir.name)
+
+        # Add a file
+        with open('file4.txt', 'wb') as fh:
+            fh.write(b'Added Test file content\n')
+
+        # Update a file
+        with open('file2.txt', 'wb') as fh:
+            fh.write(b'Updated Test file content')
+
+        # Delete a file
+        os.remove('file1.txt')
+
+        after_hashes = plugin.get_sha1_hashes(self.tempdir.name)
+        diff_hashes = plugin.diff_dictionaries(before_hashes, after_hashes)
+
+        self.assertIn('file4.txt', diff_hashes['added'])
+        self.assertIn('file2.txt', diff_hashes['changed'])
+        self.assertIn('file1.txt', diff_hashes['removed'])
+
 
 class MkdocsDocumentationVenvPluginTestCase(DocumentationPluginTestCase):
     plugin_class = screwdrivercd.documentation.mkdocs.plugin.MkDocsDocumentationVenvPlugin
@@ -289,7 +363,7 @@ class MkdocsDocumentationVenvPluginTestCase(DocumentationPluginTestCase):
     def test__documentation__publish__unchanged(self):
         self._init_test_repo()
         self.write_config_files(mkdocs_project_config)
-        p = screwdrivercd.documentation.mkdocs.plugin.MkDocsDocumentationVenvPlugin()
+        p = self.plugin_class()
         p.build_setup()
         p.build_documentation()
         p.build_cleanup()

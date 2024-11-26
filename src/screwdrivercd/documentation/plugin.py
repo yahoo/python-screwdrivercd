@@ -3,6 +3,7 @@
 """
 Documentation generator plugin classes
 """
+import hashlib
 import importlib.metadata
 import logging
 import os
@@ -42,8 +43,8 @@ class DocumentationPlugin:
         super().__init__(*args, **kwargs)
         directories = standard_directories('documentation')
         self.interpreter_bin_dir = os.path.dirname(sys.executable)
-        self.build_dir = directories['documentation']
-        self.log_dir = directories['logs']
+        self.build_dir = os.path.abspath(directories['documentation'])
+        self.log_dir = os.path.abspath(directories['logs'])
         self.build_log_filename = os.path.join(self.log_dir, f'{self.name}.build.log')
         self.publish_log_filename = os.path.join(self.log_dir, f'{self.name}.publish.log')
         self.build_dest = os.path.join(self.build_dir, self.build_output_dir)
@@ -52,6 +53,7 @@ class DocumentationPlugin:
             self.git_command_timeout = int(os.environ.get("DOCUMENTATION_GIT_TIMEOUT", str(self.git_command_timeout)))
         except ValueError:
             logger.warning('Value {os.environ.get("DOCUMENTATION_GIT_TIMEOUT", str(self.git_command_timeout))} for the DOCUMENTATION_GIT_TIMEOUT setting is invalid')
+
     @property
     def clone_dir(self) -> str:
         """
@@ -89,6 +91,52 @@ class DocumentationPlugin:
             Check that the documentation source is present, Returns True if it is, False otherwise
         """
         return False
+
+    @staticmethod
+    def get_sha1_hashes(directory_path, remove_git=True):
+        sha1_hashes = {}
+
+        for root, _, files in os.walk(directory_path):
+            for filename in files:
+                file_path = os.path.join(root, filename)
+                relative_path = os.path.relpath(file_path, directory_path)
+
+                if os.path.isfile(file_path):
+                    with open(file_path, 'rb') as f:
+                        file_hash = hashlib.sha1()
+                        while chunk := f.read(8192):
+                            file_hash.update(chunk)
+                        sha1_hashes[relative_path] = file_hash.hexdigest()
+                elif os.path.islink(file_path):  # pragma: no cover
+                    sha1_hashes[relative_path] = hashlib.sha1(relative_path.encode(errors='ignore')).hexdigest()
+        if remove_git:
+            remove_keys = []
+            for key in sha1_hashes.keys():
+                if key == '.git' or key.startswith('.git/'):
+                    remove_keys.append(key)
+            for key in remove_keys:
+                del sha1_hashes[key]
+        return sha1_hashes
+
+    @staticmethod
+    def diff_dictionaries(dict1, dict2):
+        diff = {
+            'added': {},
+            'removed': {},
+            'changed': {}
+        }
+
+        for key in dict1:
+            if key not in dict2:
+                diff['removed'][key] = dict1[key]
+            elif dict1[key] != dict2[key]:
+                diff['changed'][key] = {'from': dict1[key], 'to': dict2[key]}
+
+        for key in dict2:
+            if key not in dict1:
+                diff['added'][key] = dict2[key]
+
+        return diff
 
     def _run_command(self, command: List, log_filename: str, timeout: int = 0):
         """
@@ -165,7 +213,7 @@ class DocumentationPlugin:
         dest: str
             The destination directory
         """
-        self._log_message(f'\n- Copying files from {src} -> {dest}', self.publish_log_filename)
+        self._log_message(f'\n- In Directory {os.getcwd()} Copying files from {src} -> {dest}', self.publish_log_filename)
         copy_contents(src, dest)
 
     def clone_documentation_branch(self):  # pragma: no cover
@@ -209,8 +257,8 @@ class DocumentationPlugin:
             if line.startswith('Fetch URL:'):
                 os.chdir(cwd)
                 return ':'.join(line.split(':')[1:]).strip()
-        os.chdir(cwd)
-        return ''
+        os.chdir(cwd)  # pragma: no cover
+        return ''  # pragma: no cover
 
     def get_clone_dir(self) -> str:
         """
@@ -221,22 +269,25 @@ class DocumentationPlugin:
         str
             git clone directory
         """
-        self._log_message('Determining the clone directory', self.publish_log_filename)
-        result = self.get_clone_url().split('/')[-1].removesuffix('.git')
+        result = os.path.abspath(self.get_clone_url().split('/')[-1].removesuffix('.git'))
+        self._log_message(f'Determining the clone directory {result}', self.publish_log_filename)
         return result
 
     def git_add_all(self):
         """
         Run 'git add' on all the files in the current directory.
         """
+        subprocess.run(['git', 'config', 'advice.addIgnoredFile', 'false'], stderr=subprocess.DEVNULL)  # nosec - All subprocess calls use full path
+
         self._log_message('\n- Adding all files in the current directory to git', self.publish_log_filename)
         for filename in os.listdir('.'):
-            if filename in ['.git']:
+            if filename in ['.git', '.gitignore'] or filename.startswith('.git/'):
                 continue
             logger.debug('Adding %s to git', filename)
             self._run_command(['git', 'add', filename], log_filename=self.publish_log_filename)
+        logger.debug('Done adding files')
 
-    def git_commit_documentation(self, message: str = 'Update documentation'):
+    def git_commit_documentation(self, message: str = 'Update documentation'):  # pragma: no cover
         """
         Run git commit on all files in the current repo
 
@@ -309,7 +360,7 @@ class DocumentationPlugin:
 
     def publish_documentation(self, clear_before_build=True, push=True):  # pragma: no cover
         """
-        Build and publsh the documentation
+        Build and publish the documentation
 
         Raises
         ------
@@ -317,13 +368,13 @@ class DocumentationPlugin:
             If the build operation failed
 
         DocumentationPublishError:
-            The publish to the destination failed
+            Publish to the destination failed
         """
         self._log_message(f'\n- Publishing the documentation to github pages', self.publish_log_filename)
-        # self.remove_publish_log()
+        self.remove_publish_log()
 
         # Build the documentation
-        self.build_documentation()
+        build_dest = self.build_documentation()
 
         if not push:
             return
@@ -336,19 +387,22 @@ class DocumentationPlugin:
         with tempfile.TemporaryDirectory() as tempdir:    # pragma: no cover
             os.chdir(tempdir)
             self.clone_documentation_branch()
+            self.original_hashes = self.get_sha1_hashes(self.clone_dir)
             if clear_before_build:
                 self.clean_directory(self.clone_dir)
-            self.copy_contents(self.build_documentation(), self.clone_dir)
-
-            self._log_message('New repository contents', self.publish_log_filename)
-            self._run_command(['ls', '-lR'], log_filename=self.publish_log_filename)
+            self.copy_contents(build_dest, self.clone_dir)
 
             os.chdir(self.clone_dir)
             self.disable_jekyll()
+            self.updated_hashes = self.get_sha1_hashes(self.clone_dir)
 
-            self.git_add_all()
-            self.git_commit_documentation()
-            self.git_push_documentation()
+            if self.original_hashes == self.updated_hashes:
+                self._log_message('No changes to the documentation to publish', self.publish_log_filename)
+            else:
+                self._log_message(f'Changed files {self.diff_dictionaries(self.original_hashes, self.updated_hashes)}', self.publish_log_filename)
+                self.git_add_all()
+                self.git_commit_documentation()
+                self.git_push_documentation()
 
         os.chdir(self.source_dir)
 
@@ -360,7 +414,7 @@ def documentation_plugins(documentation_formats=None):
     for entry_point in importlib.metadata.entry_points(group='screwdrivercd.documentation.plugin'):
         try:
             instance = entry_point.load()()
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.warning(f'Documentation plugin {entry_point} failed to load due to a package dependency conflict: {e}')
             raise
         if documentation_formats and instance.name not in documentation_formats:

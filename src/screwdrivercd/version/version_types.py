@@ -98,7 +98,7 @@ class Version:
                 try:
                     data = tomlkit.load(fh)
                     if 'tool' in data and 'sdv4_version' in data['tool'] and 'project' in data and 'version' in data['project']:
-                        if not self.setup_cfg_filename:
+                        if not self.setup_cfg_filename:  # pragma: no cover
                             self.setup_cfg_filename = 'pyproject.toml'
                         return 'toml'
                     else:

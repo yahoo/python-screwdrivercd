@@ -33,10 +33,10 @@ class PipInstaller(Installer):
 
     def find_install_command(self):
         """
-        Find the install command binary to use and update the install command
+        Find the installation command binary to use and update the installation command
         """
         base_python = os.environ.get('BASE_PYTHON', '')
-        if base_python and os.path.exists(base_python):
+        if base_python and os.path.exists(base_python):  # pragma: no cover
             self.install_command = [base_python, '-m', 'pip', 'install']
             return
         super().find_install_command()

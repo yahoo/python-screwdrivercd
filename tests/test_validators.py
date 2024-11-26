@@ -143,12 +143,13 @@ invalid_style_config['src/mypyvalidator/__init__.py'] = b"""a: int =1\n"""
 class DepValidatorTestcase(ScrewdriverTestCase):
     validator_name = 'type_validation'
 
-    @unittest.skip("No longer works")
+    @unittest.skip("No longer works, safety is no longer used for validation")
     def test__secure_deps(self):
         self.write_config_files(working_config)
         result = validate_with_safety()
         self.assertEqual(result, 0)
 
+    @unittest.skip("No longer works, safety is no longer used for validation")
     def test__insecure_deps(self):
         self.write_config_files(insecure_dep_config)
         artifacts_dir = os.environ.get('SD_ARTIFACTS_DIR', '')
@@ -156,6 +157,7 @@ class DepValidatorTestcase(ScrewdriverTestCase):
         json_report_filename = os.path.join(report_dir, 'safetydb.json')
         result = validate_with_safety()
         self.assertGreater(result, 0)
+        os.system(f'ls -lh {report_dir}')
         self.assertTrue(os.path.exists(json_report_filename))
 
 

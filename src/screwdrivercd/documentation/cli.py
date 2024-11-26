@@ -5,8 +5,8 @@ screwdrivercd.documentation module command line utility
 """
 # The logging_basicConfig has to be run before other imports because some modules we use log output on import
 # pylint: disable=wrong-import-order, wrong-import-position
-from ..screwdriver.environment import logging_basicConfig, update_job_status
-logging_basicConfig(check_prefix='DOCUMENTATION')
+from ..screwdriver.environment import logging_basicConfig
+logging_basicConfig(format='%(asctime)s:%(name)s:%(levelname)s:%(module)s:%(lineno)d:%(message)s', check_prefix='DOCUMENTATION')
 import logging
 import os
 

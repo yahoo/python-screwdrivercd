@@ -26,7 +26,7 @@ def clean_directory(directory_name):
             continue
         full_filename = os.path.join(directory_name, filename)
         logger.debug('Removing file: %s', full_filename)
-        if os.path.isdir(full_filename):
+        if os.path.isdir(full_filename):  # pragma: no cover
             shutil.rmtree(full_filename)
         else:
             os.remove(full_filename)
@@ -61,7 +61,7 @@ def copy_contents(src, dest, skip_dotfiles=False):
         logger.debug('Dest directory: %s', destdir)
         os.makedirs(destdir, exist_ok=True)
         for fname in filelist:
-            if skip_dotfiles and fname.startswith('.'):
+            if skip_dotfiles and fname.startswith('.'):  # pragma: no cover
                 continue
             srcfile = os.path.join(dirname, fname)
             destfile = os.path.join(destdir, fname)

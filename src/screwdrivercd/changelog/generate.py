@@ -60,7 +60,7 @@ def create_first_commit_tag_if_missing() -> None:
     if first_commit_hash:
         try:
             subprocess.check_output(['git', 'tag', 'first_commit', first_commit_hash])  # nosec
-        except subprocess.CalledProcessError:  # pragma no cover
+        except subprocess.CalledProcessError:  # pragma: no cover
             pass  # Tag already exists
 
         
@@ -196,7 +196,7 @@ def changelog_contents(changelog_releases: str='') -> str:
             output += f'{os.linesep}---{os.linesep}'
         if changelog_name:
             output += f'## {changelog_name} {release} ({date:%Y-%m-%d}){os.linesep}'
-        else:  # pragma no cover
+        else:  # pragma: no cover
             output += f'## {release} ({date:%Y-%m-%d}){os.linesep}'
         for change_type, change_desc in CHANGE_TYPES.items():
             if change_type not in changes.keys():
