@@ -320,14 +320,14 @@ class PackageQualityValidatorTestCase(ScrewdriverTestCase):
         self.assertNotEqual(result, 0)
 
     def test__quality__pass__0(self):
-        os.environ['PYROMA_MIN_SCORE'] = '0'
+        os.environ['PYROMA_MIN_SCORE'] = '1'
         self.write_config_files(working_config)
         build_sdist_package()
         result = validate_package_quality()
         self.assertEqual(result, 0)
 
     def test__quality__skip_wheel_pass__0(self):
-        os.environ['PYROMA_MIN_SCORE'] = '0'
+        os.environ['PYROMA_MIN_SCORE'] = '1'
         self.write_config_files(working_config)
         build_sdist_package()
         build_wheel_packages()
